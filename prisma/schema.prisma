@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../prisma/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Cafe {
+  id        String     @id @default(cuid())
+  name      String
+  email     String?    // owner email (optional for MVP)
+  createdAt DateTime   @default(now())
+
+  employees Employee[]
+  schedules Schedule[]
+}
+
+model Employee {
+  id        String     @id @default(cuid())
+  name      String
+  email     String
+  cafeId    String
+  createdAt DateTime   @default(now())
+
+  cafe        Cafe         @relation(fields: [cafeId], references: [id])
+  availability Availability[]
+  shifts       Shift[]
+
+  @@index([cafeId])
+}
+
+model Availability {
+  id         String   @id @default(cuid())
+  employeeId String
+  day        String   // "Monday", "Tuesday"
+  shift      String   // "morning", "evening"
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+
+  @@index([employeeId])
+}
+
+model Schedule {
+  id        String   @id @default(cuid())
+  cafeId    String
+  weekStart DateTime // start of the week
+  createdAt DateTime @default(now())
+
+  cafe   Cafe   @relation(fields: [cafeId], references: [id])
+  shifts Shift[]
+
+  @@index([cafeId])
+}
+
+model Shift {
+  id         String   @id @default(cuid())
+  scheduleId String
+  employeeId String?
+  day        String   // "Monday"
+  shift      String   // "morning" | "evening"
+  status     String   @default("assigned") // assigned | pending | swapped
+
+  schedule Schedule @relation(fields: [scheduleId], references: [id])
+  employee Employee? @relation(fields: [employeeId], references: [id])
+
+  @@index([scheduleId])
+  @@index([employeeId])
+}
