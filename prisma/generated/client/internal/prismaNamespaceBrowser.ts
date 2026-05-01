@@ -55,7 +55,8 @@ export const ModelName = {
   Employee: 'Employee',
   Availability: 'Availability',
   Schedule: 'Schedule',
-  Shift: 'Shift'
+  Shift: 'Shift',
+  Message: 'Message'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -125,6 +126,18 @@ export const ShiftScalarFieldEnum = {
 } as const
 
 export type ShiftScalarFieldEnum = (typeof ShiftScalarFieldEnum)[keyof typeof ShiftScalarFieldEnum]
+
+
+export const MessageScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  cafeId: 'cafeId',
+  content: 'content',
+  role: 'role',
+  createdAt: 'createdAt'
+} as const
+
+export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
 export const SortOrder = {

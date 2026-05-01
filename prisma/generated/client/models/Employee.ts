@@ -185,6 +185,7 @@ export type EmployeeWhereInput = {
   cafe?: Prisma.XOR<Prisma.CafeScalarRelationFilter, Prisma.CafeWhereInput>
   availability?: Prisma.AvailabilityListRelationFilter
   shifts?: Prisma.ShiftListRelationFilter
+  messages?: Prisma.MessageListRelationFilter
 }
 
 export type EmployeeOrderByWithRelationInput = {
@@ -196,6 +197,7 @@ export type EmployeeOrderByWithRelationInput = {
   cafe?: Prisma.CafeOrderByWithRelationInput
   availability?: Prisma.AvailabilityOrderByRelationAggregateInput
   shifts?: Prisma.ShiftOrderByRelationAggregateInput
+  messages?: Prisma.MessageOrderByRelationAggregateInput
 }
 
 export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
@@ -210,6 +212,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   cafe?: Prisma.XOR<Prisma.CafeScalarRelationFilter, Prisma.CafeWhereInput>
   availability?: Prisma.AvailabilityListRelationFilter
   shifts?: Prisma.ShiftListRelationFilter
+  messages?: Prisma.MessageListRelationFilter
 }, "id">
 
 export type EmployeeOrderByWithAggregationInput = {
@@ -242,6 +245,7 @@ export type EmployeeCreateInput = {
   cafe: Prisma.CafeCreateNestedOneWithoutEmployeesInput
   availability?: Prisma.AvailabilityCreateNestedManyWithoutEmployeeInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
+  messages?: Prisma.MessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateInput = {
@@ -252,6 +256,7 @@ export type EmployeeUncheckedCreateInput = {
   createdAt?: Date | string
   availability?: Prisma.AvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUpdateInput = {
@@ -262,6 +267,7 @@ export type EmployeeUpdateInput = {
   cafe?: Prisma.CafeUpdateOneRequiredWithoutEmployeesNestedInput
   availability?: Prisma.AvailabilityUpdateManyWithoutEmployeeNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateInput = {
@@ -272,6 +278,7 @@ export type EmployeeUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   availability?: Prisma.AvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateManyInput = {
@@ -413,6 +420,20 @@ export type EmployeeUpdateOneWithoutShiftsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutShiftsInput, Prisma.EmployeeUpdateWithoutShiftsInput>, Prisma.EmployeeUncheckedUpdateWithoutShiftsInput>
 }
 
+export type EmployeeCreateNestedOneWithoutMessagesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutMessagesInput, Prisma.EmployeeUncheckedCreateWithoutMessagesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutMessagesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutMessagesInput, Prisma.EmployeeUncheckedCreateWithoutMessagesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutMessagesInput
+  upsert?: Prisma.EmployeeUpsertWithoutMessagesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutMessagesInput, Prisma.EmployeeUpdateWithoutMessagesInput>, Prisma.EmployeeUncheckedUpdateWithoutMessagesInput>
+}
+
 export type EmployeeCreateWithoutCafeInput = {
   id?: string
   name: string
@@ -420,6 +441,7 @@ export type EmployeeCreateWithoutCafeInput = {
   createdAt?: Date | string
   availability?: Prisma.AvailabilityCreateNestedManyWithoutEmployeeInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
+  messages?: Prisma.MessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutCafeInput = {
@@ -429,6 +451,7 @@ export type EmployeeUncheckedCreateWithoutCafeInput = {
   createdAt?: Date | string
   availability?: Prisma.AvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutCafeInput = {
@@ -475,6 +498,7 @@ export type EmployeeCreateWithoutAvailabilityInput = {
   createdAt?: Date | string
   cafe: Prisma.CafeCreateNestedOneWithoutEmployeesInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
+  messages?: Prisma.MessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutAvailabilityInput = {
@@ -484,6 +508,7 @@ export type EmployeeUncheckedCreateWithoutAvailabilityInput = {
   cafeId: string
   createdAt?: Date | string
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutAvailabilityInput = {
@@ -509,6 +534,7 @@ export type EmployeeUpdateWithoutAvailabilityInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cafe?: Prisma.CafeUpdateOneRequiredWithoutEmployeesNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutAvailabilityInput = {
@@ -518,6 +544,7 @@ export type EmployeeUncheckedUpdateWithoutAvailabilityInput = {
   cafeId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateWithoutShiftsInput = {
@@ -527,6 +554,7 @@ export type EmployeeCreateWithoutShiftsInput = {
   createdAt?: Date | string
   cafe: Prisma.CafeCreateNestedOneWithoutEmployeesInput
   availability?: Prisma.AvailabilityCreateNestedManyWithoutEmployeeInput
+  messages?: Prisma.MessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutShiftsInput = {
@@ -536,6 +564,7 @@ export type EmployeeUncheckedCreateWithoutShiftsInput = {
   cafeId: string
   createdAt?: Date | string
   availability?: Prisma.AvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutShiftsInput = {
@@ -561,6 +590,7 @@ export type EmployeeUpdateWithoutShiftsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cafe?: Prisma.CafeUpdateOneRequiredWithoutEmployeesNestedInput
   availability?: Prisma.AvailabilityUpdateManyWithoutEmployeeNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutShiftsInput = {
@@ -570,6 +600,63 @@ export type EmployeeUncheckedUpdateWithoutShiftsInput = {
   cafeId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   availability?: Prisma.AvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutMessagesInput = {
+  id?: string
+  name: string
+  email: string
+  createdAt?: Date | string
+  cafe: Prisma.CafeCreateNestedOneWithoutEmployeesInput
+  availability?: Prisma.AvailabilityCreateNestedManyWithoutEmployeeInput
+  shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutMessagesInput = {
+  id?: string
+  name: string
+  email: string
+  cafeId: string
+  createdAt?: Date | string
+  availability?: Prisma.AvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
+  shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutMessagesInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutMessagesInput, Prisma.EmployeeUncheckedCreateWithoutMessagesInput>
+}
+
+export type EmployeeUpsertWithoutMessagesInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutMessagesInput, Prisma.EmployeeUncheckedUpdateWithoutMessagesInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutMessagesInput, Prisma.EmployeeUncheckedCreateWithoutMessagesInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutMessagesInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutMessagesInput, Prisma.EmployeeUncheckedUpdateWithoutMessagesInput>
+}
+
+export type EmployeeUpdateWithoutMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cafe?: Prisma.CafeUpdateOneRequiredWithoutEmployeesNestedInput
+  availability?: Prisma.AvailabilityUpdateManyWithoutEmployeeNestedInput
+  shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  cafeId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  availability?: Prisma.AvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
+  shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateManyCafeInput = {
@@ -586,6 +673,7 @@ export type EmployeeUpdateWithoutCafeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   availability?: Prisma.AvailabilityUpdateManyWithoutEmployeeNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutCafeInput = {
@@ -595,6 +683,7 @@ export type EmployeeUncheckedUpdateWithoutCafeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   availability?: Prisma.AvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateManyWithoutCafeInput = {
@@ -612,11 +701,13 @@ export type EmployeeUncheckedUpdateManyWithoutCafeInput = {
 export type EmployeeCountOutputType = {
   availability: number
   shifts: number
+  messages: number
 }
 
 export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   availability?: boolean | EmployeeCountOutputTypeCountAvailabilityArgs
   shifts?: boolean | EmployeeCountOutputTypeCountShiftsArgs
+  messages?: boolean | EmployeeCountOutputTypeCountMessagesArgs
 }
 
 /**
@@ -643,6 +734,13 @@ export type EmployeeCountOutputTypeCountShiftsArgs<ExtArgs extends runtime.Types
   where?: Prisma.ShiftWhereInput
 }
 
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MessageWhereInput
+}
+
 
 export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -653,6 +751,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   cafe?: boolean | Prisma.CafeDefaultArgs<ExtArgs>
   availability?: boolean | Prisma.Employee$availabilityArgs<ExtArgs>
   shifts?: boolean | Prisma.Employee$shiftsArgs<ExtArgs>
+  messages?: boolean | Prisma.Employee$messagesArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employee"]>
 
@@ -687,6 +786,7 @@ export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   cafe?: boolean | Prisma.CafeDefaultArgs<ExtArgs>
   availability?: boolean | Prisma.Employee$availabilityArgs<ExtArgs>
   shifts?: boolean | Prisma.Employee$shiftsArgs<ExtArgs>
+  messages?: boolean | Prisma.Employee$messagesArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EmployeeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -702,6 +802,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     cafe: Prisma.$CafePayload<ExtArgs>
     availability: Prisma.$AvailabilityPayload<ExtArgs>[]
     shifts: Prisma.$ShiftPayload<ExtArgs>[]
+    messages: Prisma.$MessagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1106,6 +1207,7 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
   cafe<T extends Prisma.CafeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CafeDefaultArgs<ExtArgs>>): Prisma.Prisma__CafeClient<runtime.Types.Result.GetResult<Prisma.$CafePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   availability<T extends Prisma.Employee$availabilityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$availabilityArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AvailabilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   shifts<T extends Prisma.Employee$shiftsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$shiftsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShiftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  messages<T extends Prisma.Employee$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1586,6 +1688,30 @@ export type Employee$shiftsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.ShiftScalarFieldEnum | Prisma.ShiftScalarFieldEnum[]
+}
+
+/**
+ * Employee.messages
+ */
+export type Employee$messagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Message
+   */
+  select?: Prisma.MessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Message
+   */
+  omit?: Prisma.MessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MessageInclude<ExtArgs> | null
+  where?: Prisma.MessageWhereInput
+  orderBy?: Prisma.MessageOrderByWithRelationInput | Prisma.MessageOrderByWithRelationInput[]
+  cursor?: Prisma.MessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
 }
 
 /**

@@ -42,3 +42,8 @@ export type Schedule = Prisma.ScheduleModel
  * 
  */
 export type Shift = Prisma.ShiftModel
+/**
+ * Model Message
+ * 
+ */
+export type Message = Prisma.MessageModel

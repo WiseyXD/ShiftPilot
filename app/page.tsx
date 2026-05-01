@@ -1,65 +1,186 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
+
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
+
+import { TopBar } from "@/components/dashboard/top-bar"
+import { CreateCafe } from "@/components/dashboard/create-cafe"
+import { AddEmployee } from "@/components/dashboard/add-employee"
+import { EmployeeList } from "@/components/dashboard/employee-list"
+import { ScheduleView } from "@/components/dashboard/schedule-view"
+import { ChatWindows } from "@/components/dashboard/chat-window"
+
+export default function Page() {
+  const [tab, setTab] = useState("schedule")
+  const [cafe, setCafe] = useState<any>(null)
+  const [employees, setEmployees] = useState<any[]>([])
+  const [schedule, setSchedule] = useState<any>(null)
+
+  const [activeChats, setActiveChats] = useState<string[]>([])
+  const [messages, setMessages] = useState<any>({})
+
+  const [loading, setLoading] = useState(false)
+
+  const cafeForm = useForm()
+  const empForm = useForm()
+
+
+  // Create Cafe
+  const createCafe = async (data: any) => {
+    setLoading(true)
+    try {
+      const res = await fetch("/api/cafe", {
+        method: "POST",
+        body: JSON.stringify(data),
+      })
+
+      const json = await res.json()
+      setCafe(json)
+      cafeForm.reset()
+
+      toast.success("Cafe created successfully")
+    } catch {
+      toast.error("Failed to create cafe")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Add Employee
+  const addEmployee = async (data: any) => {
+    setLoading(true)
+    try {
+      const res = await fetch("/api/employee", {
+        method: "POST",
+        body: JSON.stringify({
+          ...data,
+          cafeId: cafe.id,
+          availability: [],
+        }),
+      })
+
+      const json = await res.json()
+      setEmployees((prev) => [...prev, json])
+      empForm.reset()
+
+      toast.success("Employee added")
+    } catch {
+      toast.error("Failed to add employee")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Generate Schedule
+  const generateSchedule = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch("/api/schedule/generate", {
+        method: "POST",
+        body: JSON.stringify({
+          cafeId: cafe.id,
+          weekStart: new Date(),
+        }),
+      })
+
+      const json = await res.json()
+      setSchedule(json)
+
+      toast.success("Schedule generated")
+    } catch {
+      toast.error("Failed to generate schedule")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const toggleChat = (id: string) => {
+    setActiveChats((prev) =>
+      prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]
+    )
+  }
+
+  const sendMessage = async (id: string) => {
+    const content = messages[id]
+    if (!content) return
+
+    setLoading(true)
+
+    try {
+      await fetch("/api/reply", {
+        method: "POST",
+        body: JSON.stringify({ employeeId: id, content }),
+      })
+
+      await generateSchedule()
+
+      toast.success("Schedule updated via AI")
+    } catch {
+      toast.error("Failed to process request")
+    } finally {
+      setLoading(false)
+      setMessages((prev: any) => ({ ...prev, [id]: "" }))
+    }
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <SidebarProvider>
+      <AppSidebar tab={tab} setTab={setTab} />
+
+      <SidebarInset className="h-screen flex flex-col bg-slate-50">
+        <TopBar tab={tab} cafe={cafe} />
+
+        <div className="flex-1 overflow-y-auto p-6 max-w-4xl mx-auto space-y-6">
+          {tab === "schedule" ? (
+            <>
+              {!cafe && (
+                <CreateCafe form={cafeForm} onSubmit={createCafe} />
+              )}
+
+              {cafe && (
+                <>
+                  <AddEmployee form={empForm} onSubmit={addEmployee} />
+
+                  <EmployeeList
+                    employees={employees}
+                    onChat={toggleChat}
+                  />
+
+                  {employees.length > 0 && (
+                    <button
+                      onClick={generateSchedule}
+                      disabled={loading}
+                      className="bg-black text-white px-5 py-2 rounded-lg hover:opacity-90 transition disabled:opacity-50"
+                    >
+                      {loading ? "Generating..." : "Generate Schedule"}
+                    </button>
+                  )}
+
+                  <ScheduleView schedule={schedule} />
+                </>
+              )}
+            </>
+          ) : (<div className="h-full flex flex-col">
+            <div className="flex-1 flex items-center justify-center text-muted-foreground">
+              Ask anything about your schedule
+            </div>
+          </div>
+          )}
+
+        </div>
+        <ChatWindows
+          activeChats={activeChats}
+          employees={employees}
+          messages={messages}
+          setMessages={setMessages}
+          sendMessage={sendMessage}
+          toggleChat={toggleChat}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+      </SidebarInset>
+    </SidebarProvider>
+  )
 }
