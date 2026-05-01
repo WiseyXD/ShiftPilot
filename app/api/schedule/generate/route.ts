@@ -1,9 +1,6 @@
-
 import { prisma } from "@/prisma/client"
 import { NextResponse } from "next/server"
-
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-const SHIFTS = ["morning", "evening"]
+import { generateScheduleWithAI } from "@/lib/llm/scheduler"
 
 export async function POST(req: Request) {
     try {
@@ -11,9 +8,18 @@ export async function POST(req: Request) {
 
         const employees = await prisma.employee.findMany({
             where: { cafeId },
-            include: { availability: true },
         })
 
+        if (employees.length === 0) {
+            return NextResponse.json({ error: "No employees" }, { status: 400 })
+        }
+
+        // 🧠 AI generates schedule
+        const aiShifts = await generateScheduleWithAI(
+            employees.map((e) => ({ name: e.name }))
+        )
+
+        // create schedule
         const schedule = await prisma.schedule.create({
             data: {
                 cafeId,
@@ -21,27 +27,17 @@ export async function POST(req: Request) {
             },
         })
 
-        const shiftsData = []
+        // map names → employee IDs
+        const shiftsData = aiShifts.map((s) => {
+            const employee = employees.find((e) => e.name === s.employeeName)
 
-        for (const day of DAYS) {
-            for (const shift of SHIFTS) {
-                // find available employees
-                const available = employees.filter((e) =>
-                    e.availability.some(
-                        (a) => a.day === day && a.shift === shift
-                    )
-                )
-
-                const assigned = available[Math.floor(Math.random() * available.length)]
-
-                shiftsData.push({
-                    scheduleId: schedule.id,
-                    employeeId: assigned?.id || null,
-                    day,
-                    shift,
-                })
+            return {
+                scheduleId: schedule.id,
+                employeeId: employee?.id || null,
+                day: s.day,
+                shift: s.shift,
             }
-        }
+        })
 
         await prisma.shift.createMany({
             data: shiftsData,
@@ -58,6 +54,10 @@ export async function POST(req: Request) {
 
         return NextResponse.json(fullSchedule)
     } catch (err) {
-        return NextResponse.json({ error: "Failed to generate schedule" }, { status: 500 })
+        console.error(err)
+        return NextResponse.json(
+            { error: "Failed to generate schedule" },
+            { status: 500 }
+        )
     }
 }
