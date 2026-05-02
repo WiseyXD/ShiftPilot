@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { BorderBeam } from "@/components/ui/border-beam"
 
 export function ChatWindows({
     activeChats,
@@ -11,7 +12,7 @@ export function ChatWindows({
     onDeclineShift,
 }: any) {
     return (
-        <div className="fixed bottom-4 right-4 flex gap-3">
+        <div className="fixed bottom-4 right-4 flex gap-3 z-50">
             {activeChats.map((id: string) => {
                 const emp = employees.find((e: any) => e.id === id)
 
@@ -23,8 +24,9 @@ export function ChatWindows({
                 return (
                     <div
                         key={id}
-                        className="w-80 bg-white border rounded-xl shadow-lg flex flex-col"
+                        className="w-80 bg-white border rounded-xl shadow-2xl flex flex-col relative overflow-hidden"
                     >
+                        <BorderBeam duration={8} size={100} />
                         {/* Header */}
                         <div className="px-3 py-2 border-b flex justify-between">
                             <span className="text-sm font-medium">{emp?.name}</span>

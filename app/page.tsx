@@ -15,6 +15,8 @@ import { ScheduleView } from "@/components/dashboard/schedule-view"
 import { ChatWindows } from "@/components/dashboard/chat-window"
 import { Button } from "@/components/ui/button"
 import { AssistantPanel } from "@/components/dashboard/assistant-panel"
+import { DotPattern } from "@/components/ui/dot-pattern"
+import { cn } from "@/lib/utils"
 
 export default function Page() {
   const [tab, setTab] = useState("schedule")
@@ -234,10 +236,11 @@ export default function Page() {
     <SidebarProvider>
       <AppSidebar tab={tab} setTab={setTab} />
 
-      <SidebarInset className="h-screen flex flex-col bg-slate-50">
+      <SidebarInset className="h-screen flex flex-col bg-slate-50/50 relative overflow-hidden">
+        <DotPattern className={cn("[mask-image:radial-gradient(800px_circle_at_center,white,transparent)]", "opacity-40")} />
         <TopBar tab={tab} cafe={cafe} />
 
-        <div className="flex-1 overflow-y-auto p-6 max-w-4xl mx-auto space-y-6">
+        <div className="flex-1 overflow-y-auto p-6 max-w-4xl mx-auto space-y-6 z-10 w-full">
           {tab === "schedule" ? (
             <>
               {!cafe && (
@@ -276,9 +279,11 @@ export default function Page() {
           )}
 
         </div>
-        <Button variant="destructive" onClick={resetDemo}>
-          Reset Demo
-        </Button>
+        <div className="p-6 pt-0 mx-auto max-w-4xl w-full z-10">
+          <Button variant="destructive" onClick={resetDemo} className="w-full sm:w-auto">
+            Reset Demo
+          </Button>
+        </div>
 
       </SidebarInset>
       <ChatWindows
