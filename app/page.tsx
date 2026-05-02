@@ -111,29 +111,34 @@ export default function Page() {
     )
   }
 
-  const sendMessage = async (id: string) => {
-    const content = messages[id]
-    if (!content) return
+  const sendMessage = async (employeeId: string, shiftId: string) => {
+    const content = messages[employeeId]
+
+    if (!content || !shiftId) {
+      toast.error("Select a shift")
+      return
+    }
 
     setLoading(true)
 
     try {
-      const replyResponse = await fetch("/api/reply", {
+      const res = await fetch("/api/reply", {
         method: "POST",
-        body: JSON.stringify({ employeeId: id, content }),
+        body: JSON.stringify({
+          employeeId,
+          shiftId, // 🔥 NEW
+          content,
+        }),
       })
 
-      const reply = await replyResponse.json()
+      const reply = await res.json()
 
-      console.log("reply response", reply)
-
-      // ❌ handle error from backend
       if (!reply.success) {
-        toast.error(reply.error || "Failed to update schedule")
+        toast.error(reply.error)
         return
       }
 
-      // ✅ update UI instantly (THIS IS THE FIX)
+      // ✅ update UI
       if (reply.updatedShift && schedule) {
         setSchedule((prev: any) => ({
           ...prev,
@@ -148,10 +153,12 @@ export default function Page() {
       toast.error("Failed to process request")
     } finally {
       setLoading(false)
-      setMessages((prev: any) => ({ ...prev, [id]: "" }))
+      setMessages((prev: any) => ({
+        ...prev,
+        [employeeId]: "",
+      }))
     }
   }
-
   return (
     <SidebarProvider>
       <AppSidebar tab={tab} setTab={setTab} />
