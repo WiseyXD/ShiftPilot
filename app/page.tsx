@@ -194,17 +194,22 @@ export default function Page() {
       })
 
       // 🔥 trigger LLM reschedule
-      await fetch("/api/schedule/reschedule", {
+      const res = await fetch("/api/schedule/reschedule", {
         method: "POST",
         body: JSON.stringify({
           scheduleId: schedule.id,
         }),
-      })
-
+      });
+      const data = await res.json()
       // 🔥 refresh UI
       await fetchSchedule()
-
-      toast.success("Shift declined & rescheduled")
+      data.updates.forEach((u: any) => {
+        if (u.employeeId) {
+          toast.success(u.reason)
+        } else {
+          toast.warning("Unassigned shift → manager needed")
+        }
+      })
     } catch {
       toast.error("Error updating shift")
     }

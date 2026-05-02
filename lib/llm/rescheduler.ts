@@ -3,14 +3,15 @@ import { z } from "zod"
 
 const model = new ChatOpenAI({
   model: "gpt-4o-mini",
-  temperature: 0.3,
+  temperature: 0.2,
 })
 
 const schema = z.object({
-  shifts: z.array(
+  updates: z.array(
     z.object({
       shiftId: z.string(),
-      employeeName: z.string().nullable(),
+      employeeId: z.string().nullable(),
+      reason: z.string(),
     })
   ),
 })
@@ -22,22 +23,24 @@ export async function rescheduleWithAI(input: {
   const structured = model.withStructuredOutput(schema)
 
   const result = await structured.invoke(`
-You are a scheduling assistant.
+You are a scheduling AI.
 
 Goal:
 Reassign ONLY declined shifts.
 
 Rules:
-- Respect availability
-- Avoid double booking
+- Use employeeId ONLY (never names)
+- Respect availability strictly
+- Avoid assigning same employee twice in same day
 - Balance workload
-- If no one available → assign null
+- If no valid employee → return null employeeId
+- Always include reason
 
 Employees:
 ${input.employees
       .map(
         (e) =>
-          `${e.name}: ${e.availability
+          `${e.id}: ${e.name} → ${e.availability
             .map((a: any) => `${a.day}-${a.shift}`)
             .join(", ")}`
       )
@@ -47,12 +50,12 @@ Shifts:
 ${input.shifts
       .map(
         (s) =>
-          `${s.id}: ${s.day}-${s.shift} (${s.status}) assigned to ${s.employee?.name}`
+          `${s.id}: ${s.day}-${s.shift} (${s.status}) assigned to ${s.employeeId}`
       )
       .join("\n")}
 
-Return updated assignments only for declined shifts.
+Return JSON only.
 `)
 
-  return result.shifts
+  return result.updates
 }
