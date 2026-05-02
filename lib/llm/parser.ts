@@ -14,6 +14,7 @@ const schema = z.object({
 })
 
 export async function parseMessageWithLLM(message: string) {
+  console.log("llm message sent", message)
   const structuredModel = model.withStructuredOutput(schema)
 
   const result = await structuredModel.invoke(

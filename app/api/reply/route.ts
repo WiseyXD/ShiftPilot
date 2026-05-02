@@ -6,12 +6,9 @@ export async function POST(req: Request) {
     try {
         const { employeeId, content } = await req.json()
 
-        if (!employeeId || !content) {
-            return NextResponse.json({ error: "Missing fields" }, { status: 400 })
-        }
-
-        // 🧠 1. LLM parsing
         const parsed = await parseMessageWithLLM(content)
+
+        console.log("parsed", parsed)
 
         if (!parsed.day || !parsed.shift) {
             return NextResponse.json({
@@ -19,14 +16,17 @@ export async function POST(req: Request) {
             })
         }
 
-        const { day, shift } = parsed
+        const day =
+            parsed.day.charAt(0).toUpperCase() +
+            parsed.day.slice(1).toLowerCase()
 
-        // 🔍 2. Find shift
+        const shift = parsed.shift.toLowerCase()
+
         const targetShift = await prisma.shift.findFirst({
             where: {
-                employeeId,
                 day,
                 shift,
+                employeeId, // 🔥 CRITICAL FIX
             },
             include: {
                 schedule: true,
@@ -37,13 +37,24 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Shift not found" }, { status: 404 })
         }
 
-        // 🔄 3. Find replacement
+
+        // 🔥 validate employee
+        if (targetShift.employeeId !== employeeId) {
+            return NextResponse.json(
+                { error: "You are not assigned to this shift" },
+                { status: 400 }
+            )
+        }
+
         const candidates = await prisma.employee.findMany({
             where: {
                 cafeId: targetShift.schedule.cafeId,
                 id: { not: employeeId },
                 availability: {
-                    some: { day, shift },
+                    some: {
+                        day,
+                        shift,
+                    },
                 },
             },
         })
@@ -61,7 +72,6 @@ export async function POST(req: Request) {
 
         return NextResponse.json({
             success: true,
-            parsed,
             updatedShift,
         })
     } catch (err) {

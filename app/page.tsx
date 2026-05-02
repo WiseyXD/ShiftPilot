@@ -54,12 +54,19 @@ export default function Page() {
   const addEmployee = async (data: any) => {
     setLoading(true)
     try {
+      const parsedAvailability =
+        data.availability?.map((val: string) => {
+          const [day, shift] = val.split("-")
+          return { day, shift }
+        }) || []
+
       const res = await fetch("/api/employee", {
         method: "POST",
         body: JSON.stringify({
-          ...data,
+          name: data.name,
+          email: data.email,
           cafeId: cafe.id,
-          availability: [],
+          availability: parsedAvailability,
         }),
       })
 
@@ -111,14 +118,32 @@ export default function Page() {
     setLoading(true)
 
     try {
-      await fetch("/api/reply", {
+      const replyResponse = await fetch("/api/reply", {
         method: "POST",
         body: JSON.stringify({ employeeId: id, content }),
       })
 
-      await generateSchedule()
+      const reply = await replyResponse.json()
 
-      toast.success("Schedule updated via AI")
+      console.log("reply response", reply)
+
+      // ❌ handle error from backend
+      if (!reply.success) {
+        toast.error(reply.error || "Failed to update schedule")
+        return
+      }
+
+      // ✅ update UI instantly (THIS IS THE FIX)
+      if (reply.updatedShift && schedule) {
+        setSchedule((prev: any) => ({
+          ...prev,
+          shifts: prev.shifts.map((s: any) =>
+            s.id === reply.updatedShift.id ? reply.updatedShift : s
+          ),
+        }))
+      }
+
+      toast.success("Shift updated")
     } catch {
       toast.error("Failed to process request")
     } finally {
