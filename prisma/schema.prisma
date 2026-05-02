@@ -60,13 +60,22 @@ model Schedule {
   @@index([cafeId])
 }
 
+enum ShiftStatus {
+  pending
+  accepted
+  declined
+  reassigned
+  unassigned
+}
+
 model Shift {
   id         String  @id @default(cuid())
   scheduleId String
   employeeId String?
   day        String // "Monday"
   shift      String // "morning" | "evening"
-  status     String  @default("assigned") // assigned | pending | swapped
+  status     ShiftStatus @default(pending)
+
 
   schedule Schedule  @relation(fields: [scheduleId], references: [id])
   employee Employee? @relation(fields: [employeeId], references: [id])

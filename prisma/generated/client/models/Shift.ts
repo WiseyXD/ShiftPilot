@@ -30,7 +30,7 @@ export type ShiftMinAggregateOutputType = {
   employeeId: string | null
   day: string | null
   shift: string | null
-  status: string | null
+  status: $Enums.ShiftStatus | null
 }
 
 export type ShiftMaxAggregateOutputType = {
@@ -39,7 +39,7 @@ export type ShiftMaxAggregateOutputType = {
   employeeId: string | null
   day: string | null
   shift: string | null
-  status: string | null
+  status: $Enums.ShiftStatus | null
 }
 
 export type ShiftCountAggregateOutputType = {
@@ -159,7 +159,7 @@ export type ShiftGroupByOutputType = {
   employeeId: string | null
   day: string
   shift: string
-  status: string
+  status: $Enums.ShiftStatus
   _count: ShiftCountAggregateOutputType | null
   _min: ShiftMinAggregateOutputType | null
   _max: ShiftMaxAggregateOutputType | null
@@ -189,7 +189,7 @@ export type ShiftWhereInput = {
   employeeId?: Prisma.StringNullableFilter<"Shift"> | string | null
   day?: Prisma.StringFilter<"Shift"> | string
   shift?: Prisma.StringFilter<"Shift"> | string
-  status?: Prisma.StringFilter<"Shift"> | string
+  status?: Prisma.EnumShiftStatusFilter<"Shift"> | $Enums.ShiftStatus
   schedule?: Prisma.XOR<Prisma.ScheduleScalarRelationFilter, Prisma.ScheduleWhereInput>
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
 }
@@ -214,7 +214,7 @@ export type ShiftWhereUniqueInput = Prisma.AtLeast<{
   employeeId?: Prisma.StringNullableFilter<"Shift"> | string | null
   day?: Prisma.StringFilter<"Shift"> | string
   shift?: Prisma.StringFilter<"Shift"> | string
-  status?: Prisma.StringFilter<"Shift"> | string
+  status?: Prisma.EnumShiftStatusFilter<"Shift"> | $Enums.ShiftStatus
   schedule?: Prisma.XOR<Prisma.ScheduleScalarRelationFilter, Prisma.ScheduleWhereInput>
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
 }, "id">
@@ -240,14 +240,14 @@ export type ShiftScalarWhereWithAggregatesInput = {
   employeeId?: Prisma.StringNullableWithAggregatesFilter<"Shift"> | string | null
   day?: Prisma.StringWithAggregatesFilter<"Shift"> | string
   shift?: Prisma.StringWithAggregatesFilter<"Shift"> | string
-  status?: Prisma.StringWithAggregatesFilter<"Shift"> | string
+  status?: Prisma.EnumShiftStatusWithAggregatesFilter<"Shift"> | $Enums.ShiftStatus
 }
 
 export type ShiftCreateInput = {
   id?: string
   day: string
   shift: string
-  status?: string
+  status?: $Enums.ShiftStatus
   schedule: Prisma.ScheduleCreateNestedOneWithoutShiftsInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutShiftsInput
 }
@@ -258,14 +258,14 @@ export type ShiftUncheckedCreateInput = {
   employeeId?: string | null
   day: string
   shift: string
-  status?: string
+  status?: $Enums.ShiftStatus
 }
 
 export type ShiftUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   day?: Prisma.StringFieldUpdateOperationsInput | string
   shift?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
   schedule?: Prisma.ScheduleUpdateOneRequiredWithoutShiftsNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutShiftsNestedInput
 }
@@ -276,7 +276,7 @@ export type ShiftUncheckedUpdateInput = {
   employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   day?: Prisma.StringFieldUpdateOperationsInput | string
   shift?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
 }
 
 export type ShiftCreateManyInput = {
@@ -285,14 +285,14 @@ export type ShiftCreateManyInput = {
   employeeId?: string | null
   day: string
   shift: string
-  status?: string
+  status?: $Enums.ShiftStatus
 }
 
 export type ShiftUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   day?: Prisma.StringFieldUpdateOperationsInput | string
   shift?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
 }
 
 export type ShiftUncheckedUpdateManyInput = {
@@ -301,7 +301,7 @@ export type ShiftUncheckedUpdateManyInput = {
   employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   day?: Prisma.StringFieldUpdateOperationsInput | string
   shift?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
 }
 
 export type ShiftListRelationFilter = {
@@ -425,11 +425,15 @@ export type ShiftUncheckedUpdateManyWithoutScheduleNestedInput = {
   deleteMany?: Prisma.ShiftScalarWhereInput | Prisma.ShiftScalarWhereInput[]
 }
 
+export type EnumShiftStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ShiftStatus
+}
+
 export type ShiftCreateWithoutEmployeeInput = {
   id?: string
   day: string
   shift: string
-  status?: string
+  status?: $Enums.ShiftStatus
   schedule: Prisma.ScheduleCreateNestedOneWithoutShiftsInput
 }
 
@@ -438,7 +442,7 @@ export type ShiftUncheckedCreateWithoutEmployeeInput = {
   scheduleId: string
   day: string
   shift: string
-  status?: string
+  status?: $Enums.ShiftStatus
 }
 
 export type ShiftCreateOrConnectWithoutEmployeeInput = {
@@ -476,14 +480,14 @@ export type ShiftScalarWhereInput = {
   employeeId?: Prisma.StringNullableFilter<"Shift"> | string | null
   day?: Prisma.StringFilter<"Shift"> | string
   shift?: Prisma.StringFilter<"Shift"> | string
-  status?: Prisma.StringFilter<"Shift"> | string
+  status?: Prisma.EnumShiftStatusFilter<"Shift"> | $Enums.ShiftStatus
 }
 
 export type ShiftCreateWithoutScheduleInput = {
   id?: string
   day: string
   shift: string
-  status?: string
+  status?: $Enums.ShiftStatus
   employee?: Prisma.EmployeeCreateNestedOneWithoutShiftsInput
 }
 
@@ -492,7 +496,7 @@ export type ShiftUncheckedCreateWithoutScheduleInput = {
   employeeId?: string | null
   day: string
   shift: string
-  status?: string
+  status?: $Enums.ShiftStatus
 }
 
 export type ShiftCreateOrConnectWithoutScheduleInput = {
@@ -526,14 +530,14 @@ export type ShiftCreateManyEmployeeInput = {
   scheduleId: string
   day: string
   shift: string
-  status?: string
+  status?: $Enums.ShiftStatus
 }
 
 export type ShiftUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   day?: Prisma.StringFieldUpdateOperationsInput | string
   shift?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
   schedule?: Prisma.ScheduleUpdateOneRequiredWithoutShiftsNestedInput
 }
 
@@ -542,7 +546,7 @@ export type ShiftUncheckedUpdateWithoutEmployeeInput = {
   scheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   day?: Prisma.StringFieldUpdateOperationsInput | string
   shift?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
 }
 
 export type ShiftUncheckedUpdateManyWithoutEmployeeInput = {
@@ -550,7 +554,7 @@ export type ShiftUncheckedUpdateManyWithoutEmployeeInput = {
   scheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   day?: Prisma.StringFieldUpdateOperationsInput | string
   shift?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
 }
 
 export type ShiftCreateManyScheduleInput = {
@@ -558,14 +562,14 @@ export type ShiftCreateManyScheduleInput = {
   employeeId?: string | null
   day: string
   shift: string
-  status?: string
+  status?: $Enums.ShiftStatus
 }
 
 export type ShiftUpdateWithoutScheduleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   day?: Prisma.StringFieldUpdateOperationsInput | string
   shift?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
   employee?: Prisma.EmployeeUpdateOneWithoutShiftsNestedInput
 }
 
@@ -574,7 +578,7 @@ export type ShiftUncheckedUpdateWithoutScheduleInput = {
   employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   day?: Prisma.StringFieldUpdateOperationsInput | string
   shift?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
 }
 
 export type ShiftUncheckedUpdateManyWithoutScheduleInput = {
@@ -582,7 +586,7 @@ export type ShiftUncheckedUpdateManyWithoutScheduleInput = {
   employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   day?: Prisma.StringFieldUpdateOperationsInput | string
   shift?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
 }
 
 
@@ -655,7 +659,7 @@ export type $ShiftPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     employeeId: string | null
     day: string
     shift: string
-    status: string
+    status: $Enums.ShiftStatus
   }, ExtArgs["result"]["shift"]>
   composites: {}
 }
@@ -1086,7 +1090,7 @@ export interface ShiftFieldRefs {
   readonly employeeId: Prisma.FieldRef<"Shift", 'String'>
   readonly day: Prisma.FieldRef<"Shift", 'String'>
   readonly shift: Prisma.FieldRef<"Shift", 'String'>
-  readonly status: Prisma.FieldRef<"Shift", 'String'>
+  readonly status: Prisma.FieldRef<"Shift", 'ShiftStatus'>
 }
     
 

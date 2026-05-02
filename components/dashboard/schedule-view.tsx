@@ -2,7 +2,11 @@
 
 import { Button } from "@/components/ui/button"
 
-export function ScheduleView({ schedule, onDecline }: any) {
+export function ScheduleView({
+    schedule,
+    onAccept,
+    onDecline,
+}: any) {
     if (!schedule) return null
 
     return (
@@ -10,7 +14,7 @@ export function ScheduleView({ schedule, onDecline }: any) {
             {schedule.shifts.map((s: any) => (
                 <div
                     key={s.id}
-                    className="flex justify-between items-center border rounded-lg px-4 py-3 bg-white shadow-sm"
+                    className="flex justify-between items-center border rounded-lg px-4 py-3 bg-white"
                 >
                     <div>
                         <div className="text-sm font-medium">
@@ -19,16 +23,25 @@ export function ScheduleView({ schedule, onDecline }: any) {
                         <div className="text-xs text-muted-foreground">
                             {s.employee?.name || "Unassigned"}
                         </div>
+                        <div className="text-xs mt-1">
+                            Status: {s.status}
+                        </div>
                     </div>
 
-                    {s.employee && (
-                        <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => onDecline(s)}
-                        >
-                            Decline
-                        </Button>
+                    {s.employee && s.status === "pending" && (
+                        <div className="flex gap-2">
+                            <Button size="sm" onClick={() => onAccept(s)}>
+                                Accept
+                            </Button>
+
+                            <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => onDecline(s)}
+                            >
+                                Decline
+                            </Button>
+                        </div>
                     )}
                 </div>
             ))}

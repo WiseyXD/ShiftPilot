@@ -9,7 +9,12 @@
 * 🟢 You can import this file directly.
 */
 
+export const ShiftStatus = {
+  pending: 'pending',
+  accepted: 'accepted',
+  declined: 'declined',
+  reassigned: 'reassigned',
+  unassigned: 'unassigned'
+} as const
 
-
-// This file is empty because there are no enums in the schema.
-export {}
+export type ShiftStatus = (typeof ShiftStatus)[keyof typeof ShiftStatus]

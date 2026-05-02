@@ -13,6 +13,7 @@ import { AddEmployee } from "@/components/dashboard/add-employee"
 import { EmployeeList } from "@/components/dashboard/employee-list"
 import { ScheduleView } from "@/components/dashboard/schedule-view"
 import { ChatWindows } from "@/components/dashboard/chat-window"
+import { Button } from "@/components/ui/button"
 
 export default function Page() {
   const [tab, setTab] = useState("schedule")
@@ -82,6 +83,13 @@ export default function Page() {
     }
   }
 
+  const fetchSchedule = async () => {
+    if (!schedule?.id) return
+
+    const res = await fetch(`/api/schedule/${schedule.id}`)
+    const data = await res.json()
+    setSchedule(data)
+  }
   // Generate Schedule
   const generateSchedule = async () => {
     setLoading(true)
@@ -160,16 +168,41 @@ export default function Page() {
     }
   }
 
-  const declineShift = async (shift: any) => {
-    setLoading(true)
+  const acceptShift = async (shift: any) => {
+    try {
+      const res = await fetch("/api/shift/accept", {
+        method: "POST",
+        body: JSON.stringify({ shiftId: shift.id }),
+      })
 
+      const data = await res.json()
+
+      if (!data.success) {
+        toast.error("Failed to accept shift")
+        return
+      }
+
+      // update UI
+      setSchedule((prev: any) => ({
+        ...prev,
+        shifts: prev.shifts.map((s: any) =>
+          s.id === shift.id ? { ...s, status: "accepted" } : s
+        ),
+      }))
+
+      toast.success("Shift accepted")
+    } catch {
+      toast.error("Error accepting shift")
+    }
+  }
+
+  const declineShift = async (shift: any) => {
     try {
       const res = await fetch("/api/reply", {
         method: "POST",
         body: JSON.stringify({
           employeeId: shift.employeeId,
           shiftId: shift.id,
-          reason: "declined",
         }),
       })
 
@@ -180,20 +213,44 @@ export default function Page() {
         return
       }
 
-      // ✅ update UI
+      // update UI
       setSchedule((prev: any) => ({
         ...prev,
         shifts: prev.shifts.map((s: any) =>
-          s.id === data.updatedShift.id ? data.updatedShift : s
+          s.id === shift.id ? { ...s, status: "declined" } : s
         ),
       }))
 
-      // 🔥 show explanation
-      toast.success(data.explanation || "Shift reassigned")
+      toast.success("Shift declined")
     } catch {
-      toast.error("Failed to update shift")
-    } finally {
-      setLoading(false)
+      toast.error("Error declining shift")
+    }
+  }
+
+  const reschedule = async () => {
+    if (!schedule) return
+
+    try {
+      const res = await fetch("/api/schedule/reschedule", {
+        method: "POST",
+        body: JSON.stringify({
+          scheduleId: schedule.id,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!data.success) {
+        toast.error("Failed to reschedule")
+        return
+      }
+
+      // 🔥 REFETCH schedule (important)
+      await fetchSchedule()
+
+      toast.success("Schedule rebalanced")
+    } catch {
+      toast.error("Error rescheduling")
     }
   }
 
@@ -230,7 +287,10 @@ export default function Page() {
                     </button>
                   )}
 
-                  <ScheduleView schedule={schedule} onDecline={declineShift} />
+                  <ScheduleView schedule={schedule} onAccept={acceptShift} onDecline={declineShift} />
+                  <Button onClick={reschedule}>
+                    Rebalance Schedule
+                  </Button>
                 </>
               )}
             </>
