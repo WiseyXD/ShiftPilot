@@ -28,21 +28,6 @@ export function ScheduleView({
                         </div>
                     </div>
 
-                    {s.employee && s.status === "pending" && (
-                        <div className="flex gap-2">
-                            <Button size="sm" onClick={() => onAccept(s)}>
-                                Accept
-                            </Button>
-
-                            <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={() => onDecline(s)}
-                            >
-                                Decline
-                            </Button>
-                        </div>
-                    )}
                 </div>
             ))}
         </div>

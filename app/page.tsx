@@ -170,35 +170,22 @@ export default function Page() {
 
   const acceptShift = async (shift: any) => {
     try {
-      const res = await fetch("/api/shift/accept", {
+      await fetch("/api/shift/accept", {
         method: "POST",
         body: JSON.stringify({ shiftId: shift.id }),
       })
 
-      const data = await res.json()
-
-      if (!data.success) {
-        toast.error("Failed to accept shift")
-        return
-      }
-
-      // update UI
-      setSchedule((prev: any) => ({
-        ...prev,
-        shifts: prev.shifts.map((s: any) =>
-          s.id === shift.id ? { ...s, status: "accepted" } : s
-        ),
-      }))
+      await fetchSchedule()
 
       toast.success("Shift accepted")
     } catch {
-      toast.error("Error accepting shift")
+      toast.error("Failed to accept shift")
     }
   }
 
   const declineShift = async (shift: any) => {
     try {
-      const res = await fetch("/api/reply", {
+      await fetch("/api/reply", {
         method: "POST",
         body: JSON.stringify({
           employeeId: shift.employeeId,
@@ -206,24 +193,20 @@ export default function Page() {
         }),
       })
 
-      const data = await res.json()
+      // 🔥 trigger LLM reschedule
+      await fetch("/api/schedule/reschedule", {
+        method: "POST",
+        body: JSON.stringify({
+          scheduleId: schedule.id,
+        }),
+      })
 
-      if (!data.success) {
-        toast.error(data.error)
-        return
-      }
+      // 🔥 refresh UI
+      await fetchSchedule()
 
-      // update UI
-      setSchedule((prev: any) => ({
-        ...prev,
-        shifts: prev.shifts.map((s: any) =>
-          s.id === shift.id ? { ...s, status: "declined" } : s
-        ),
-      }))
-
-      toast.success("Shift declined")
+      toast.success("Shift declined & rescheduled")
     } catch {
-      toast.error("Error declining shift")
+      toast.error("Error updating shift")
     }
   }
 
@@ -302,15 +285,16 @@ export default function Page() {
           )}
 
         </div>
-        <ChatWindows
-          activeChats={activeChats}
-          employees={employees}
-          messages={messages}
-          setMessages={setMessages}
-          sendMessage={sendMessage}
-          toggleChat={toggleChat}
-        />
       </SidebarInset>
+      <ChatWindows
+        activeChats={activeChats}
+        employees={employees}
+        schedule={schedule}
+        toggleChat={toggleChat}
+        onAcceptShift={acceptShift}
+        onDeclineShift={declineShift}
+      />
+
     </SidebarProvider>
   )
 }

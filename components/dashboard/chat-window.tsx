@@ -1,78 +1,77 @@
 "use client"
 
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
 
 export function ChatWindows({
     activeChats,
     employees,
     schedule,
-    messages,
-    setMessages,
-    sendMessage,
     toggleChat,
+    onAcceptShift,
+    onDeclineShift,
 }: any) {
-    const [selectedShift, setSelectedShift] = useState<any>({})
-
     return (
         <div className="fixed bottom-4 right-4 flex gap-3">
             {activeChats.map((id: string) => {
                 const emp = employees.find((e: any) => e.id === id)
 
-                // 🔥 get employee shifts
                 const empShifts =
-                    schedule?.shifts?.filter((s: any) => s.employeeId === id) || []
+                    schedule?.shifts?.filter(
+                        (s: any) => s.employeeId === id && s.status === "pending"
+                    ) || []
 
                 return (
                     <div
                         key={id}
-                        className="w-72 bg-white border rounded-xl shadow-lg flex flex-col"
+                        className="w-80 bg-white border rounded-xl shadow-lg flex flex-col"
                     >
+                        {/* Header */}
                         <div className="px-3 py-2 border-b flex justify-between">
                             <span className="text-sm font-medium">{emp?.name}</span>
                             <button onClick={() => toggleChat(id)}>✕</button>
                         </div>
 
-                        <div className="p-3 space-y-2">
-                            {/* 🔥 shift selector */}
-                            <select
-                                className="w-full border rounded p-2 text-sm"
-                                onChange={(e) =>
-                                    setSelectedShift((prev: any) => ({
-                                        ...prev,
-                                        [id]: e.target.value,
-                                    }))
-                                }
-                            >
-                                <option value="">Select shift</option>
-                                {empShifts.map((s: any) => (
-                                    <option key={s.id} value={s.id}>
-                                        {s.day} - {s.shift}
-                                    </option>
-                                ))}
-                            </select>
+                        {/* Content */}
+                        <div className="p-3 space-y-3">
+                            {empShifts.length === 0 ? (
+                                <div className="text-sm text-muted-foreground">
+                                    No pending shifts 🎉
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="text-sm">
+                                        You have been assigned:
+                                    </div>
 
-                            <Input
-                                placeholder="Type message..."
-                                value={messages[id] || ""}
-                                onChange={(e) =>
-                                    setMessages((prev: any) => ({
-                                        ...prev,
-                                        [id]: e.target.value,
-                                    }))
-                                }
-                            />
+                                    {empShifts.map((s: any) => (
+                                        <div
+                                            key={s.id}
+                                            className="border rounded-md p-2 flex justify-between items-center"
+                                        >
+                                            <span className="text-xs">
+                                                {s.day} - {s.shift}
+                                            </span>
 
-                            <Button
-                                className="w-full"
-                                size="sm"
-                                onClick={() =>
-                                    sendMessage(id, selectedShift[id]) // 🔥 pass shiftId
-                                }
-                            >
-                                Send
-                            </Button>
+                                            <div className="flex gap-2">
+                                                <Button
+                                                    size="sm"
+                                                    onClick={() => onAcceptShift(s)}
+                                                >
+                                                    Accept
+                                                </Button>
+
+                                                <Button
+                                                    size="sm"
+                                                    variant="destructive"
+                                                    onClick={() => onDeclineShift(s)}
+                                                >
+                                                    Decline
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </>
+                            )}
                         </div>
                     </div>
                 )
