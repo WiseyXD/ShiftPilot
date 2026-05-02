@@ -27,9 +27,45 @@ export default function Page() {
 
   const [loading, setLoading] = useState(false)
 
+
+
   const cafeForm = useForm()
   const empForm = useForm()
 
+
+  useEffect(() => {
+    loadInitialData()
+  }, [])
+
+  const loadInitialData = async () => {
+    try {
+      const res = await fetch("/api/init")
+      const data = await res.json()
+
+      setCafe(data.cafe || null)
+      setEmployees(data.employees || [])
+      setSchedule(data.schedule || null)
+    } catch {
+      console.error("Failed to load initial data")
+    }
+  }
+
+  const resetDemo = async () => {
+    try {
+      await fetch("/api/demo/reset", {
+        method: "POST",
+      })
+
+      // reset UI
+      setCafe(null)
+      setEmployees([])
+      setSchedule(null)
+
+      toast.success("Demo reset successful")
+    } catch {
+      toast.error("Failed to reset demo")
+    }
+  }
 
   // Create Cafe
   const createCafe = async (data: any) => {
@@ -240,6 +276,10 @@ export default function Page() {
           )}
 
         </div>
+        <Button variant="destructive" onClick={resetDemo}>
+          Reset Demo
+        </Button>
+
       </SidebarInset>
       <ChatWindows
         activeChats={activeChats}
