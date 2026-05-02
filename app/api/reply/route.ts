@@ -51,15 +51,29 @@ export async function POST(req: Request) {
                 cafeId: targetShift.schedule.cafeId,
                 id: { not: employeeId },
                 availability: {
-                    some: {
-                        day,
-                        shift,
-                    },
+                    some: { day, shift },
                 },
+            },
+            include: {
+                shifts: true, // 🔥 needed for workload
             },
         })
 
-        const replacement = candidates[0]
+        if (candidates.length === 0) {
+            return NextResponse.json({
+                error: "No available replacement found",
+            }, { status: 400 })
+        }
+
+        const validCandidates = candidates.filter((emp) =>
+            !emp.shifts.some((s) => s.day === day && s.shift === shift)
+        )
+
+        const pool = validCandidates.length > 0 ? validCandidates : candidates
+
+        const replacement = pool.reduce((prev, curr) => {
+            return prev.shifts.length <= curr.shifts.length ? prev : curr
+        });
 
         const updatedShift = await prisma.shift.update({
             where: { id: targetShift.id },
