@@ -65,6 +65,9 @@ export async function POST(req: Request) {
         const replacement = validCandidates.reduce((prev, curr) =>
             prev.shifts.length <= curr.shifts.length ? prev : curr
         )
+        const explanation = `
+Assigned to ${replacement.name} because they were available and have fewer shifts (${replacement.shifts.length})
+`
 
         const updatedShift = await prisma.shift.update({
             where: { id: targetShift.id },
@@ -78,6 +81,7 @@ export async function POST(req: Request) {
         return NextResponse.json({
             success: true,
             updatedShift,
+            explanation,
         })
 
     } catch (err) {

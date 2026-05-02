@@ -159,6 +159,44 @@ export default function Page() {
       }))
     }
   }
+
+  const declineShift = async (shift: any) => {
+    setLoading(true)
+
+    try {
+      const res = await fetch("/api/reply", {
+        method: "POST",
+        body: JSON.stringify({
+          employeeId: shift.employeeId,
+          shiftId: shift.id,
+          reason: "declined",
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!data.success) {
+        toast.error(data.error)
+        return
+      }
+
+      // ✅ update UI
+      setSchedule((prev: any) => ({
+        ...prev,
+        shifts: prev.shifts.map((s: any) =>
+          s.id === data.updatedShift.id ? data.updatedShift : s
+        ),
+      }))
+
+      // 🔥 show explanation
+      toast.success(data.explanation || "Shift reassigned")
+    } catch {
+      toast.error("Failed to update shift")
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <SidebarProvider>
       <AppSidebar tab={tab} setTab={setTab} />
@@ -192,7 +230,7 @@ export default function Page() {
                     </button>
                   )}
 
-                  <ScheduleView schedule={schedule} />
+                  <ScheduleView schedule={schedule} onDecline={declineShift} />
                 </>
               )}
             </>
