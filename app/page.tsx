@@ -14,6 +14,7 @@ import { EmployeeList } from "@/components/dashboard/employee-list"
 import { ScheduleView } from "@/components/dashboard/schedule-view"
 import { ChatWindows } from "@/components/dashboard/chat-window"
 import { Button } from "@/components/ui/button"
+import { AssistantPanel } from "@/components/dashboard/assistant-panel"
 
 export default function Page() {
   const [tab, setTab] = useState("schedule")
@@ -117,55 +118,6 @@ export default function Page() {
     setActiveChats((prev) =>
       prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]
     )
-  }
-
-  const sendMessage = async (employeeId: string, shiftId: string) => {
-    const content = messages[employeeId]
-
-    if (!content || !shiftId) {
-      toast.error("Select a shift")
-      return
-    }
-
-    setLoading(true)
-
-    try {
-      const res = await fetch("/api/reply", {
-        method: "POST",
-        body: JSON.stringify({
-          employeeId,
-          shiftId, // 🔥 NEW
-          content,
-        }),
-      })
-
-      const reply = await res.json()
-
-      if (!reply.success) {
-        toast.error(reply.error)
-        return
-      }
-
-      // ✅ update UI
-      if (reply.updatedShift && schedule) {
-        setSchedule((prev: any) => ({
-          ...prev,
-          shifts: prev.shifts.map((s: any) =>
-            s.id === reply.updatedShift.id ? reply.updatedShift : s
-          ),
-        }))
-      }
-
-      toast.success("Shift updated")
-    } catch {
-      toast.error("Failed to process request")
-    } finally {
-      setLoading(false)
-      setMessages((prev: any) => ({
-        ...prev,
-        [employeeId]: "",
-      }))
-    }
   }
 
   const acceptShift = async (shift: any) => {
@@ -283,9 +235,7 @@ export default function Page() {
               )}
             </>
           ) : (<div className="h-full flex flex-col">
-            <div className="flex-1 flex items-center justify-center text-muted-foreground">
-              Ask anything about your schedule
-            </div>
+            <AssistantPanel schedule={schedule} />
           </div>
           )}
 
