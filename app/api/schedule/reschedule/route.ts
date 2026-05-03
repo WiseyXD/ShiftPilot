@@ -57,14 +57,14 @@ export async function POST(req: Request) {
                     // Do not reassign to the same person who just declined it
                     const isSameEmployeeWhoDeclined = emp.id === shift.employeeId && shift.status === "declined"
 
-                    console.log(`Validation for Shift ${shift.id} -> Emp ${emp.id}:`, {
-                        isAvailable,
-                        isSameEmployeeWhoDeclined
-                    });
 
                     if (isAvailable && !isSameEmployeeWhoDeclined) {
                         validEmployeeId = emp.id
+                    } else {
+                        console.log(`Rejected assignment. isAvailable: ${isAvailable}, isSameEmployee: ${isSameEmployeeWhoDeclined}`)
                     }
+                } else {
+                    console.log(`Validation failed: Employee not found with id ${u.employeeId}`)
                 }
             }
 
