@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
+import { Check } from "lucide-react"
 
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
@@ -232,6 +233,15 @@ export default function Page() {
     }
   }
 
+  const steps = [
+    { id: 1, name: 'Setup Cafe' },
+    { id: 2, name: 'Add Team' },
+    { id: 3, name: 'Generate Schedule' },
+    { id: 4, name: 'View Calendar' },
+  ]
+
+  const currentStep = schedule ? 4 : (cafe && employees.length > 0 ? 3 : (cafe ? 2 : 1))
+
   return (
     <SidebarProvider>
       <AppSidebar tab={tab} setTab={setTab} />
@@ -240,39 +250,111 @@ export default function Page() {
         <DotPattern className={cn("[mask-image:radial-gradient(800px_circle_at_center,white,transparent)]", "opacity-40")} />
         <TopBar tab={tab} cafe={cafe} />
 
-        <div className="flex-1 overflow-y-auto p-6 max-w-4xl mx-auto space-y-6 z-10 w-full">
+        <div className="flex-1 overflow-y-auto p-6 max-w-5xl mx-auto space-y-6 z-10 w-full">
           {tab === "schedule" ? (
-            <>
-              {!cafe && (
-                <CreateCafe form={cafeForm} onSubmit={createCafe} />
-              )}
+            <div className="space-y-8 w-full">
+              {/* Stepper */}
+              <div className="mb-8 w-full max-w-2xl mx-auto px-4 mt-4">
+                <div className="flex items-center justify-between w-full relative">
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-[2px] bg-slate-200 -z-10" />
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 h-[2px] bg-black -z-10 transition-all duration-500 ease-in-out" style={{ width: `${((currentStep - 1) / 3) * 100}%` }} />
+                  {steps.map((step) => (
+                    <div key={step.id} className="flex flex-col items-center gap-2 bg-transparent px-2">
+                      <div className={cn("w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-500",
+                        currentStep > step.id ? "bg-black text-white scale-100" :
+                          currentStep === step.id ? "bg-black text-white ring-4 ring-slate-200 scale-110" :
+                            "bg-white border-2 border-slate-200 text-slate-400 scale-100"
+                      )}>
+                        {currentStep > step.id ? <Check className="w-5 h-5" /> : step.id}
+                      </div>
+                      <span className={cn("text-xs font-semibold uppercase tracking-wider transition-colors duration-300 mt-2", currentStep >= step.id ? "text-black" : "text-slate-400")}>
+                        {step.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-              {cafe && (
-                <>
-                  <AddEmployee form={empForm} onSubmit={addEmployee} />
+              {/* Main Content Area */}
+              <div className="bg-white/80 backdrop-blur-xl p-8 rounded-3xl shadow-sm border border-slate-200/60 relative overflow-hidden">
+                {/* Decorative glow */}
+                <div className="absolute -top-40 -right-40 w-96 h-96 bg-black/[0.03] rounded-full blur-3xl pointer-events-none" />
 
-                  <EmployeeList
-                    employees={employees}
-                    onChat={toggleChat}
-                  />
+                {currentStep === 1 && (
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-md mx-auto">
+                    <div className="mb-8 text-center">
+                      <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">☕</div>
+                      <h2 className="text-3xl font-bold tracking-tight">Welcome to ShiftPilot</h2>
+                      <p className="text-slate-500 mt-2">Let's start by setting up your cafe profile. This will only take a moment.</p>
+                    </div>
+                    <CreateCafe form={cafeForm} onSubmit={createCafe} />
+                  </div>
+                )}
 
-                  {employees.length > 0 && (
-                    <button
-                      onClick={generateSchedule}
-                      disabled={loading}
-                      className="bg-black text-white px-5 py-2 rounded-lg hover:opacity-90 transition disabled:opacity-50"
-                    >
-                      {loading ? "Generating..." : "Generate Schedule"}
-                    </button>
-                  )}
+                {(currentStep === 2 || currentStep === 3) && (
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div>
+                        <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+                          <span className="text-xl">👥</span> Build your team
+                        </h2>
+                        <p className="text-slate-500 mt-1 text-sm">Add employees and their availability.</p>
+                      </div>
+                      {currentStep === 3 && (
+                        <button
+                          onClick={generateSchedule}
+                          disabled={loading}
+                          className="bg-black text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-black/90 transition shadow-lg shadow-black/10 disabled:opacity-50 flex items-center gap-2 group"
+                        >
+                          {loading ? (
+                            <span className="animate-spin text-lg leading-none">↻</span>
+                          ) : (
+                            <span className="text-lg leading-none group-hover:scale-110 transition-transform">✨</span>
+                          )}
+                          {loading ? "Generating..." : "Generate Schedule"}
+                        </button>
+                      )}
+                    </div>
 
-                  <ScheduleView schedule={schedule} onAccept={acceptShift} onDecline={declineShift} />
-                  <Button onClick={reschedule}>
-                    Rebalance Schedule
-                  </Button>
-                </>
-              )}
-            </>
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                      <div className="lg:col-span-5 bg-slate-50/50 p-6 rounded-2xl border border-slate-100">
+                        <h3 className="text-sm font-semibold mb-4 text-slate-800">Add New Employee</h3>
+                        <AddEmployee form={empForm} onSubmit={addEmployee} />
+                      </div>
+                      <div className="lg:col-span-7">
+                         <h3 className="text-sm font-semibold mb-4 text-slate-800">Team Roster ({employees.length})</h3>
+                        <EmployeeList employees={employees} onChat={toggleChat} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {currentStep === 4 && (
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col min-h-[500px]">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                      <div>
+                        <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+                          <span className="text-xl">📅</span> Weekly Schedule
+                        </h2>
+                        <p className="text-slate-500 mt-1 text-sm">Manage and rebalance your shifts.</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button variant="outline" onClick={reschedule} className="rounded-xl bg-white hover:bg-slate-50 border-slate-200">
+                          ⚖️ Rebalance
+                        </Button>
+                        <Button variant="ghost" onClick={() => setSchedule(null)} className="rounded-xl text-slate-500 hover:text-slate-800">
+                          Reset
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="flex-1 w-full flex flex-col">
+                      <ScheduleView schedule={schedule} onAccept={acceptShift} onDecline={declineShift} onChat={toggleChat} />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           ) : (<div className="h-full flex flex-col">
             <AssistantPanel schedule={schedule} />
           </div>

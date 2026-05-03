@@ -34,7 +34,13 @@ export function ChatWindows({
                         </div>
 
                         {/* Content */}
-                        <div className="p-3 space-y-3">
+                        <div className="p-3 bg-slate-50 border-b flex items-start gap-2">
+                            <span className="text-xl leading-none">📱</span>
+                            <p className="text-[10px] text-slate-500 leading-tight">
+                                This window simulates the employee's view. In production, these shift requests would be sent via Email, WhatsApp, or Slack.
+                            </p>
+                        </div>
+                        <div className="p-3 space-y-3 flex-1 overflow-y-auto">
                             {empShifts.length === 0 ? (
                                 <div className="text-sm text-muted-foreground">
                                     No pending shifts 🎉
