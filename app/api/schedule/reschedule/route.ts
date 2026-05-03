@@ -54,14 +54,15 @@ export async function POST(req: Request) {
                         (a) => a.day === shift.day && a.shift === shift.shift
                     )
 
-                    const alreadyAssigned = schedule.shifts.some(
-                        (s) =>
-                            s.employeeId === emp.id &&
-                            s.day === shift.day &&
-                            s.id !== shift.id
-                    )
+                    // Do not reassign to the same person who just declined it
+                    const isSameEmployeeWhoDeclined = emp.id === shift.employeeId && shift.status === "declined"
 
-                    if (isAvailable && !alreadyAssigned) {
+                    console.log(`Validation for Shift ${shift.id} -> Emp ${emp.id}:`, {
+                        isAvailable,
+                        isSameEmployeeWhoDeclined
+                    });
+
+                    if (isAvailable && !isSameEmployeeWhoDeclined) {
                         validEmployeeId = emp.id
                     }
                 }

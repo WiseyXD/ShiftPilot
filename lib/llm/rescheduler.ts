@@ -22,7 +22,7 @@ export async function rescheduleWithAI(input: {
 }) {
   const structured = model.withStructuredOutput(schema)
 
-  const result = await structured.invoke(`
+  const promptStr = `
 You are a scheduling AI.
 
 Goal:
@@ -31,8 +31,8 @@ Reassign ONLY declined shifts.
 Rules:
 - Use employeeId ONLY (never names)
 - Respect availability strictly
-- Avoid assigning same employee twice in same day
 - Balance workload
+- DO NOT assign a declined shift to the employee who declined it
 - If no valid employee → return null employeeId
 - Always include reason
 
@@ -55,7 +55,9 @@ ${input.shifts
       .join("\n")}
 
 Return JSON only.
-`)
+`
+
+  const result = await structured.invoke(promptStr)
 
   return result.updates
 }

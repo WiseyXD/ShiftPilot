@@ -123,6 +123,49 @@ export default function Page() {
     }
   }
 
+  const generateDemoTeam = async () => {
+    if (!cafe) return
+    setLoading(true)
+    try {
+      const names = ["Aryan", "Julia", "Niko", "Vedika"]
+      // Overlapping availability for all
+      const availability = [
+        { day: "Monday", shift: "morning" },
+        { day: "Monday", shift: "evening" },
+        { day: "Tuesday", shift: "morning" },
+        { day: "Tuesday", shift: "evening" },
+        { day: "Wednesday", shift: "morning" },
+        { day: "Wednesday", shift: "evening" },
+        { day: "Thursday", shift: "morning" },
+        { day: "Thursday", shift: "evening" },
+        { day: "Friday", shift: "morning" },
+        { day: "Friday", shift: "evening" },
+      ]
+
+      const newEmployees = []
+      for (const name of names) {
+        const res = await fetch("/api/employee", {
+          method: "POST",
+          body: JSON.stringify({
+            name,
+            email: "aryan.s.nag@gmail.com",
+            cafeId: cafe.id,
+            availability,
+          }),
+        })
+        const json = await res.json()
+        newEmployees.push(json)
+      }
+
+      setEmployees((prev) => [...prev, ...newEmployees])
+      toast.success("Demo team generated!")
+    } catch {
+      toast.error("Failed to generate demo team")
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const fetchSchedule = async () => {
     if (!schedule?.id) return
 
@@ -300,20 +343,32 @@ export default function Page() {
                         </h2>
                         <p className="text-slate-500 mt-1 text-sm">Add employees and their availability.</p>
                       </div>
-                      {currentStep === 3 && (
-                        <button
-                          onClick={generateSchedule}
-                          disabled={loading}
-                          className="bg-black text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-black/90 transition shadow-lg shadow-black/10 disabled:opacity-50 flex items-center gap-2 group"
-                        >
-                          {loading ? (
-                            <span className="animate-spin text-lg leading-none">↻</span>
-                          ) : (
-                            <span className="text-lg leading-none group-hover:scale-110 transition-transform">✨</span>
-                          )}
-                          {loading ? "Generating..." : "Generate Schedule"}
-                        </button>
-                      )}
+                      <div className="flex items-center gap-3">
+                        {employees.length === 0 && (
+                          <Button 
+                            variant="outline" 
+                            onClick={generateDemoTeam}
+                            disabled={loading}
+                            className="rounded-xl border-dashed border-2 bg-slate-50 hover:bg-slate-100 h-10"
+                          >
+                            ⚡ Generate Demo Team
+                          </Button>
+                        )}
+                        {currentStep === 3 && (
+                          <button
+                            onClick={generateSchedule}
+                            disabled={loading}
+                            className="bg-black text-white px-6 py-2.5 h-10 rounded-xl text-sm font-semibold hover:bg-black/90 transition shadow-lg shadow-black/10 disabled:opacity-50 flex items-center gap-2 group"
+                          >
+                            {loading ? (
+                              <span className="animate-spin text-lg leading-none">↻</span>
+                            ) : (
+                              <span className="text-lg leading-none group-hover:scale-110 transition-transform">✨</span>
+                            )}
+                            {loading ? "Generating..." : "Generate Schedule"}
+                          </button>
+                        )}
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
