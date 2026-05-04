@@ -38,7 +38,13 @@ export default function Page() {
 
   useEffect(() => {
     loadInitialData()
-  }, [])
+
+    const handleScheduleUpdate = () => {
+      fetchSchedule()
+    }
+    window.addEventListener("schedule-updated", handleScheduleUpdate)
+    return () => window.removeEventListener("schedule-updated", handleScheduleUpdate)
+  }, [schedule?.id])
 
   const loadInitialData = async () => {
     try {
@@ -142,7 +148,7 @@ export default function Page() {
         { day: "Friday", shift: "evening" },
       ]
 
-      const newEmployees = []
+      const newEmployees: any[] = []
       for (const name of names) {
         const res = await fetch("/api/employee", {
           method: "POST",

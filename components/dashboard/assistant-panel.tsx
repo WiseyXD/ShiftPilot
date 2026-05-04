@@ -7,10 +7,16 @@ import { BlurFade } from "@/components/ui/blur-fade"
 
 export function AssistantPanel({ schedule }: any) {
     const [input, setInput] = useState("")
-    const [messages, setMessages] = useState<string[]>([])
+    const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([])
 
     const send = async () => {
         if (!input) return
+
+        const userMessage = { role: "user" as const, content: input }
+        const newMessages = [...messages, userMessage]
+        
+        setMessages(newMessages)
+        setInput("")
 
         const res = await fetch("/api/assistant", {
             method: "POST",
@@ -18,7 +24,7 @@ export function AssistantPanel({ schedule }: any) {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                message: input,
+                messages: newMessages,
                 scheduleId: schedule?.id,
             }),
         })
@@ -27,23 +33,23 @@ export function AssistantPanel({ schedule }: any) {
 
         setMessages((prev) => [
             ...prev,
-            `You: ${input}`,
-            `AI: ${data.response}`, // ✅ FIXED
+            { role: "assistant", content: data.response },
         ])
 
-        // 🔥 auto refresh if rescheduled
-        if (data.action === "reschedule") {
+        // 🔥 auto refresh if an action occurred
+        if (data.action && data.action !== "none") {
             await fetchSchedule()
         }
-
-        setInput("")
     }
     const fetchSchedule = async () => {
         if (!schedule?.id) return
 
         const res = await fetch(`/api/schedule/${schedule.id}`)
         const data = await res.json()
-        // setSchedule(data)
+        // Wait, where is setSchedule? It's not passed. 
+        // We need to trigger a re-fetch. We can reload the window or dispatch an event, but AssistantPanel is already calling fetchSchedule which does nothing if setSchedule is missing.
+        // Actually, we can dispatch a custom event that `app/page.tsx` listens to.
+        window.dispatchEvent(new Event("schedule-updated"))
     }
 
 
@@ -53,8 +59,9 @@ export function AssistantPanel({ schedule }: any) {
             <div className="flex-1 space-y-3 overflow-y-auto pr-2">
                 {messages.map((m, i) => (
                     <BlurFade key={i} delay={0.1}>
-                        <div className="text-sm p-3 rounded-lg bg-white shadow-sm border text-slate-700">
-                            {m}
+                        <div className={`text-sm p-3 rounded-lg shadow-sm border ${m.role === "user" ? "bg-slate-900 text-white ml-auto max-w-[80%]" : "bg-white text-slate-700 mr-auto max-w-[90%]"}`}>
+                            <span className="font-semibold block mb-1">{m.role === "user" ? "You" : "AI"}</span>
+                            {m.content}
                         </div>
                     </BlurFade>
                 ))}

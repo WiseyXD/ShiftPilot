@@ -62,5 +62,76 @@ export const tools = {
     })
 
     return stats
+  },
+
+  async clearDay(scheduleId: string, day: string) {
+    // day like "Monday", "Tuesday", etc.
+    await prisma.shift.updateMany({
+      where: {
+        scheduleId,
+        day: {
+          equals: day,
+          mode: 'insensitive' // case insensitive match
+        }
+      },
+      data: {
+        employeeId: null,
+        status: "unassigned"
+      }
+    })
+    return { success: true, message: `Cleared all shifts for ${day}` }
+  },
+
+  async approveAll(scheduleId: string) {
+    await prisma.shift.updateMany({
+      where: {
+        scheduleId,
+        status: "pending"
+      },
+      data: {
+        status: "accepted"
+      }
+    })
+    return { success: true, message: "All pending shifts have been approved" }
+  },
+
+  async assignSpecificShift(scheduleId: string, day: string, shiftBlock: string | null, employeeName: string) {
+    const schedule = await prisma.schedule.findUnique({
+      where: { id: scheduleId }
+    })
+    if (!schedule) throw new Error("Schedule not found")
+
+    // Find the employee by name (case-insensitive approximation)
+    const employees = await prisma.employee.findMany({
+      where: { cafeId: schedule.cafeId }
+    })
+    
+    const targetEmployee = employees.find(e => e.name.toLowerCase().includes(employeeName.toLowerCase()))
+    if (!targetEmployee) {
+      return { error: `Employee named ${employeeName} not found` }
+    }
+
+    // Build the query
+    const whereClause: any = {
+      scheduleId,
+      day: { equals: day, mode: 'insensitive' }
+    }
+    
+    if (shiftBlock && shiftBlock.toLowerCase() !== "all") {
+      whereClause.shift = { equals: shiftBlock, mode: 'insensitive' }
+    }
+
+    await prisma.shift.updateMany({
+      where: whereClause,
+      data: {
+        employeeId: targetEmployee.id,
+        status: "pending"
+      }
+    })
+
+    return { 
+      success: true, 
+      message: `Assigned ${day}${shiftBlock ? ' ' + shiftBlock : ''} shifts to ${targetEmployee.name}` 
+    }
   }
 }
