@@ -18,20 +18,35 @@ export { Prisma }
 export * as $Enums from './enums'
 export * from './enums';
 /**
- * Model Cafe
+ * Model User
  * 
  */
-export type Cafe = Prisma.CafeModel
+export type User = Prisma.UserModel
+/**
+ * Model Location
+ * 
+ */
+export type Location = Prisma.LocationModel
 /**
  * Model Employee
  * 
  */
 export type Employee = Prisma.EmployeeModel
 /**
- * Model Availability
+ * Model ShiftTemplate
  * 
  */
-export type Availability = Prisma.AvailabilityModel
+export type ShiftTemplate = Prisma.ShiftTemplateModel
+/**
+ * Model RecurringAvailability
+ * 
+ */
+export type RecurringAvailability = Prisma.RecurringAvailabilityModel
+/**
+ * Model AvailabilityOverride
+ * 
+ */
+export type AvailabilityOverride = Prisma.AvailabilityOverrideModel
 /**
  * Model Schedule
  * 
@@ -43,7 +58,17 @@ export type Schedule = Prisma.ScheduleModel
  */
 export type Shift = Prisma.ShiftModel
 /**
- * Model Message
+ * Model SwapRequest
  * 
  */
-export type Message = Prisma.MessageModel
+export type SwapRequest = Prisma.SwapRequestModel
+/**
+ * Model ActionToken
+ * 
+ */
+export type ActionToken = Prisma.ActionTokenModel
+/**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = Prisma.AuditLogModel

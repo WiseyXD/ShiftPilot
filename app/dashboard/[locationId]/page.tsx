@@ -1,0 +1,162 @@
+import { auth } from "@/auth"
+import { prisma } from "@/prisma/client"
+import { redirect, notFound } from "next/navigation"
+import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { PageHeader } from "@/components/dashboard/page-header"
+import { Users, ClipboardList, Calendar, ChevronRight, ArrowRight } from "lucide-react"
+
+export default async function LocationPage({
+  params,
+}: {
+  params: Promise<{ locationId: string }>
+}) {
+  const { locationId } = await params
+  const session = await auth()
+  if (!session) redirect("/login")
+
+  const location = await prisma.location.findFirst({
+    where: { id: locationId, ownerId: session.user.id },
+    include: {
+      employees: { orderBy: { createdAt: "asc" } },
+      shiftTemplates: { orderBy: { startTime: "asc" } },
+      schedules: { orderBy: { weekStart: "desc" }, take: 5 },
+    },
+  })
+  if (!location) notFound()
+
+  return (
+    <div className="space-y-6">
+      <PageHeader title={location.name} description={location.timezone} />
+
+      {/* Stats */}
+      <div className="grid gap-3 sm:grid-cols-3">
+        <StatCard label="Employees" value={location.employees.length} icon={Users} href={`/dashboard/${locationId}/employees`} />
+        <StatCard label="Shift templates" value={location.shiftTemplates.length} icon={ClipboardList} href={`/dashboard/${locationId}/templates`} />
+        <StatCard label="Schedules" value={location.schedules.length} icon={Calendar} href={`/dashboard/${locationId}/schedules`} />
+      </div>
+
+      {/* Recent schedules */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>Recent schedules</CardTitle>
+          <Link
+            href={`/dashboard/${locationId}/schedules`}
+            className="text-sm text-slate-500 hover:text-slate-900 inline-flex items-center gap-1"
+          >
+            View all <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </CardHeader>
+        <CardContent className="p-0">
+          {location.schedules.length === 0 ? (
+            <div className="py-10 px-6 text-center text-sm text-slate-500">
+              No schedules yet. They're generated automatically each week.
+            </div>
+          ) : (
+            <ul className="divide-y divide-slate-100">
+              {location.schedules.map((sched) => (
+                <li key={sched.id}>
+                  <Link
+                    href={`/dashboard/${locationId}/schedules/${sched.id}`}
+                    className="flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition-colors group"
+                  >
+                    <span className="text-sm font-medium text-slate-900">
+                      w/c {new Date(sched.weekStart).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                    </span>
+                    <div className="flex items-center gap-3">
+                      <ScheduleBadge status={sched.status} />
+                      <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-slate-500" />
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Employees */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>Employees</CardTitle>
+          <Link href={`/dashboard/${locationId}/employees`}>
+            <Button variant="ghost" size="sm">
+              Manage <ArrowRight className="h-3.5 w-3.5" />
+            </Button>
+          </Link>
+        </CardHeader>
+        <CardContent className="p-0">
+          {location.employees.length === 0 ? (
+            <div className="py-10 px-6 text-center text-sm text-slate-500">No employees yet.</div>
+          ) : (
+            <ul className="divide-y divide-slate-100">
+              {location.employees.slice(0, 6).map((emp) => (
+                <li key={emp.id} className="flex items-center justify-between px-4 py-3">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-slate-900 truncate">{emp.name}</p>
+                    <p className="text-xs text-slate-500 truncate">{emp.email}</p>
+                  </div>
+                  <div className="flex gap-1 flex-wrap justify-end">
+                    {emp.roles.map((r) => (
+                      <Badge key={r} variant="secondary" className="text-xs">
+                        {r}
+                      </Badge>
+                    ))}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+          {location.employees.length > 6 && (
+            <p className="text-xs text-slate-400 text-center py-3 border-t border-slate-100">
+              + {location.employees.length - 6} more
+            </p>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+function StatCard({
+  label,
+  value,
+  icon: Icon,
+  href,
+}: {
+  label: string
+  value: number
+  icon: React.ComponentType<{ className?: string }>
+  href: string
+}) {
+  return (
+    <Link href={href}>
+      <Card className="hover:border-slate-300 hover:shadow-sm transition-all">
+        <CardContent className="py-5 flex items-center gap-4">
+          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100">
+            <Icon className="h-5 w-5 text-slate-600" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-slate-900 leading-none">{value}</p>
+            <p className="text-xs text-slate-500 mt-1">{label}</p>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
+  )
+}
+
+function ScheduleBadge({ status }: { status: string }) {
+  const map: Record<string, string> = {
+    PUBLISHED: "bg-green-100 text-green-700 border-green-200",
+    APPROVED: "bg-blue-100 text-blue-700 border-blue-200",
+    DRAFT: "bg-slate-100 text-slate-600 border-slate-200",
+  }
+  return (
+    <Badge variant="outline" className={`text-xs ${map[status] ?? ""}`}>
+      {status}
+    </Badge>
+  )
+}

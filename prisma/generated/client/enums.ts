@@ -9,12 +9,57 @@
 * 🟢 You can import this file directly.
 */
 
+export const StripePlan = {
+  TRIAL: 'TRIAL',
+  STARTER: 'STARTER',
+  PRO: 'PRO',
+  NONE: 'NONE'
+} as const
+
+export type StripePlan = (typeof StripePlan)[keyof typeof StripePlan]
+
+
+export const ActionTokenAction = {
+  ACCEPT_SHIFT: 'ACCEPT_SHIFT',
+  DECLINE_SHIFT: 'DECLINE_SHIFT',
+  SUBMIT_AVAILABILITY: 'SUBMIT_AVAILABILITY',
+  REPORT_SICK: 'REPORT_SICK',
+  REQUEST_SWAP: 'REQUEST_SWAP',
+  ACCEPT_SWAP: 'ACCEPT_SWAP',
+  DECLINE_SWAP: 'DECLINE_SWAP',
+  APPROVE_SWAP: 'APPROVE_SWAP',
+  REJECT_SWAP: 'REJECT_SWAP',
+  APPROVE_SCHEDULE: 'APPROVE_SCHEDULE'
+} as const
+
+export type ActionTokenAction = (typeof ActionTokenAction)[keyof typeof ActionTokenAction]
+
+
+export const ScheduleStatus = {
+  DRAFT: 'DRAFT',
+  APPROVED: 'APPROVED',
+  PUBLISHED: 'PUBLISHED'
+} as const
+
+export type ScheduleStatus = (typeof ScheduleStatus)[keyof typeof ScheduleStatus]
+
+
 export const ShiftStatus = {
-  pending: 'pending',
-  accepted: 'accepted',
-  declined: 'declined',
-  reassigned: 'reassigned',
-  unassigned: 'unassigned'
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  DECLINED: 'DECLINED',
+  REASSIGNED: 'REASSIGNED',
+  UNASSIGNED: 'UNASSIGNED'
 } as const
 
 export type ShiftStatus = (typeof ShiftStatus)[keyof typeof ShiftStatus]
+
+
+export const SwapRequestStatus = {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  REJECTED: 'REJECTED',
+  FAILED: 'FAILED'
+} as const
+
+export type SwapRequestStatus = (typeof SwapRequestStatus)[keyof typeof SwapRequestStatus]

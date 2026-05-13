@@ -31,8 +31,8 @@ export * from "./enums"
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more Cafes
- * const cafes = await prisma.cafe.findMany()
+ * // Fetch zero or more Users
+ * const users = await prisma.user.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -42,20 +42,35 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
- * Model Cafe
+ * Model User
  * 
  */
-export type Cafe = Prisma.CafeModel
+export type User = Prisma.UserModel
+/**
+ * Model Location
+ * 
+ */
+export type Location = Prisma.LocationModel
 /**
  * Model Employee
  * 
  */
 export type Employee = Prisma.EmployeeModel
 /**
- * Model Availability
+ * Model ShiftTemplate
  * 
  */
-export type Availability = Prisma.AvailabilityModel
+export type ShiftTemplate = Prisma.ShiftTemplateModel
+/**
+ * Model RecurringAvailability
+ * 
+ */
+export type RecurringAvailability = Prisma.RecurringAvailabilityModel
+/**
+ * Model AvailabilityOverride
+ * 
+ */
+export type AvailabilityOverride = Prisma.AvailabilityOverrideModel
 /**
  * Model Schedule
  * 
@@ -67,7 +82,17 @@ export type Schedule = Prisma.ScheduleModel
  */
 export type Shift = Prisma.ShiftModel
 /**
- * Model Message
+ * Model SwapRequest
  * 
  */
-export type Message = Prisma.MessageModel
+export type SwapRequest = Prisma.SwapRequestModel
+/**
+ * Model ActionToken
+ * 
+ */
+export type ActionToken = Prisma.ActionTokenModel
+/**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = Prisma.AuditLogModel

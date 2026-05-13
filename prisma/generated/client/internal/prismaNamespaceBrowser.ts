@@ -51,12 +51,17 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  Cafe: 'Cafe',
+  User: 'User',
+  Location: 'Location',
   Employee: 'Employee',
-  Availability: 'Availability',
+  ShiftTemplate: 'ShiftTemplate',
+  RecurringAvailability: 'RecurringAvailability',
+  AvailabilityOverride: 'AvailabilityOverride',
   Schedule: 'Schedule',
   Shift: 'Shift',
-  Message: 'Message'
+  SwapRequest: 'SwapRequest',
+  ActionToken: 'ActionToken',
+  AuditLog: 'AuditLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -75,41 +80,89 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
-export const CafeScalarFieldEnum = {
+export const UserScalarFieldEnum = {
   id: 'id',
-  name: 'name',
   email: 'email',
+  passwordHash: 'passwordHash',
+  stripeCustomerId: 'stripeCustomerId',
+  stripeSubscriptionId: 'stripeSubscriptionId',
+  stripePlan: 'stripePlan',
+  trialEndsAt: 'trialEndsAt',
   createdAt: 'createdAt'
 } as const
 
-export type CafeScalarFieldEnum = (typeof CafeScalarFieldEnum)[keyof typeof CafeScalarFieldEnum]
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const LocationScalarFieldEnum = {
+  id: 'id',
+  ownerId: 'ownerId',
+  name: 'name',
+  timezone: 'timezone',
+  generationDayOfWeek: 'generationDayOfWeek',
+  freezeWindowHours: 'freezeWindowHours',
+  escalationTimeoutHours: 'escalationTimeoutHours',
+  createdAt: 'createdAt'
+} as const
+
+export type LocationScalarFieldEnum = (typeof LocationScalarFieldEnum)[keyof typeof LocationScalarFieldEnum]
 
 
 export const EmployeeScalarFieldEnum = {
   id: 'id',
+  locationId: 'locationId',
   name: 'name',
   email: 'email',
-  cafeId: 'cafeId',
+  roles: 'roles',
+  minHours: 'minHours',
+  maxHours: 'maxHours',
   createdAt: 'createdAt'
 } as const
 
 export type EmployeeScalarFieldEnum = (typeof EmployeeScalarFieldEnum)[keyof typeof EmployeeScalarFieldEnum]
 
 
-export const AvailabilityScalarFieldEnum = {
+export const ShiftTemplateScalarFieldEnum = {
   id: 'id',
-  employeeId: 'employeeId',
-  day: 'day',
-  shift: 'shift'
+  locationId: 'locationId',
+  name: 'name',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  minHeadcount: 'minHeadcount',
+  requiredRoles: 'requiredRoles',
+  createdAt: 'createdAt'
 } as const
 
-export type AvailabilityScalarFieldEnum = (typeof AvailabilityScalarFieldEnum)[keyof typeof AvailabilityScalarFieldEnum]
+export type ShiftTemplateScalarFieldEnum = (typeof ShiftTemplateScalarFieldEnum)[keyof typeof ShiftTemplateScalarFieldEnum]
+
+
+export const RecurringAvailabilityScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  shiftTemplateId: 'shiftTemplateId',
+  dayOfWeek: 'dayOfWeek'
+} as const
+
+export type RecurringAvailabilityScalarFieldEnum = (typeof RecurringAvailabilityScalarFieldEnum)[keyof typeof RecurringAvailabilityScalarFieldEnum]
+
+
+export const AvailabilityOverrideScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  shiftTemplateId: 'shiftTemplateId',
+  date: 'date',
+  available: 'available'
+} as const
+
+export type AvailabilityOverrideScalarFieldEnum = (typeof AvailabilityOverrideScalarFieldEnum)[keyof typeof AvailabilityOverrideScalarFieldEnum]
 
 
 export const ScheduleScalarFieldEnum = {
   id: 'id',
-  cafeId: 'cafeId',
+  locationId: 'locationId',
   weekStart: 'weekStart',
+  status: 'status',
+  generatedAt: 'generatedAt',
   createdAt: 'createdAt'
 } as const
 
@@ -119,25 +172,52 @@ export type ScheduleScalarFieldEnum = (typeof ScheduleScalarFieldEnum)[keyof typ
 export const ShiftScalarFieldEnum = {
   id: 'id',
   scheduleId: 'scheduleId',
+  shiftTemplateId: 'shiftTemplateId',
   employeeId: 'employeeId',
-  day: 'day',
-  shift: 'shift',
+  dayOfWeek: 'dayOfWeek',
   status: 'status'
 } as const
 
 export type ShiftScalarFieldEnum = (typeof ShiftScalarFieldEnum)[keyof typeof ShiftScalarFieldEnum]
 
 
-export const MessageScalarFieldEnum = {
+export const SwapRequestScalarFieldEnum = {
   id: 'id',
-  employeeId: 'employeeId',
-  cafeId: 'cafeId',
-  content: 'content',
-  role: 'role',
+  shiftId: 'shiftId',
+  requesterId: 'requesterId',
+  proposedEmployeeId: 'proposedEmployeeId',
+  status: 'status',
   createdAt: 'createdAt'
 } as const
 
-export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+export type SwapRequestScalarFieldEnum = (typeof SwapRequestScalarFieldEnum)[keyof typeof SwapRequestScalarFieldEnum]
+
+
+export const ActionTokenScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  userId: 'userId',
+  action: 'action',
+  payload: 'payload',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ActionTokenScalarFieldEnum = (typeof ActionTokenScalarFieldEnum)[keyof typeof ActionTokenScalarFieldEnum]
+
+
+export const AuditLogScalarFieldEnum = {
+  id: 'id',
+  locationId: 'locationId',
+  action: 'action',
+  aiReasoning: 'aiReasoning',
+  candidatesConsidered: 'candidatesConsidered',
+  outcome: 'outcome',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -146,6 +226,13 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -162,4 +249,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

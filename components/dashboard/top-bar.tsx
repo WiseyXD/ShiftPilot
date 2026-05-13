@@ -1,20 +1,45 @@
 "use client"
 
+import { usePathname } from "next/navigation"
 import { SidebarTrigger } from "@/components/ui/sidebar"
+import { Separator } from "@/components/ui/separator"
 
-export function TopBar({ tab, cafe }: any) {
-    return (
-        <div className="h-14 border-b flex items-center px-4 justify-between">
-            <div className="flex items-center gap-3">
-                <SidebarTrigger />
-                <h1 className="font-medium capitalize">{tab}</h1>
-            </div>
+const ROUTE_LABELS: Record<string, string> = {
+  schedules: "Schedules",
+  employees: "Employees",
+  templates: "Templates",
+  "audit-log": "Audit log",
+  analytics: "Analytics",
+  billing: "Billing",
+  demo: "Demo setup",
+  new: "New",
+  locations: "Locations",
+}
 
-            {cafe && (
-                <div className="text-sm text-muted-foreground">
-                    {cafe.name}
-                </div>
-            )}
-        </div>
-    )
+export function TopBar() {
+  const pathname = usePathname()
+  const parts = pathname.split("/").filter(Boolean)
+
+  const crumbs: string[] = ["Dashboard"]
+  for (let i = 1; i < parts.length; i++) {
+    const segment = parts[i]
+    if (ROUTE_LABELS[segment]) crumbs.push(ROUTE_LABELS[segment])
+  }
+
+  return (
+    <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-2 border-b border-slate-200 bg-white px-4">
+      <SidebarTrigger className="-ml-1" />
+      <Separator orientation="vertical" className="mr-2 h-4" />
+      <nav className="flex items-center gap-2 text-sm">
+        {crumbs.map((crumb, i) => (
+          <span key={i} className="flex items-center gap-2">
+            {i > 0 && <span className="text-slate-300">/</span>}
+            <span className={i === crumbs.length - 1 ? "font-medium text-slate-900" : "text-slate-500"}>
+              {crumb}
+            </span>
+          </span>
+        ))}
+      </nav>
+    </header>
+  )
 }

@@ -20,57 +20,93 @@ export type EmployeeModel = runtime.Types.Result.DefaultSelection<Prisma.$Employ
 
 export type AggregateEmployee = {
   _count: EmployeeCountAggregateOutputType | null
+  _avg: EmployeeAvgAggregateOutputType | null
+  _sum: EmployeeSumAggregateOutputType | null
   _min: EmployeeMinAggregateOutputType | null
   _max: EmployeeMaxAggregateOutputType | null
 }
 
+export type EmployeeAvgAggregateOutputType = {
+  minHours: number | null
+  maxHours: number | null
+}
+
+export type EmployeeSumAggregateOutputType = {
+  minHours: number | null
+  maxHours: number | null
+}
+
 export type EmployeeMinAggregateOutputType = {
   id: string | null
+  locationId: string | null
   name: string | null
   email: string | null
-  cafeId: string | null
+  minHours: number | null
+  maxHours: number | null
   createdAt: Date | null
 }
 
 export type EmployeeMaxAggregateOutputType = {
   id: string | null
+  locationId: string | null
   name: string | null
   email: string | null
-  cafeId: string | null
+  minHours: number | null
+  maxHours: number | null
   createdAt: Date | null
 }
 
 export type EmployeeCountAggregateOutputType = {
   id: number
+  locationId: number
   name: number
   email: number
-  cafeId: number
+  roles: number
+  minHours: number
+  maxHours: number
   createdAt: number
   _all: number
 }
 
 
+export type EmployeeAvgAggregateInputType = {
+  minHours?: true
+  maxHours?: true
+}
+
+export type EmployeeSumAggregateInputType = {
+  minHours?: true
+  maxHours?: true
+}
+
 export type EmployeeMinAggregateInputType = {
   id?: true
+  locationId?: true
   name?: true
   email?: true
-  cafeId?: true
+  minHours?: true
+  maxHours?: true
   createdAt?: true
 }
 
 export type EmployeeMaxAggregateInputType = {
   id?: true
+  locationId?: true
   name?: true
   email?: true
-  cafeId?: true
+  minHours?: true
+  maxHours?: true
   createdAt?: true
 }
 
 export type EmployeeCountAggregateInputType = {
   id?: true
+  locationId?: true
   name?: true
   email?: true
-  cafeId?: true
+  roles?: true
+  minHours?: true
+  maxHours?: true
   createdAt?: true
   _all?: true
 }
@@ -113,6 +149,18 @@ export type EmployeeAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inter
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: EmployeeAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: EmployeeSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: EmployeeMinAggregateInputType
@@ -143,17 +191,24 @@ export type EmployeeGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   _count?: EmployeeCountAggregateInputType | true
+  _avg?: EmployeeAvgAggregateInputType
+  _sum?: EmployeeSumAggregateInputType
   _min?: EmployeeMinAggregateInputType
   _max?: EmployeeMaxAggregateInputType
 }
 
 export type EmployeeGroupByOutputType = {
   id: string
+  locationId: string
   name: string
   email: string
-  cafeId: string
+  roles: string[]
+  minHours: number
+  maxHours: number
   createdAt: Date
   _count: EmployeeCountAggregateOutputType | null
+  _avg: EmployeeAvgAggregateOutputType | null
+  _sum: EmployeeSumAggregateOutputType | null
   _min: EmployeeMinAggregateOutputType | null
   _max: EmployeeMaxAggregateOutputType | null
 }
@@ -178,52 +233,76 @@ export type EmployeeWhereInput = {
   OR?: Prisma.EmployeeWhereInput[]
   NOT?: Prisma.EmployeeWhereInput | Prisma.EmployeeWhereInput[]
   id?: Prisma.StringFilter<"Employee"> | string
+  locationId?: Prisma.StringFilter<"Employee"> | string
   name?: Prisma.StringFilter<"Employee"> | string
   email?: Prisma.StringFilter<"Employee"> | string
-  cafeId?: Prisma.StringFilter<"Employee"> | string
+  roles?: Prisma.StringNullableListFilter<"Employee">
+  minHours?: Prisma.IntFilter<"Employee"> | number
+  maxHours?: Prisma.IntFilter<"Employee"> | number
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
-  cafe?: Prisma.XOR<Prisma.CafeScalarRelationFilter, Prisma.CafeWhereInput>
-  availability?: Prisma.AvailabilityListRelationFilter
+  location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>
+  recurringAvailability?: Prisma.RecurringAvailabilityListRelationFilter
+  availabilityOverrides?: Prisma.AvailabilityOverrideListRelationFilter
+  actionTokens?: Prisma.ActionTokenListRelationFilter
   shifts?: Prisma.ShiftListRelationFilter
-  messages?: Prisma.MessageListRelationFilter
+  swapRequestsInitiated?: Prisma.SwapRequestListRelationFilter
+  swapRequestsProposed?: Prisma.SwapRequestListRelationFilter
 }
 
 export type EmployeeOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  locationId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  cafeId?: Prisma.SortOrder
+  roles?: Prisma.SortOrder
+  minHours?: Prisma.SortOrder
+  maxHours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  cafe?: Prisma.CafeOrderByWithRelationInput
-  availability?: Prisma.AvailabilityOrderByRelationAggregateInput
+  location?: Prisma.LocationOrderByWithRelationInput
+  recurringAvailability?: Prisma.RecurringAvailabilityOrderByRelationAggregateInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideOrderByRelationAggregateInput
+  actionTokens?: Prisma.ActionTokenOrderByRelationAggregateInput
   shifts?: Prisma.ShiftOrderByRelationAggregateInput
-  messages?: Prisma.MessageOrderByRelationAggregateInput
+  swapRequestsInitiated?: Prisma.SwapRequestOrderByRelationAggregateInput
+  swapRequestsProposed?: Prisma.SwapRequestOrderByRelationAggregateInput
 }
 
 export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  locationId_email?: Prisma.EmployeeLocationIdEmailCompoundUniqueInput
   AND?: Prisma.EmployeeWhereInput | Prisma.EmployeeWhereInput[]
   OR?: Prisma.EmployeeWhereInput[]
   NOT?: Prisma.EmployeeWhereInput | Prisma.EmployeeWhereInput[]
+  locationId?: Prisma.StringFilter<"Employee"> | string
   name?: Prisma.StringFilter<"Employee"> | string
   email?: Prisma.StringFilter<"Employee"> | string
-  cafeId?: Prisma.StringFilter<"Employee"> | string
+  roles?: Prisma.StringNullableListFilter<"Employee">
+  minHours?: Prisma.IntFilter<"Employee"> | number
+  maxHours?: Prisma.IntFilter<"Employee"> | number
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
-  cafe?: Prisma.XOR<Prisma.CafeScalarRelationFilter, Prisma.CafeWhereInput>
-  availability?: Prisma.AvailabilityListRelationFilter
+  location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>
+  recurringAvailability?: Prisma.RecurringAvailabilityListRelationFilter
+  availabilityOverrides?: Prisma.AvailabilityOverrideListRelationFilter
+  actionTokens?: Prisma.ActionTokenListRelationFilter
   shifts?: Prisma.ShiftListRelationFilter
-  messages?: Prisma.MessageListRelationFilter
-}, "id">
+  swapRequestsInitiated?: Prisma.SwapRequestListRelationFilter
+  swapRequestsProposed?: Prisma.SwapRequestListRelationFilter
+}, "id" | "locationId_email">
 
 export type EmployeeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  locationId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  cafeId?: Prisma.SortOrder
+  roles?: Prisma.SortOrder
+  minHours?: Prisma.SortOrder
+  maxHours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.EmployeeCountOrderByAggregateInput
+  _avg?: Prisma.EmployeeAvgOrderByAggregateInput
   _max?: Prisma.EmployeeMaxOrderByAggregateInput
   _min?: Prisma.EmployeeMinOrderByAggregateInput
+  _sum?: Prisma.EmployeeSumOrderByAggregateInput
 }
 
 export type EmployeeScalarWhereWithAggregatesInput = {
@@ -231,9 +310,12 @@ export type EmployeeScalarWhereWithAggregatesInput = {
   OR?: Prisma.EmployeeScalarWhereWithAggregatesInput[]
   NOT?: Prisma.EmployeeScalarWhereWithAggregatesInput | Prisma.EmployeeScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Employee"> | string
+  locationId?: Prisma.StringWithAggregatesFilter<"Employee"> | string
   name?: Prisma.StringWithAggregatesFilter<"Employee"> | string
   email?: Prisma.StringWithAggregatesFilter<"Employee"> | string
-  cafeId?: Prisma.StringWithAggregatesFilter<"Employee"> | string
+  roles?: Prisma.StringNullableListFilter<"Employee">
+  minHours?: Prisma.IntWithAggregatesFilter<"Employee"> | number
+  maxHours?: Prisma.IntWithAggregatesFilter<"Employee"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
 }
 
@@ -241,51 +323,78 @@ export type EmployeeCreateInput = {
   id?: string
   name: string
   email: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
   createdAt?: Date | string
-  cafe: Prisma.CafeCreateNestedOneWithoutEmployeesInput
-  availability?: Prisma.AvailabilityCreateNestedManyWithoutEmployeeInput
+  location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
+  recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenCreateNestedManyWithoutEmployeeInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
-  messages?: Prisma.MessageCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestCreateNestedManyWithoutRequesterInput
+  swapRequestsProposed?: Prisma.SwapRequestCreateNestedManyWithoutProposedEmployeeInput
 }
 
 export type EmployeeUncheckedCreateInput = {
   id?: string
+  locationId: string
   name: string
   email: string
-  cafeId: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
   createdAt?: Date | string
-  availability?: Prisma.AvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
-  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutRequesterInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutProposedEmployeeInput
 }
 
 export type EmployeeUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  cafe?: Prisma.CafeUpdateOneRequiredWithoutEmployeesNestedInput
-  availability?: Prisma.AvailabilityUpdateManyWithoutEmployeeNestedInput
+  location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUpdateManyWithoutEmployeeNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
-  messages?: Prisma.MessageUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUpdateManyWithoutRequesterNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUpdateManyWithoutProposedEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  locationId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cafeId?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  availability?: Prisma.AvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
-  messages?: Prisma.MessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedUpdateManyWithoutProposedEmployeeNestedInput
 }
 
 export type EmployeeCreateManyInput = {
   id?: string
+  locationId: string
   name: string
   email: string
-  cafeId: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
   createdAt?: Date | string
 }
 
@@ -293,14 +402,20 @@ export type EmployeeUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type EmployeeUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  locationId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cafeId?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -314,28 +429,58 @@ export type EmployeeOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
+}
+
+export type EmployeeLocationIdEmailCompoundUniqueInput = {
+  locationId: string
+  email: string
+}
+
 export type EmployeeCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  locationId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  cafeId?: Prisma.SortOrder
+  roles?: Prisma.SortOrder
+  minHours?: Prisma.SortOrder
+  maxHours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type EmployeeAvgOrderByAggregateInput = {
+  minHours?: Prisma.SortOrder
+  maxHours?: Prisma.SortOrder
 }
 
 export type EmployeeMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  locationId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  cafeId?: Prisma.SortOrder
+  minHours?: Prisma.SortOrder
+  maxHours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type EmployeeMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  locationId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  cafeId?: Prisma.SortOrder
+  minHours?: Prisma.SortOrder
+  maxHours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type EmployeeSumOrderByAggregateInput = {
+  minHours?: Prisma.SortOrder
+  maxHours?: Prisma.SortOrder
 }
 
 export type EmployeeScalarRelationFilter = {
@@ -348,60 +493,83 @@ export type EmployeeNullableScalarRelationFilter = {
   isNot?: Prisma.EmployeeWhereInput | null
 }
 
-export type EmployeeCreateNestedManyWithoutCafeInput = {
-  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutCafeInput, Prisma.EmployeeUncheckedCreateWithoutCafeInput> | Prisma.EmployeeCreateWithoutCafeInput[] | Prisma.EmployeeUncheckedCreateWithoutCafeInput[]
-  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutCafeInput | Prisma.EmployeeCreateOrConnectWithoutCafeInput[]
-  createMany?: Prisma.EmployeeCreateManyCafeInputEnvelope
+export type EmployeeCreateNestedManyWithoutLocationInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutLocationInput, Prisma.EmployeeUncheckedCreateWithoutLocationInput> | Prisma.EmployeeCreateWithoutLocationInput[] | Prisma.EmployeeUncheckedCreateWithoutLocationInput[]
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutLocationInput | Prisma.EmployeeCreateOrConnectWithoutLocationInput[]
+  createMany?: Prisma.EmployeeCreateManyLocationInputEnvelope
   connect?: Prisma.EmployeeWhereUniqueInput | Prisma.EmployeeWhereUniqueInput[]
 }
 
-export type EmployeeUncheckedCreateNestedManyWithoutCafeInput = {
-  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutCafeInput, Prisma.EmployeeUncheckedCreateWithoutCafeInput> | Prisma.EmployeeCreateWithoutCafeInput[] | Prisma.EmployeeUncheckedCreateWithoutCafeInput[]
-  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutCafeInput | Prisma.EmployeeCreateOrConnectWithoutCafeInput[]
-  createMany?: Prisma.EmployeeCreateManyCafeInputEnvelope
+export type EmployeeUncheckedCreateNestedManyWithoutLocationInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutLocationInput, Prisma.EmployeeUncheckedCreateWithoutLocationInput> | Prisma.EmployeeCreateWithoutLocationInput[] | Prisma.EmployeeUncheckedCreateWithoutLocationInput[]
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutLocationInput | Prisma.EmployeeCreateOrConnectWithoutLocationInput[]
+  createMany?: Prisma.EmployeeCreateManyLocationInputEnvelope
   connect?: Prisma.EmployeeWhereUniqueInput | Prisma.EmployeeWhereUniqueInput[]
 }
 
-export type EmployeeUpdateManyWithoutCafeNestedInput = {
-  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutCafeInput, Prisma.EmployeeUncheckedCreateWithoutCafeInput> | Prisma.EmployeeCreateWithoutCafeInput[] | Prisma.EmployeeUncheckedCreateWithoutCafeInput[]
-  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutCafeInput | Prisma.EmployeeCreateOrConnectWithoutCafeInput[]
-  upsert?: Prisma.EmployeeUpsertWithWhereUniqueWithoutCafeInput | Prisma.EmployeeUpsertWithWhereUniqueWithoutCafeInput[]
-  createMany?: Prisma.EmployeeCreateManyCafeInputEnvelope
+export type EmployeeUpdateManyWithoutLocationNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutLocationInput, Prisma.EmployeeUncheckedCreateWithoutLocationInput> | Prisma.EmployeeCreateWithoutLocationInput[] | Prisma.EmployeeUncheckedCreateWithoutLocationInput[]
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutLocationInput | Prisma.EmployeeCreateOrConnectWithoutLocationInput[]
+  upsert?: Prisma.EmployeeUpsertWithWhereUniqueWithoutLocationInput | Prisma.EmployeeUpsertWithWhereUniqueWithoutLocationInput[]
+  createMany?: Prisma.EmployeeCreateManyLocationInputEnvelope
   set?: Prisma.EmployeeWhereUniqueInput | Prisma.EmployeeWhereUniqueInput[]
   disconnect?: Prisma.EmployeeWhereUniqueInput | Prisma.EmployeeWhereUniqueInput[]
   delete?: Prisma.EmployeeWhereUniqueInput | Prisma.EmployeeWhereUniqueInput[]
   connect?: Prisma.EmployeeWhereUniqueInput | Prisma.EmployeeWhereUniqueInput[]
-  update?: Prisma.EmployeeUpdateWithWhereUniqueWithoutCafeInput | Prisma.EmployeeUpdateWithWhereUniqueWithoutCafeInput[]
-  updateMany?: Prisma.EmployeeUpdateManyWithWhereWithoutCafeInput | Prisma.EmployeeUpdateManyWithWhereWithoutCafeInput[]
+  update?: Prisma.EmployeeUpdateWithWhereUniqueWithoutLocationInput | Prisma.EmployeeUpdateWithWhereUniqueWithoutLocationInput[]
+  updateMany?: Prisma.EmployeeUpdateManyWithWhereWithoutLocationInput | Prisma.EmployeeUpdateManyWithWhereWithoutLocationInput[]
   deleteMany?: Prisma.EmployeeScalarWhereInput | Prisma.EmployeeScalarWhereInput[]
 }
 
-export type EmployeeUncheckedUpdateManyWithoutCafeNestedInput = {
-  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutCafeInput, Prisma.EmployeeUncheckedCreateWithoutCafeInput> | Prisma.EmployeeCreateWithoutCafeInput[] | Prisma.EmployeeUncheckedCreateWithoutCafeInput[]
-  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutCafeInput | Prisma.EmployeeCreateOrConnectWithoutCafeInput[]
-  upsert?: Prisma.EmployeeUpsertWithWhereUniqueWithoutCafeInput | Prisma.EmployeeUpsertWithWhereUniqueWithoutCafeInput[]
-  createMany?: Prisma.EmployeeCreateManyCafeInputEnvelope
+export type EmployeeUncheckedUpdateManyWithoutLocationNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutLocationInput, Prisma.EmployeeUncheckedCreateWithoutLocationInput> | Prisma.EmployeeCreateWithoutLocationInput[] | Prisma.EmployeeUncheckedCreateWithoutLocationInput[]
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutLocationInput | Prisma.EmployeeCreateOrConnectWithoutLocationInput[]
+  upsert?: Prisma.EmployeeUpsertWithWhereUniqueWithoutLocationInput | Prisma.EmployeeUpsertWithWhereUniqueWithoutLocationInput[]
+  createMany?: Prisma.EmployeeCreateManyLocationInputEnvelope
   set?: Prisma.EmployeeWhereUniqueInput | Prisma.EmployeeWhereUniqueInput[]
   disconnect?: Prisma.EmployeeWhereUniqueInput | Prisma.EmployeeWhereUniqueInput[]
   delete?: Prisma.EmployeeWhereUniqueInput | Prisma.EmployeeWhereUniqueInput[]
   connect?: Prisma.EmployeeWhereUniqueInput | Prisma.EmployeeWhereUniqueInput[]
-  update?: Prisma.EmployeeUpdateWithWhereUniqueWithoutCafeInput | Prisma.EmployeeUpdateWithWhereUniqueWithoutCafeInput[]
-  updateMany?: Prisma.EmployeeUpdateManyWithWhereWithoutCafeInput | Prisma.EmployeeUpdateManyWithWhereWithoutCafeInput[]
+  update?: Prisma.EmployeeUpdateWithWhereUniqueWithoutLocationInput | Prisma.EmployeeUpdateWithWhereUniqueWithoutLocationInput[]
+  updateMany?: Prisma.EmployeeUpdateManyWithWhereWithoutLocationInput | Prisma.EmployeeUpdateManyWithWhereWithoutLocationInput[]
   deleteMany?: Prisma.EmployeeScalarWhereInput | Prisma.EmployeeScalarWhereInput[]
 }
 
-export type EmployeeCreateNestedOneWithoutAvailabilityInput = {
-  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutAvailabilityInput, Prisma.EmployeeUncheckedCreateWithoutAvailabilityInput>
-  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutAvailabilityInput
+export type EmployeeCreaterolesInput = {
+  set: string[]
+}
+
+export type EmployeeUpdaterolesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type EmployeeCreateNestedOneWithoutRecurringAvailabilityInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutRecurringAvailabilityInput, Prisma.EmployeeUncheckedCreateWithoutRecurringAvailabilityInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutRecurringAvailabilityInput
   connect?: Prisma.EmployeeWhereUniqueInput
 }
 
-export type EmployeeUpdateOneRequiredWithoutAvailabilityNestedInput = {
-  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutAvailabilityInput, Prisma.EmployeeUncheckedCreateWithoutAvailabilityInput>
-  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutAvailabilityInput
-  upsert?: Prisma.EmployeeUpsertWithoutAvailabilityInput
+export type EmployeeUpdateOneRequiredWithoutRecurringAvailabilityNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutRecurringAvailabilityInput, Prisma.EmployeeUncheckedCreateWithoutRecurringAvailabilityInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutRecurringAvailabilityInput
+  upsert?: Prisma.EmployeeUpsertWithoutRecurringAvailabilityInput
   connect?: Prisma.EmployeeWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutAvailabilityInput, Prisma.EmployeeUpdateWithoutAvailabilityInput>, Prisma.EmployeeUncheckedUpdateWithoutAvailabilityInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutRecurringAvailabilityInput, Prisma.EmployeeUpdateWithoutRecurringAvailabilityInput>, Prisma.EmployeeUncheckedUpdateWithoutRecurringAvailabilityInput>
+}
+
+export type EmployeeCreateNestedOneWithoutAvailabilityOverridesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutAvailabilityOverridesInput, Prisma.EmployeeUncheckedCreateWithoutAvailabilityOverridesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutAvailabilityOverridesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutAvailabilityOverridesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutAvailabilityOverridesInput, Prisma.EmployeeUncheckedCreateWithoutAvailabilityOverridesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutAvailabilityOverridesInput
+  upsert?: Prisma.EmployeeUpsertWithoutAvailabilityOverridesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutAvailabilityOverridesInput, Prisma.EmployeeUpdateWithoutAvailabilityOverridesInput>, Prisma.EmployeeUncheckedUpdateWithoutAvailabilityOverridesInput>
 }
 
 export type EmployeeCreateNestedOneWithoutShiftsInput = {
@@ -420,64 +588,108 @@ export type EmployeeUpdateOneWithoutShiftsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutShiftsInput, Prisma.EmployeeUpdateWithoutShiftsInput>, Prisma.EmployeeUncheckedUpdateWithoutShiftsInput>
 }
 
-export type EmployeeCreateNestedOneWithoutMessagesInput = {
-  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutMessagesInput, Prisma.EmployeeUncheckedCreateWithoutMessagesInput>
-  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutMessagesInput
+export type EmployeeCreateNestedOneWithoutSwapRequestsInitiatedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutSwapRequestsInitiatedInput, Prisma.EmployeeUncheckedCreateWithoutSwapRequestsInitiatedInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutSwapRequestsInitiatedInput
   connect?: Prisma.EmployeeWhereUniqueInput
 }
 
-export type EmployeeUpdateOneRequiredWithoutMessagesNestedInput = {
-  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutMessagesInput, Prisma.EmployeeUncheckedCreateWithoutMessagesInput>
-  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutMessagesInput
-  upsert?: Prisma.EmployeeUpsertWithoutMessagesInput
+export type EmployeeCreateNestedOneWithoutSwapRequestsProposedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutSwapRequestsProposedInput, Prisma.EmployeeUncheckedCreateWithoutSwapRequestsProposedInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutSwapRequestsProposedInput
   connect?: Prisma.EmployeeWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutMessagesInput, Prisma.EmployeeUpdateWithoutMessagesInput>, Prisma.EmployeeUncheckedUpdateWithoutMessagesInput>
 }
 
-export type EmployeeCreateWithoutCafeInput = {
+export type EmployeeUpdateOneRequiredWithoutSwapRequestsInitiatedNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutSwapRequestsInitiatedInput, Prisma.EmployeeUncheckedCreateWithoutSwapRequestsInitiatedInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutSwapRequestsInitiatedInput
+  upsert?: Prisma.EmployeeUpsertWithoutSwapRequestsInitiatedInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutSwapRequestsInitiatedInput, Prisma.EmployeeUpdateWithoutSwapRequestsInitiatedInput>, Prisma.EmployeeUncheckedUpdateWithoutSwapRequestsInitiatedInput>
+}
+
+export type EmployeeUpdateOneWithoutSwapRequestsProposedNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutSwapRequestsProposedInput, Prisma.EmployeeUncheckedCreateWithoutSwapRequestsProposedInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutSwapRequestsProposedInput
+  upsert?: Prisma.EmployeeUpsertWithoutSwapRequestsProposedInput
+  disconnect?: Prisma.EmployeeWhereInput | boolean
+  delete?: Prisma.EmployeeWhereInput | boolean
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutSwapRequestsProposedInput, Prisma.EmployeeUpdateWithoutSwapRequestsProposedInput>, Prisma.EmployeeUncheckedUpdateWithoutSwapRequestsProposedInput>
+}
+
+export type EmployeeCreateNestedOneWithoutActionTokensInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutActionTokensInput, Prisma.EmployeeUncheckedCreateWithoutActionTokensInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutActionTokensInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneWithoutActionTokensNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutActionTokensInput, Prisma.EmployeeUncheckedCreateWithoutActionTokensInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutActionTokensInput
+  upsert?: Prisma.EmployeeUpsertWithoutActionTokensInput
+  disconnect?: Prisma.EmployeeWhereInput | boolean
+  delete?: Prisma.EmployeeWhereInput | boolean
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutActionTokensInput, Prisma.EmployeeUpdateWithoutActionTokensInput>, Prisma.EmployeeUncheckedUpdateWithoutActionTokensInput>
+}
+
+export type EmployeeCreateWithoutLocationInput = {
   id?: string
   name: string
   email: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
   createdAt?: Date | string
-  availability?: Prisma.AvailabilityCreateNestedManyWithoutEmployeeInput
+  recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenCreateNestedManyWithoutEmployeeInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
-  messages?: Prisma.MessageCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestCreateNestedManyWithoutRequesterInput
+  swapRequestsProposed?: Prisma.SwapRequestCreateNestedManyWithoutProposedEmployeeInput
 }
 
-export type EmployeeUncheckedCreateWithoutCafeInput = {
+export type EmployeeUncheckedCreateWithoutLocationInput = {
   id?: string
   name: string
   email: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
   createdAt?: Date | string
-  availability?: Prisma.AvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
-  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutRequesterInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutProposedEmployeeInput
 }
 
-export type EmployeeCreateOrConnectWithoutCafeInput = {
+export type EmployeeCreateOrConnectWithoutLocationInput = {
   where: Prisma.EmployeeWhereUniqueInput
-  create: Prisma.XOR<Prisma.EmployeeCreateWithoutCafeInput, Prisma.EmployeeUncheckedCreateWithoutCafeInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutLocationInput, Prisma.EmployeeUncheckedCreateWithoutLocationInput>
 }
 
-export type EmployeeCreateManyCafeInputEnvelope = {
-  data: Prisma.EmployeeCreateManyCafeInput | Prisma.EmployeeCreateManyCafeInput[]
+export type EmployeeCreateManyLocationInputEnvelope = {
+  data: Prisma.EmployeeCreateManyLocationInput | Prisma.EmployeeCreateManyLocationInput[]
   skipDuplicates?: boolean
 }
 
-export type EmployeeUpsertWithWhereUniqueWithoutCafeInput = {
+export type EmployeeUpsertWithWhereUniqueWithoutLocationInput = {
   where: Prisma.EmployeeWhereUniqueInput
-  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutCafeInput, Prisma.EmployeeUncheckedUpdateWithoutCafeInput>
-  create: Prisma.XOR<Prisma.EmployeeCreateWithoutCafeInput, Prisma.EmployeeUncheckedCreateWithoutCafeInput>
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutLocationInput, Prisma.EmployeeUncheckedUpdateWithoutLocationInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutLocationInput, Prisma.EmployeeUncheckedCreateWithoutLocationInput>
 }
 
-export type EmployeeUpdateWithWhereUniqueWithoutCafeInput = {
+export type EmployeeUpdateWithWhereUniqueWithoutLocationInput = {
   where: Prisma.EmployeeWhereUniqueInput
-  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutCafeInput, Prisma.EmployeeUncheckedUpdateWithoutCafeInput>
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutLocationInput, Prisma.EmployeeUncheckedUpdateWithoutLocationInput>
 }
 
-export type EmployeeUpdateManyWithWhereWithoutCafeInput = {
+export type EmployeeUpdateManyWithWhereWithoutLocationInput = {
   where: Prisma.EmployeeScalarWhereInput
-  data: Prisma.XOR<Prisma.EmployeeUpdateManyMutationInput, Prisma.EmployeeUncheckedUpdateManyWithoutCafeInput>
+  data: Prisma.XOR<Prisma.EmployeeUpdateManyMutationInput, Prisma.EmployeeUncheckedUpdateManyWithoutLocationInput>
 }
 
 export type EmployeeScalarWhereInput = {
@@ -485,86 +697,205 @@ export type EmployeeScalarWhereInput = {
   OR?: Prisma.EmployeeScalarWhereInput[]
   NOT?: Prisma.EmployeeScalarWhereInput | Prisma.EmployeeScalarWhereInput[]
   id?: Prisma.StringFilter<"Employee"> | string
+  locationId?: Prisma.StringFilter<"Employee"> | string
   name?: Prisma.StringFilter<"Employee"> | string
   email?: Prisma.StringFilter<"Employee"> | string
-  cafeId?: Prisma.StringFilter<"Employee"> | string
+  roles?: Prisma.StringNullableListFilter<"Employee">
+  minHours?: Prisma.IntFilter<"Employee"> | number
+  maxHours?: Prisma.IntFilter<"Employee"> | number
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
 }
 
-export type EmployeeCreateWithoutAvailabilityInput = {
+export type EmployeeCreateWithoutRecurringAvailabilityInput = {
   id?: string
   name: string
   email: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
   createdAt?: Date | string
-  cafe: Prisma.CafeCreateNestedOneWithoutEmployeesInput
+  location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenCreateNestedManyWithoutEmployeeInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
-  messages?: Prisma.MessageCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestCreateNestedManyWithoutRequesterInput
+  swapRequestsProposed?: Prisma.SwapRequestCreateNestedManyWithoutProposedEmployeeInput
 }
 
-export type EmployeeUncheckedCreateWithoutAvailabilityInput = {
+export type EmployeeUncheckedCreateWithoutRecurringAvailabilityInput = {
+  id?: string
+  locationId: string
+  name: string
+  email: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
+  createdAt?: Date | string
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
+  shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutRequesterInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutProposedEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutRecurringAvailabilityInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutRecurringAvailabilityInput, Prisma.EmployeeUncheckedCreateWithoutRecurringAvailabilityInput>
+}
+
+export type EmployeeUpsertWithoutRecurringAvailabilityInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutRecurringAvailabilityInput, Prisma.EmployeeUncheckedUpdateWithoutRecurringAvailabilityInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutRecurringAvailabilityInput, Prisma.EmployeeUncheckedCreateWithoutRecurringAvailabilityInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutRecurringAvailabilityInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutRecurringAvailabilityInput, Prisma.EmployeeUncheckedUpdateWithoutRecurringAvailabilityInput>
+}
+
+export type EmployeeUpdateWithoutRecurringAvailabilityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUpdateManyWithoutEmployeeNestedInput
+  shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUpdateManyWithoutRequesterNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUpdateManyWithoutProposedEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutRecurringAvailabilityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  locationId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
+  shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedUpdateManyWithoutProposedEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutAvailabilityOverridesInput = {
   id?: string
   name: string
   email: string
-  cafeId: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
   createdAt?: Date | string
+  location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
+  recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenCreateNestedManyWithoutEmployeeInput
+  shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestCreateNestedManyWithoutRequesterInput
+  swapRequestsProposed?: Prisma.SwapRequestCreateNestedManyWithoutProposedEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutAvailabilityOverridesInput = {
+  id?: string
+  locationId: string
+  name: string
+  email: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
+  createdAt?: Date | string
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
-  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutRequesterInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutProposedEmployeeInput
 }
 
-export type EmployeeCreateOrConnectWithoutAvailabilityInput = {
+export type EmployeeCreateOrConnectWithoutAvailabilityOverridesInput = {
   where: Prisma.EmployeeWhereUniqueInput
-  create: Prisma.XOR<Prisma.EmployeeCreateWithoutAvailabilityInput, Prisma.EmployeeUncheckedCreateWithoutAvailabilityInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutAvailabilityOverridesInput, Prisma.EmployeeUncheckedCreateWithoutAvailabilityOverridesInput>
 }
 
-export type EmployeeUpsertWithoutAvailabilityInput = {
-  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutAvailabilityInput, Prisma.EmployeeUncheckedUpdateWithoutAvailabilityInput>
-  create: Prisma.XOR<Prisma.EmployeeCreateWithoutAvailabilityInput, Prisma.EmployeeUncheckedCreateWithoutAvailabilityInput>
+export type EmployeeUpsertWithoutAvailabilityOverridesInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutAvailabilityOverridesInput, Prisma.EmployeeUncheckedUpdateWithoutAvailabilityOverridesInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutAvailabilityOverridesInput, Prisma.EmployeeUncheckedCreateWithoutAvailabilityOverridesInput>
   where?: Prisma.EmployeeWhereInput
 }
 
-export type EmployeeUpdateToOneWithWhereWithoutAvailabilityInput = {
+export type EmployeeUpdateToOneWithWhereWithoutAvailabilityOverridesInput = {
   where?: Prisma.EmployeeWhereInput
-  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutAvailabilityInput, Prisma.EmployeeUncheckedUpdateWithoutAvailabilityInput>
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutAvailabilityOverridesInput, Prisma.EmployeeUncheckedUpdateWithoutAvailabilityOverridesInput>
 }
 
-export type EmployeeUpdateWithoutAvailabilityInput = {
+export type EmployeeUpdateWithoutAvailabilityOverridesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  cafe?: Prisma.CafeUpdateOneRequiredWithoutEmployeesNestedInput
+  location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUpdateManyWithoutEmployeeNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
-  messages?: Prisma.MessageUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUpdateManyWithoutRequesterNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUpdateManyWithoutProposedEmployeeNestedInput
 }
 
-export type EmployeeUncheckedUpdateWithoutAvailabilityInput = {
+export type EmployeeUncheckedUpdateWithoutAvailabilityOverridesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  locationId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cafeId?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
-  messages?: Prisma.MessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedUpdateManyWithoutProposedEmployeeNestedInput
 }
 
 export type EmployeeCreateWithoutShiftsInput = {
   id?: string
   name: string
   email: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
   createdAt?: Date | string
-  cafe: Prisma.CafeCreateNestedOneWithoutEmployeesInput
-  availability?: Prisma.AvailabilityCreateNestedManyWithoutEmployeeInput
-  messages?: Prisma.MessageCreateNestedManyWithoutEmployeeInput
+  location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
+  recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestCreateNestedManyWithoutRequesterInput
+  swapRequestsProposed?: Prisma.SwapRequestCreateNestedManyWithoutProposedEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutShiftsInput = {
   id?: string
+  locationId: string
   name: string
   email: string
-  cafeId: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
   createdAt?: Date | string
-  availability?: Prisma.AvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
-  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutEmployeeInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutRequesterInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutProposedEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutShiftsInput = {
@@ -587,109 +918,323 @@ export type EmployeeUpdateWithoutShiftsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  cafe?: Prisma.CafeUpdateOneRequiredWithoutEmployeesNestedInput
-  availability?: Prisma.AvailabilityUpdateManyWithoutEmployeeNestedInput
-  messages?: Prisma.MessageUpdateManyWithoutEmployeeNestedInput
+  location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUpdateManyWithoutRequesterNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUpdateManyWithoutProposedEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutShiftsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  locationId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cafeId?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  availability?: Prisma.AvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
-  messages?: Prisma.MessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedUpdateManyWithoutProposedEmployeeNestedInput
 }
 
-export type EmployeeCreateWithoutMessagesInput = {
+export type EmployeeCreateWithoutSwapRequestsInitiatedInput = {
   id?: string
   name: string
   email: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
   createdAt?: Date | string
-  cafe: Prisma.CafeCreateNestedOneWithoutEmployeesInput
-  availability?: Prisma.AvailabilityCreateNestedManyWithoutEmployeeInput
+  location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
+  recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenCreateNestedManyWithoutEmployeeInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
+  swapRequestsProposed?: Prisma.SwapRequestCreateNestedManyWithoutProposedEmployeeInput
 }
 
-export type EmployeeUncheckedCreateWithoutMessagesInput = {
+export type EmployeeUncheckedCreateWithoutSwapRequestsInitiatedInput = {
   id?: string
+  locationId: string
   name: string
   email: string
-  cafeId: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
   createdAt?: Date | string
-  availability?: Prisma.AvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutProposedEmployeeInput
 }
 
-export type EmployeeCreateOrConnectWithoutMessagesInput = {
+export type EmployeeCreateOrConnectWithoutSwapRequestsInitiatedInput = {
   where: Prisma.EmployeeWhereUniqueInput
-  create: Prisma.XOR<Prisma.EmployeeCreateWithoutMessagesInput, Prisma.EmployeeUncheckedCreateWithoutMessagesInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutSwapRequestsInitiatedInput, Prisma.EmployeeUncheckedCreateWithoutSwapRequestsInitiatedInput>
 }
 
-export type EmployeeUpsertWithoutMessagesInput = {
-  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutMessagesInput, Prisma.EmployeeUncheckedUpdateWithoutMessagesInput>
-  create: Prisma.XOR<Prisma.EmployeeCreateWithoutMessagesInput, Prisma.EmployeeUncheckedCreateWithoutMessagesInput>
-  where?: Prisma.EmployeeWhereInput
-}
-
-export type EmployeeUpdateToOneWithWhereWithoutMessagesInput = {
-  where?: Prisma.EmployeeWhereInput
-  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutMessagesInput, Prisma.EmployeeUncheckedUpdateWithoutMessagesInput>
-}
-
-export type EmployeeUpdateWithoutMessagesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  cafe?: Prisma.CafeUpdateOneRequiredWithoutEmployeesNestedInput
-  availability?: Prisma.AvailabilityUpdateManyWithoutEmployeeNestedInput
-  shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
-}
-
-export type EmployeeUncheckedUpdateWithoutMessagesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  cafeId?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  availability?: Prisma.AvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
-  shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
-}
-
-export type EmployeeCreateManyCafeInput = {
+export type EmployeeCreateWithoutSwapRequestsProposedInput = {
   id?: string
   name: string
   email: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
+  createdAt?: Date | string
+  location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
+  recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenCreateNestedManyWithoutEmployeeInput
+  shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestCreateNestedManyWithoutRequesterInput
+}
+
+export type EmployeeUncheckedCreateWithoutSwapRequestsProposedInput = {
+  id?: string
+  locationId: string
+  name: string
+  email: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
+  createdAt?: Date | string
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
+  shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutRequesterInput
+}
+
+export type EmployeeCreateOrConnectWithoutSwapRequestsProposedInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutSwapRequestsProposedInput, Prisma.EmployeeUncheckedCreateWithoutSwapRequestsProposedInput>
+}
+
+export type EmployeeUpsertWithoutSwapRequestsInitiatedInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutSwapRequestsInitiatedInput, Prisma.EmployeeUncheckedUpdateWithoutSwapRequestsInitiatedInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutSwapRequestsInitiatedInput, Prisma.EmployeeUncheckedCreateWithoutSwapRequestsInitiatedInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutSwapRequestsInitiatedInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutSwapRequestsInitiatedInput, Prisma.EmployeeUncheckedUpdateWithoutSwapRequestsInitiatedInput>
+}
+
+export type EmployeeUpdateWithoutSwapRequestsInitiatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUpdateManyWithoutEmployeeNestedInput
+  shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUpdateManyWithoutProposedEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutSwapRequestsInitiatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  locationId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
+  shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedUpdateManyWithoutProposedEmployeeNestedInput
+}
+
+export type EmployeeUpsertWithoutSwapRequestsProposedInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutSwapRequestsProposedInput, Prisma.EmployeeUncheckedUpdateWithoutSwapRequestsProposedInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutSwapRequestsProposedInput, Prisma.EmployeeUncheckedCreateWithoutSwapRequestsProposedInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutSwapRequestsProposedInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutSwapRequestsProposedInput, Prisma.EmployeeUncheckedUpdateWithoutSwapRequestsProposedInput>
+}
+
+export type EmployeeUpdateWithoutSwapRequestsProposedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUpdateManyWithoutEmployeeNestedInput
+  shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUpdateManyWithoutRequesterNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutSwapRequestsProposedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  locationId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
+  shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedUpdateManyWithoutRequesterNestedInput
+}
+
+export type EmployeeCreateWithoutActionTokensInput = {
+  id?: string
+  name: string
+  email: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
+  createdAt?: Date | string
+  location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
+  recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutEmployeeInput
+  shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestCreateNestedManyWithoutRequesterInput
+  swapRequestsProposed?: Prisma.SwapRequestCreateNestedManyWithoutProposedEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutActionTokensInput = {
+  id?: string
+  locationId: string
+  name: string
+  email: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
+  createdAt?: Date | string
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutRequesterInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutProposedEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutActionTokensInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutActionTokensInput, Prisma.EmployeeUncheckedCreateWithoutActionTokensInput>
+}
+
+export type EmployeeUpsertWithoutActionTokensInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutActionTokensInput, Prisma.EmployeeUncheckedUpdateWithoutActionTokensInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutActionTokensInput, Prisma.EmployeeUncheckedCreateWithoutActionTokensInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutActionTokensInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutActionTokensInput, Prisma.EmployeeUncheckedUpdateWithoutActionTokensInput>
+}
+
+export type EmployeeUpdateWithoutActionTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutEmployeeNestedInput
+  shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUpdateManyWithoutRequesterNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUpdateManyWithoutProposedEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutActionTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  locationId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedUpdateManyWithoutProposedEmployeeNestedInput
+}
+
+export type EmployeeCreateManyLocationInput = {
+  id?: string
+  name: string
+  email: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
   createdAt?: Date | string
 }
 
-export type EmployeeUpdateWithoutCafeInput = {
+export type EmployeeUpdateWithoutLocationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  availability?: Prisma.AvailabilityUpdateManyWithoutEmployeeNestedInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUpdateManyWithoutEmployeeNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
-  messages?: Prisma.MessageUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUpdateManyWithoutRequesterNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUpdateManyWithoutProposedEmployeeNestedInput
 }
 
-export type EmployeeUncheckedUpdateWithoutCafeInput = {
+export type EmployeeUncheckedUpdateWithoutLocationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  availability?: Prisma.AvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
-  messages?: Prisma.MessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedUpdateManyWithoutProposedEmployeeNestedInput
 }
 
-export type EmployeeUncheckedUpdateManyWithoutCafeInput = {
+export type EmployeeUncheckedUpdateManyWithoutLocationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -699,15 +1244,21 @@ export type EmployeeUncheckedUpdateManyWithoutCafeInput = {
  */
 
 export type EmployeeCountOutputType = {
-  availability: number
+  recurringAvailability: number
+  availabilityOverrides: number
+  actionTokens: number
   shifts: number
-  messages: number
+  swapRequestsInitiated: number
+  swapRequestsProposed: number
 }
 
 export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  availability?: boolean | EmployeeCountOutputTypeCountAvailabilityArgs
+  recurringAvailability?: boolean | EmployeeCountOutputTypeCountRecurringAvailabilityArgs
+  availabilityOverrides?: boolean | EmployeeCountOutputTypeCountAvailabilityOverridesArgs
+  actionTokens?: boolean | EmployeeCountOutputTypeCountActionTokensArgs
   shifts?: boolean | EmployeeCountOutputTypeCountShiftsArgs
-  messages?: boolean | EmployeeCountOutputTypeCountMessagesArgs
+  swapRequestsInitiated?: boolean | EmployeeCountOutputTypeCountSwapRequestsInitiatedArgs
+  swapRequestsProposed?: boolean | EmployeeCountOutputTypeCountSwapRequestsProposedArgs
 }
 
 /**
@@ -723,8 +1274,22 @@ export type EmployeeCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Ext
 /**
  * EmployeeCountOutputType without action
  */
-export type EmployeeCountOutputTypeCountAvailabilityArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AvailabilityWhereInput
+export type EmployeeCountOutputTypeCountRecurringAvailabilityArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RecurringAvailabilityWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountAvailabilityOverridesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AvailabilityOverrideWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountActionTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ActionTokenWhereInput
 }
 
 /**
@@ -737,78 +1302,109 @@ export type EmployeeCountOutputTypeCountShiftsArgs<ExtArgs extends runtime.Types
 /**
  * EmployeeCountOutputType without action
  */
-export type EmployeeCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.MessageWhereInput
+export type EmployeeCountOutputTypeCountSwapRequestsInitiatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SwapRequestWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountSwapRequestsProposedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SwapRequestWhereInput
 }
 
 
 export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  locationId?: boolean
   name?: boolean
   email?: boolean
-  cafeId?: boolean
+  roles?: boolean
+  minHours?: boolean
+  maxHours?: boolean
   createdAt?: boolean
-  cafe?: boolean | Prisma.CafeDefaultArgs<ExtArgs>
-  availability?: boolean | Prisma.Employee$availabilityArgs<ExtArgs>
+  location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
+  recurringAvailability?: boolean | Prisma.Employee$recurringAvailabilityArgs<ExtArgs>
+  availabilityOverrides?: boolean | Prisma.Employee$availabilityOverridesArgs<ExtArgs>
+  actionTokens?: boolean | Prisma.Employee$actionTokensArgs<ExtArgs>
   shifts?: boolean | Prisma.Employee$shiftsArgs<ExtArgs>
-  messages?: boolean | Prisma.Employee$messagesArgs<ExtArgs>
+  swapRequestsInitiated?: boolean | Prisma.Employee$swapRequestsInitiatedArgs<ExtArgs>
+  swapRequestsProposed?: boolean | Prisma.Employee$swapRequestsProposedArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employee"]>
 
 export type EmployeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  locationId?: boolean
   name?: boolean
   email?: boolean
-  cafeId?: boolean
+  roles?: boolean
+  minHours?: boolean
+  maxHours?: boolean
   createdAt?: boolean
-  cafe?: boolean | Prisma.CafeDefaultArgs<ExtArgs>
+  location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employee"]>
 
 export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  locationId?: boolean
   name?: boolean
   email?: boolean
-  cafeId?: boolean
+  roles?: boolean
+  minHours?: boolean
+  maxHours?: boolean
   createdAt?: boolean
-  cafe?: boolean | Prisma.CafeDefaultArgs<ExtArgs>
+  location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employee"]>
 
 export type EmployeeSelectScalar = {
   id?: boolean
+  locationId?: boolean
   name?: boolean
   email?: boolean
-  cafeId?: boolean
+  roles?: boolean
+  minHours?: boolean
+  maxHours?: boolean
   createdAt?: boolean
 }
 
-export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "cafeId" | "createdAt", ExtArgs["result"]["employee"]>
+export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "locationId" | "name" | "email" | "roles" | "minHours" | "maxHours" | "createdAt", ExtArgs["result"]["employee"]>
 export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  cafe?: boolean | Prisma.CafeDefaultArgs<ExtArgs>
-  availability?: boolean | Prisma.Employee$availabilityArgs<ExtArgs>
+  location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
+  recurringAvailability?: boolean | Prisma.Employee$recurringAvailabilityArgs<ExtArgs>
+  availabilityOverrides?: boolean | Prisma.Employee$availabilityOverridesArgs<ExtArgs>
+  actionTokens?: boolean | Prisma.Employee$actionTokensArgs<ExtArgs>
   shifts?: boolean | Prisma.Employee$shiftsArgs<ExtArgs>
-  messages?: boolean | Prisma.Employee$messagesArgs<ExtArgs>
+  swapRequestsInitiated?: boolean | Prisma.Employee$swapRequestsInitiatedArgs<ExtArgs>
+  swapRequestsProposed?: boolean | Prisma.Employee$swapRequestsProposedArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EmployeeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  cafe?: boolean | Prisma.CafeDefaultArgs<ExtArgs>
+  location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
 }
 export type EmployeeIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  cafe?: boolean | Prisma.CafeDefaultArgs<ExtArgs>
+  location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
 }
 
 export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Employee"
   objects: {
-    cafe: Prisma.$CafePayload<ExtArgs>
-    availability: Prisma.$AvailabilityPayload<ExtArgs>[]
+    location: Prisma.$LocationPayload<ExtArgs>
+    recurringAvailability: Prisma.$RecurringAvailabilityPayload<ExtArgs>[]
+    availabilityOverrides: Prisma.$AvailabilityOverridePayload<ExtArgs>[]
+    actionTokens: Prisma.$ActionTokenPayload<ExtArgs>[]
     shifts: Prisma.$ShiftPayload<ExtArgs>[]
-    messages: Prisma.$MessagePayload<ExtArgs>[]
+    swapRequestsInitiated: Prisma.$SwapRequestPayload<ExtArgs>[]
+    swapRequestsProposed: Prisma.$SwapRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    locationId: string
     name: string
     email: string
-    cafeId: string
+    roles: string[]
+    minHours: number
+    maxHours: number
     createdAt: Date
   }, ExtArgs["result"]["employee"]>
   composites: {}
@@ -1204,10 +1800,13 @@ readonly fields: EmployeeFieldRefs;
  */
 export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  cafe<T extends Prisma.CafeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CafeDefaultArgs<ExtArgs>>): Prisma.Prisma__CafeClient<runtime.Types.Result.GetResult<Prisma.$CafePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  availability<T extends Prisma.Employee$availabilityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$availabilityArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AvailabilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  location<T extends Prisma.LocationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LocationDefaultArgs<ExtArgs>>): Prisma.Prisma__LocationClient<runtime.Types.Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  recurringAvailability<T extends Prisma.Employee$recurringAvailabilityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$recurringAvailabilityArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RecurringAvailabilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  availabilityOverrides<T extends Prisma.Employee$availabilityOverridesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$availabilityOverridesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AvailabilityOverridePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  actionTokens<T extends Prisma.Employee$actionTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$actionTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActionTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   shifts<T extends Prisma.Employee$shiftsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$shiftsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShiftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  messages<T extends Prisma.Employee$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  swapRequestsInitiated<T extends Prisma.Employee$swapRequestsInitiatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$swapRequestsInitiatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SwapRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  swapRequestsProposed<T extends Prisma.Employee$swapRequestsProposedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$swapRequestsProposedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SwapRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1238,9 +1837,12 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
  */
 export interface EmployeeFieldRefs {
   readonly id: Prisma.FieldRef<"Employee", 'String'>
+  readonly locationId: Prisma.FieldRef<"Employee", 'String'>
   readonly name: Prisma.FieldRef<"Employee", 'String'>
   readonly email: Prisma.FieldRef<"Employee", 'String'>
-  readonly cafeId: Prisma.FieldRef<"Employee", 'String'>
+  readonly roles: Prisma.FieldRef<"Employee", 'String[]'>
+  readonly minHours: Prisma.FieldRef<"Employee", 'Int'>
+  readonly maxHours: Prisma.FieldRef<"Employee", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Employee", 'DateTime'>
 }
     
@@ -1643,27 +2245,75 @@ export type EmployeeDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
- * Employee.availability
+ * Employee.recurringAvailability
  */
-export type Employee$availabilityArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Employee$recurringAvailabilityArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Availability
+   * Select specific fields to fetch from the RecurringAvailability
    */
-  select?: Prisma.AvailabilitySelect<ExtArgs> | null
+  select?: Prisma.RecurringAvailabilitySelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Availability
+   * Omit specific fields from the RecurringAvailability
    */
-  omit?: Prisma.AvailabilityOmit<ExtArgs> | null
+  omit?: Prisma.RecurringAvailabilityOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.AvailabilityInclude<ExtArgs> | null
-  where?: Prisma.AvailabilityWhereInput
-  orderBy?: Prisma.AvailabilityOrderByWithRelationInput | Prisma.AvailabilityOrderByWithRelationInput[]
-  cursor?: Prisma.AvailabilityWhereUniqueInput
+  include?: Prisma.RecurringAvailabilityInclude<ExtArgs> | null
+  where?: Prisma.RecurringAvailabilityWhereInput
+  orderBy?: Prisma.RecurringAvailabilityOrderByWithRelationInput | Prisma.RecurringAvailabilityOrderByWithRelationInput[]
+  cursor?: Prisma.RecurringAvailabilityWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.AvailabilityScalarFieldEnum | Prisma.AvailabilityScalarFieldEnum[]
+  distinct?: Prisma.RecurringAvailabilityScalarFieldEnum | Prisma.RecurringAvailabilityScalarFieldEnum[]
+}
+
+/**
+ * Employee.availabilityOverrides
+ */
+export type Employee$availabilityOverridesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AvailabilityOverride
+   */
+  select?: Prisma.AvailabilityOverrideSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AvailabilityOverride
+   */
+  omit?: Prisma.AvailabilityOverrideOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AvailabilityOverrideInclude<ExtArgs> | null
+  where?: Prisma.AvailabilityOverrideWhereInput
+  orderBy?: Prisma.AvailabilityOverrideOrderByWithRelationInput | Prisma.AvailabilityOverrideOrderByWithRelationInput[]
+  cursor?: Prisma.AvailabilityOverrideWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AvailabilityOverrideScalarFieldEnum | Prisma.AvailabilityOverrideScalarFieldEnum[]
+}
+
+/**
+ * Employee.actionTokens
+ */
+export type Employee$actionTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ActionToken
+   */
+  select?: Prisma.ActionTokenSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ActionToken
+   */
+  omit?: Prisma.ActionTokenOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActionTokenInclude<ExtArgs> | null
+  where?: Prisma.ActionTokenWhereInput
+  orderBy?: Prisma.ActionTokenOrderByWithRelationInput | Prisma.ActionTokenOrderByWithRelationInput[]
+  cursor?: Prisma.ActionTokenWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ActionTokenScalarFieldEnum | Prisma.ActionTokenScalarFieldEnum[]
 }
 
 /**
@@ -1691,27 +2341,51 @@ export type Employee$shiftsArgs<ExtArgs extends runtime.Types.Extensions.Interna
 }
 
 /**
- * Employee.messages
+ * Employee.swapRequestsInitiated
  */
-export type Employee$messagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Employee$swapRequestsInitiatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Message
+   * Select specific fields to fetch from the SwapRequest
    */
-  select?: Prisma.MessageSelect<ExtArgs> | null
+  select?: Prisma.SwapRequestSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Message
+   * Omit specific fields from the SwapRequest
    */
-  omit?: Prisma.MessageOmit<ExtArgs> | null
+  omit?: Prisma.SwapRequestOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.MessageInclude<ExtArgs> | null
-  where?: Prisma.MessageWhereInput
-  orderBy?: Prisma.MessageOrderByWithRelationInput | Prisma.MessageOrderByWithRelationInput[]
-  cursor?: Prisma.MessageWhereUniqueInput
+  include?: Prisma.SwapRequestInclude<ExtArgs> | null
+  where?: Prisma.SwapRequestWhereInput
+  orderBy?: Prisma.SwapRequestOrderByWithRelationInput | Prisma.SwapRequestOrderByWithRelationInput[]
+  cursor?: Prisma.SwapRequestWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
+  distinct?: Prisma.SwapRequestScalarFieldEnum | Prisma.SwapRequestScalarFieldEnum[]
+}
+
+/**
+ * Employee.swapRequestsProposed
+ */
+export type Employee$swapRequestsProposedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SwapRequest
+   */
+  select?: Prisma.SwapRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SwapRequest
+   */
+  omit?: Prisma.SwapRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SwapRequestInclude<ExtArgs> | null
+  where?: Prisma.SwapRequestWhereInput
+  orderBy?: Prisma.SwapRequestOrderByWithRelationInput | Prisma.SwapRequestOrderByWithRelationInput[]
+  cursor?: Prisma.SwapRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SwapRequestScalarFieldEnum | Prisma.SwapRequestScalarFieldEnum[]
 }
 
 /**

@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../prisma/generated/client"
@@ -12,87 +7,243 @@ datasource db {
   provider = "postgresql"
 }
 
-model Cafe {
-  id        String   @id @default(cuid())
-  name      String
-  email     String? // owner email (optional for MVP)
-  createdAt DateTime @default(now())
+// ─── Enums ────────────────────────────────────────────────────────────────────
 
-  employees Employee[]
-  schedules Schedule[]
+enum StripePlan {
+  TRIAL
+  STARTER
+  PRO
+  NONE
 }
 
-model Employee {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
-  cafeId    String
-  createdAt DateTime @default(now())
-
-  cafe         Cafe           @relation(fields: [cafeId], references: [id])
-  availability Availability[]
-  shifts       Shift[]
-  messages     Message[]
-
-  @@index([cafeId])
+enum ActionTokenAction {
+  ACCEPT_SHIFT
+  DECLINE_SHIFT
+  SUBMIT_AVAILABILITY
+  REPORT_SICK
+  REQUEST_SWAP
+  ACCEPT_SWAP
+  DECLINE_SWAP
+  APPROVE_SWAP
+  REJECT_SWAP
+  APPROVE_SCHEDULE
 }
 
-model Availability {
-  id         String @id @default(cuid())
-  employeeId String
-  day        String // "Monday", "Tuesday"
-  shift      String // "morning", "evening"
-
-  employee Employee @relation(fields: [employeeId], references: [id])
-
-  @@index([employeeId])
-}
-
-model Schedule {
-  id        String   @id @default(cuid())
-  cafeId    String
-  weekStart DateTime // start of the week
-  createdAt DateTime @default(now())
-
-  cafe   Cafe    @relation(fields: [cafeId], references: [id])
-  shifts Shift[]
-
-  @@index([cafeId])
+enum ScheduleStatus {
+  DRAFT
+  APPROVED
+  PUBLISHED
 }
 
 enum ShiftStatus {
-  pending
-  accepted
-  declined
-  reassigned
-  unassigned
+  PENDING
+  ACCEPTED
+  DECLINED
+  REASSIGNED
+  UNASSIGNED
+}
+
+enum SwapRequestStatus {
+  PENDING
+  COMPLETED
+  REJECTED
+  FAILED
+}
+
+// ─── Owner / Auth ─────────────────────────────────────────────────────────────
+
+model User {
+  id                   String     @id @default(cuid())
+  email                String     @unique
+  passwordHash         String
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  stripePlan           StripePlan @default(TRIAL)
+  trialEndsAt          DateTime
+  createdAt            DateTime   @default(now())
+
+  locations    Location[]
+  actionTokens ActionToken[]
+}
+
+// ─── Location (replaces Cafe) ─────────────────────────────────────────────────
+
+model Location {
+  id                     String   @id @default(cuid())
+  ownerId                String
+  name                   String
+  timezone               String   @default("UTC")
+  generationDayOfWeek    Int      @default(3) // 0=Sun 1=Mon ... 6=Sat; default Wednesday
+  freezeWindowHours      Int      @default(24)
+  escalationTimeoutHours Int      @default(2)
+  createdAt              DateTime @default(now())
+
+  owner          User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  employees      Employee[]
+  shiftTemplates ShiftTemplate[]
+  schedules      Schedule[]
+  auditLogs      AuditLog[]
+
+  @@index([ownerId])
+}
+
+// ─── Employees ────────────────────────────────────────────────────────────────
+
+model Employee {
+  id         String   @id @default(cuid())
+  locationId String
+  name       String
+  email      String
+  roles      String[]
+  minHours   Int      @default(0)
+  maxHours   Int      @default(40)
+  createdAt  DateTime @default(now())
+
+  location              Location               @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  recurringAvailability RecurringAvailability[]
+  availabilityOverrides AvailabilityOverride[]
+  actionTokens          ActionToken[]
+  shifts                Shift[]
+  swapRequestsInitiated SwapRequest[]          @relation("SwapRequester")
+  swapRequestsProposed  SwapRequest[]          @relation("SwapProposed")
+
+  @@unique([locationId, email])
+  @@index([locationId])
+}
+
+// ─── Shift Templates ──────────────────────────────────────────────────────────
+
+model ShiftTemplate {
+  id            String   @id @default(cuid())
+  locationId    String
+  name          String
+  startTime     String   // "09:00"
+  endTime       String   // "17:00"
+  minHeadcount  Int      @default(1)
+  requiredRoles String[]
+  createdAt     DateTime @default(now())
+
+  location              Location               @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  recurringAvailability RecurringAvailability[]
+  availabilityOverrides AvailabilityOverride[]
+  shifts                Shift[]
+
+  @@index([locationId])
+}
+
+// ─── Availability ─────────────────────────────────────────────────────────────
+
+model RecurringAvailability {
+  id              String @id @default(cuid())
+  employeeId      String
+  shiftTemplateId String
+  dayOfWeek       Int    // 0=Sun 1=Mon ... 6=Sat
+
+  employee      Employee      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  shiftTemplate ShiftTemplate @relation(fields: [shiftTemplateId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, shiftTemplateId, dayOfWeek])
+  @@index([employeeId])
+}
+
+model AvailabilityOverride {
+  id              String   @id @default(cuid())
+  employeeId      String
+  shiftTemplateId String
+  date            DateTime
+  available       Boolean
+
+  employee      Employee      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  shiftTemplate ShiftTemplate @relation(fields: [shiftTemplateId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, shiftTemplateId, date])
+  @@index([employeeId])
+}
+
+// ─── Schedules & Shifts ───────────────────────────────────────────────────────
+
+model Schedule {
+  id          String         @id @default(cuid())
+  locationId  String
+  weekStart   DateTime
+  status      ScheduleStatus @default(DRAFT)
+  generatedAt DateTime       @default(now())
+  createdAt   DateTime       @default(now())
+
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  shifts   Shift[]
+
+  @@index([locationId])
 }
 
 model Shift {
-  id         String  @id @default(cuid())
-  scheduleId String
-  employeeId String?
-  day        String // "Monday"
-  shift      String // "morning" | "evening"
-  status     ShiftStatus @default(pending)
+  id              String      @id @default(cuid())
+  scheduleId      String
+  shiftTemplateId String
+  employeeId      String?
+  dayOfWeek       Int         @default(0) // 0=Sun 1=Mon ... 6=Sat
+  status          ShiftStatus @default(PENDING)
 
-
-  schedule Schedule  @relation(fields: [scheduleId], references: [id])
-  employee Employee? @relation(fields: [employeeId], references: [id])
+  schedule      Schedule      @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  shiftTemplate ShiftTemplate @relation(fields: [shiftTemplateId], references: [id], onDelete: Cascade)
+  employee      Employee?     @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+  swapRequests  SwapRequest[]
 
   @@index([scheduleId])
   @@index([employeeId])
 }
 
-model Message {
-  id         String   @id @default(cuid())
-  employeeId String
-  cafeId     String
-  content    String
-  role       String // "employee" | "system"
-  createdAt  DateTime @default(now())
+// ─── Swap Requests ────────────────────────────────────────────────────────────
 
-  employee Employee @relation(fields: [employeeId], references: [id])
+model SwapRequest {
+  id                 String            @id @default(cuid())
+  shiftId            String
+  requesterId        String
+  proposedEmployeeId String?
+  status             SwapRequestStatus @default(PENDING)
+  createdAt          DateTime          @default(now())
+
+  shift            Shift     @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+  requester        Employee  @relation("SwapRequester", fields: [requesterId], references: [id])
+  proposedEmployee Employee? @relation("SwapProposed", fields: [proposedEmployeeId], references: [id])
+
+  @@index([shiftId])
+  @@index([requesterId])
+}
+
+// ─── Action Tokens ────────────────────────────────────────────────────────────
+
+model ActionToken {
+  id         String            @id @default(cuid())
+  employeeId String?
+  userId     String?
+  action     ActionTokenAction
+  payload    Json
+  expiresAt  DateTime
+  usedAt     DateTime?
+  createdAt  DateTime          @default(now())
+
+  employee Employee? @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  user     User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([employeeId])
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// ─── Audit Log ────────────────────────────────────────────────────────────────
+
+model AuditLog {
+  id                   String   @id @default(cuid())
+  locationId           String
+  action               String
+  aiReasoning          String
+  candidatesConsidered Json
+  outcome              String
+  createdAt            DateTime @default(now())
+
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@index([locationId])
+  @@index([createdAt])
 }
