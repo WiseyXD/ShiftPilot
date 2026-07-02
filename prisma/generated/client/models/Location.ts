@@ -30,12 +30,18 @@ export type LocationAvgAggregateOutputType = {
   generationDayOfWeek: number | null
   freezeWindowHours: number | null
   escalationTimeoutHours: number | null
+  lat: number | null
+  lng: number | null
+  discoveryRadiusKm: number | null
 }
 
 export type LocationSumAggregateOutputType = {
   generationDayOfWeek: number | null
   freezeWindowHours: number | null
   escalationTimeoutHours: number | null
+  lat: number | null
+  lng: number | null
+  discoveryRadiusKm: number | null
 }
 
 export type LocationMinAggregateOutputType = {
@@ -46,6 +52,11 @@ export type LocationMinAggregateOutputType = {
   generationDayOfWeek: number | null
   freezeWindowHours: number | null
   escalationTimeoutHours: number | null
+  address: string | null
+  lat: number | null
+  lng: number | null
+  isDiscoverable: boolean | null
+  discoveryRadiusKm: number | null
   createdAt: Date | null
 }
 
@@ -57,6 +68,11 @@ export type LocationMaxAggregateOutputType = {
   generationDayOfWeek: number | null
   freezeWindowHours: number | null
   escalationTimeoutHours: number | null
+  address: string | null
+  lat: number | null
+  lng: number | null
+  isDiscoverable: boolean | null
+  discoveryRadiusKm: number | null
   createdAt: Date | null
 }
 
@@ -68,6 +84,11 @@ export type LocationCountAggregateOutputType = {
   generationDayOfWeek: number
   freezeWindowHours: number
   escalationTimeoutHours: number
+  address: number
+  lat: number
+  lng: number
+  isDiscoverable: number
+  discoveryRadiusKm: number
   createdAt: number
   _all: number
 }
@@ -77,12 +98,18 @@ export type LocationAvgAggregateInputType = {
   generationDayOfWeek?: true
   freezeWindowHours?: true
   escalationTimeoutHours?: true
+  lat?: true
+  lng?: true
+  discoveryRadiusKm?: true
 }
 
 export type LocationSumAggregateInputType = {
   generationDayOfWeek?: true
   freezeWindowHours?: true
   escalationTimeoutHours?: true
+  lat?: true
+  lng?: true
+  discoveryRadiusKm?: true
 }
 
 export type LocationMinAggregateInputType = {
@@ -93,6 +120,11 @@ export type LocationMinAggregateInputType = {
   generationDayOfWeek?: true
   freezeWindowHours?: true
   escalationTimeoutHours?: true
+  address?: true
+  lat?: true
+  lng?: true
+  isDiscoverable?: true
+  discoveryRadiusKm?: true
   createdAt?: true
 }
 
@@ -104,6 +136,11 @@ export type LocationMaxAggregateInputType = {
   generationDayOfWeek?: true
   freezeWindowHours?: true
   escalationTimeoutHours?: true
+  address?: true
+  lat?: true
+  lng?: true
+  isDiscoverable?: true
+  discoveryRadiusKm?: true
   createdAt?: true
 }
 
@@ -115,6 +152,11 @@ export type LocationCountAggregateInputType = {
   generationDayOfWeek?: true
   freezeWindowHours?: true
   escalationTimeoutHours?: true
+  address?: true
+  lat?: true
+  lng?: true
+  isDiscoverable?: true
+  discoveryRadiusKm?: true
   createdAt?: true
   _all?: true
 }
@@ -213,6 +255,11 @@ export type LocationGroupByOutputType = {
   generationDayOfWeek: number
   freezeWindowHours: number
   escalationTimeoutHours: number
+  address: string | null
+  lat: number | null
+  lng: number | null
+  isDiscoverable: boolean
+  discoveryRadiusKm: number
   createdAt: Date
   _count: LocationCountAggregateOutputType | null
   _avg: LocationAvgAggregateOutputType | null
@@ -247,12 +294,18 @@ export type LocationWhereInput = {
   generationDayOfWeek?: Prisma.IntFilter<"Location"> | number
   freezeWindowHours?: Prisma.IntFilter<"Location"> | number
   escalationTimeoutHours?: Prisma.IntFilter<"Location"> | number
+  address?: Prisma.StringNullableFilter<"Location"> | string | null
+  lat?: Prisma.FloatNullableFilter<"Location"> | number | null
+  lng?: Prisma.FloatNullableFilter<"Location"> | number | null
+  isDiscoverable?: Prisma.BoolFilter<"Location"> | boolean
+  discoveryRadiusKm?: Prisma.IntFilter<"Location"> | number
   createdAt?: Prisma.DateTimeFilter<"Location"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   employees?: Prisma.EmployeeListRelationFilter
   shiftTemplates?: Prisma.ShiftTemplateListRelationFilter
   schedules?: Prisma.ScheduleListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
+  sharingListings?: Prisma.SharingListingListRelationFilter
 }
 
 export type LocationOrderByWithRelationInput = {
@@ -263,12 +316,18 @@ export type LocationOrderByWithRelationInput = {
   generationDayOfWeek?: Prisma.SortOrder
   freezeWindowHours?: Prisma.SortOrder
   escalationTimeoutHours?: Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
+  lat?: Prisma.SortOrderInput | Prisma.SortOrder
+  lng?: Prisma.SortOrderInput | Prisma.SortOrder
+  isDiscoverable?: Prisma.SortOrder
+  discoveryRadiusKm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   owner?: Prisma.UserOrderByWithRelationInput
   employees?: Prisma.EmployeeOrderByRelationAggregateInput
   shiftTemplates?: Prisma.ShiftTemplateOrderByRelationAggregateInput
   schedules?: Prisma.ScheduleOrderByRelationAggregateInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
+  sharingListings?: Prisma.SharingListingOrderByRelationAggregateInput
 }
 
 export type LocationWhereUniqueInput = Prisma.AtLeast<{
@@ -282,12 +341,18 @@ export type LocationWhereUniqueInput = Prisma.AtLeast<{
   generationDayOfWeek?: Prisma.IntFilter<"Location"> | number
   freezeWindowHours?: Prisma.IntFilter<"Location"> | number
   escalationTimeoutHours?: Prisma.IntFilter<"Location"> | number
+  address?: Prisma.StringNullableFilter<"Location"> | string | null
+  lat?: Prisma.FloatNullableFilter<"Location"> | number | null
+  lng?: Prisma.FloatNullableFilter<"Location"> | number | null
+  isDiscoverable?: Prisma.BoolFilter<"Location"> | boolean
+  discoveryRadiusKm?: Prisma.IntFilter<"Location"> | number
   createdAt?: Prisma.DateTimeFilter<"Location"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   employees?: Prisma.EmployeeListRelationFilter
   shiftTemplates?: Prisma.ShiftTemplateListRelationFilter
   schedules?: Prisma.ScheduleListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
+  sharingListings?: Prisma.SharingListingListRelationFilter
 }, "id">
 
 export type LocationOrderByWithAggregationInput = {
@@ -298,6 +363,11 @@ export type LocationOrderByWithAggregationInput = {
   generationDayOfWeek?: Prisma.SortOrder
   freezeWindowHours?: Prisma.SortOrder
   escalationTimeoutHours?: Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
+  lat?: Prisma.SortOrderInput | Prisma.SortOrder
+  lng?: Prisma.SortOrderInput | Prisma.SortOrder
+  isDiscoverable?: Prisma.SortOrder
+  discoveryRadiusKm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.LocationCountOrderByAggregateInput
   _avg?: Prisma.LocationAvgOrderByAggregateInput
@@ -317,6 +387,11 @@ export type LocationScalarWhereWithAggregatesInput = {
   generationDayOfWeek?: Prisma.IntWithAggregatesFilter<"Location"> | number
   freezeWindowHours?: Prisma.IntWithAggregatesFilter<"Location"> | number
   escalationTimeoutHours?: Prisma.IntWithAggregatesFilter<"Location"> | number
+  address?: Prisma.StringNullableWithAggregatesFilter<"Location"> | string | null
+  lat?: Prisma.FloatNullableWithAggregatesFilter<"Location"> | number | null
+  lng?: Prisma.FloatNullableWithAggregatesFilter<"Location"> | number | null
+  isDiscoverable?: Prisma.BoolWithAggregatesFilter<"Location"> | boolean
+  discoveryRadiusKm?: Prisma.IntWithAggregatesFilter<"Location"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Location"> | Date | string
 }
 
@@ -327,12 +402,18 @@ export type LocationCreateInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutLocationsInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutLocationInput
   shiftTemplates?: Prisma.ShiftTemplateCreateNestedManyWithoutLocationInput
   schedules?: Prisma.ScheduleCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateInput = {
@@ -343,11 +424,17 @@ export type LocationUncheckedCreateInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
   createdAt?: Date | string
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutLocationInput
   shiftTemplates?: Prisma.ShiftTemplateUncheckedCreateNestedManyWithoutLocationInput
   schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUpdateInput = {
@@ -357,12 +444,18 @@ export type LocationUpdateInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutLocationsNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutLocationNestedInput
   shiftTemplates?: Prisma.ShiftTemplateUpdateManyWithoutLocationNestedInput
   schedules?: Prisma.ScheduleUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateInput = {
@@ -373,11 +466,17 @@ export type LocationUncheckedUpdateInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutLocationNestedInput
   shiftTemplates?: Prisma.ShiftTemplateUncheckedUpdateManyWithoutLocationNestedInput
   schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationCreateManyInput = {
@@ -388,6 +487,11 @@ export type LocationCreateManyInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
   createdAt?: Date | string
 }
 
@@ -398,6 +502,11 @@ export type LocationUpdateManyMutationInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -409,6 +518,11 @@ export type LocationUncheckedUpdateManyInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -430,6 +544,11 @@ export type LocationCountOrderByAggregateInput = {
   generationDayOfWeek?: Prisma.SortOrder
   freezeWindowHours?: Prisma.SortOrder
   escalationTimeoutHours?: Prisma.SortOrder
+  address?: Prisma.SortOrder
+  lat?: Prisma.SortOrder
+  lng?: Prisma.SortOrder
+  isDiscoverable?: Prisma.SortOrder
+  discoveryRadiusKm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -437,6 +556,9 @@ export type LocationAvgOrderByAggregateInput = {
   generationDayOfWeek?: Prisma.SortOrder
   freezeWindowHours?: Prisma.SortOrder
   escalationTimeoutHours?: Prisma.SortOrder
+  lat?: Prisma.SortOrder
+  lng?: Prisma.SortOrder
+  discoveryRadiusKm?: Prisma.SortOrder
 }
 
 export type LocationMaxOrderByAggregateInput = {
@@ -447,6 +569,11 @@ export type LocationMaxOrderByAggregateInput = {
   generationDayOfWeek?: Prisma.SortOrder
   freezeWindowHours?: Prisma.SortOrder
   escalationTimeoutHours?: Prisma.SortOrder
+  address?: Prisma.SortOrder
+  lat?: Prisma.SortOrder
+  lng?: Prisma.SortOrder
+  isDiscoverable?: Prisma.SortOrder
+  discoveryRadiusKm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -458,6 +585,11 @@ export type LocationMinOrderByAggregateInput = {
   generationDayOfWeek?: Prisma.SortOrder
   freezeWindowHours?: Prisma.SortOrder
   escalationTimeoutHours?: Prisma.SortOrder
+  address?: Prisma.SortOrder
+  lat?: Prisma.SortOrder
+  lng?: Prisma.SortOrder
+  isDiscoverable?: Prisma.SortOrder
+  discoveryRadiusKm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -465,6 +597,9 @@ export type LocationSumOrderByAggregateInput = {
   generationDayOfWeek?: Prisma.SortOrder
   freezeWindowHours?: Prisma.SortOrder
   escalationTimeoutHours?: Prisma.SortOrder
+  lat?: Prisma.SortOrder
+  lng?: Prisma.SortOrder
+  discoveryRadiusKm?: Prisma.SortOrder
 }
 
 export type LocationScalarRelationFilter = {
@@ -522,6 +657,18 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type NullableFloatFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
 export type LocationCreateNestedOneWithoutEmployeesInput = {
   create?: Prisma.XOR<Prisma.LocationCreateWithoutEmployeesInput, Prisma.LocationUncheckedCreateWithoutEmployeesInput>
   connectOrCreate?: Prisma.LocationCreateOrConnectWithoutEmployeesInput
@@ -564,6 +711,20 @@ export type LocationUpdateOneRequiredWithoutSchedulesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.LocationUpdateToOneWithWhereWithoutSchedulesInput, Prisma.LocationUpdateWithoutSchedulesInput>, Prisma.LocationUncheckedUpdateWithoutSchedulesInput>
 }
 
+export type LocationCreateNestedOneWithoutSharingListingsInput = {
+  create?: Prisma.XOR<Prisma.LocationCreateWithoutSharingListingsInput, Prisma.LocationUncheckedCreateWithoutSharingListingsInput>
+  connectOrCreate?: Prisma.LocationCreateOrConnectWithoutSharingListingsInput
+  connect?: Prisma.LocationWhereUniqueInput
+}
+
+export type LocationUpdateOneRequiredWithoutSharingListingsNestedInput = {
+  create?: Prisma.XOR<Prisma.LocationCreateWithoutSharingListingsInput, Prisma.LocationUncheckedCreateWithoutSharingListingsInput>
+  connectOrCreate?: Prisma.LocationCreateOrConnectWithoutSharingListingsInput
+  upsert?: Prisma.LocationUpsertWithoutSharingListingsInput
+  connect?: Prisma.LocationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LocationUpdateToOneWithWhereWithoutSharingListingsInput, Prisma.LocationUpdateWithoutSharingListingsInput>, Prisma.LocationUncheckedUpdateWithoutSharingListingsInput>
+}
+
 export type LocationCreateNestedOneWithoutAuditLogsInput = {
   create?: Prisma.XOR<Prisma.LocationCreateWithoutAuditLogsInput, Prisma.LocationUncheckedCreateWithoutAuditLogsInput>
   connectOrCreate?: Prisma.LocationCreateOrConnectWithoutAuditLogsInput
@@ -585,11 +746,17 @@ export type LocationCreateWithoutOwnerInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
   createdAt?: Date | string
   employees?: Prisma.EmployeeCreateNestedManyWithoutLocationInput
   shiftTemplates?: Prisma.ShiftTemplateCreateNestedManyWithoutLocationInput
   schedules?: Prisma.ScheduleCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateWithoutOwnerInput = {
@@ -599,11 +766,17 @@ export type LocationUncheckedCreateWithoutOwnerInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
   createdAt?: Date | string
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutLocationInput
   shiftTemplates?: Prisma.ShiftTemplateUncheckedCreateNestedManyWithoutLocationInput
   schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationCreateOrConnectWithoutOwnerInput = {
@@ -643,6 +816,11 @@ export type LocationScalarWhereInput = {
   generationDayOfWeek?: Prisma.IntFilter<"Location"> | number
   freezeWindowHours?: Prisma.IntFilter<"Location"> | number
   escalationTimeoutHours?: Prisma.IntFilter<"Location"> | number
+  address?: Prisma.StringNullableFilter<"Location"> | string | null
+  lat?: Prisma.FloatNullableFilter<"Location"> | number | null
+  lng?: Prisma.FloatNullableFilter<"Location"> | number | null
+  isDiscoverable?: Prisma.BoolFilter<"Location"> | boolean
+  discoveryRadiusKm?: Prisma.IntFilter<"Location"> | number
   createdAt?: Prisma.DateTimeFilter<"Location"> | Date | string
 }
 
@@ -653,11 +831,17 @@ export type LocationCreateWithoutEmployeesInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutLocationsInput
   shiftTemplates?: Prisma.ShiftTemplateCreateNestedManyWithoutLocationInput
   schedules?: Prisma.ScheduleCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateWithoutEmployeesInput = {
@@ -668,10 +852,16 @@ export type LocationUncheckedCreateWithoutEmployeesInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
   createdAt?: Date | string
   shiftTemplates?: Prisma.ShiftTemplateUncheckedCreateNestedManyWithoutLocationInput
   schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationCreateOrConnectWithoutEmployeesInput = {
@@ -697,11 +887,17 @@ export type LocationUpdateWithoutEmployeesInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutLocationsNestedInput
   shiftTemplates?: Prisma.ShiftTemplateUpdateManyWithoutLocationNestedInput
   schedules?: Prisma.ScheduleUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutEmployeesInput = {
@@ -712,10 +908,16 @@ export type LocationUncheckedUpdateWithoutEmployeesInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   shiftTemplates?: Prisma.ShiftTemplateUncheckedUpdateManyWithoutLocationNestedInput
   schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationCreateWithoutShiftTemplatesInput = {
@@ -725,11 +927,17 @@ export type LocationCreateWithoutShiftTemplatesInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutLocationsInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutLocationInput
   schedules?: Prisma.ScheduleCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateWithoutShiftTemplatesInput = {
@@ -740,10 +948,16 @@ export type LocationUncheckedCreateWithoutShiftTemplatesInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
   createdAt?: Date | string
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutLocationInput
   schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationCreateOrConnectWithoutShiftTemplatesInput = {
@@ -769,11 +983,17 @@ export type LocationUpdateWithoutShiftTemplatesInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutLocationsNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutLocationNestedInput
   schedules?: Prisma.ScheduleUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutShiftTemplatesInput = {
@@ -784,10 +1004,16 @@ export type LocationUncheckedUpdateWithoutShiftTemplatesInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutLocationNestedInput
   schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationCreateWithoutSchedulesInput = {
@@ -797,11 +1023,17 @@ export type LocationCreateWithoutSchedulesInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutLocationsInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutLocationInput
   shiftTemplates?: Prisma.ShiftTemplateCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateWithoutSchedulesInput = {
@@ -812,10 +1044,16 @@ export type LocationUncheckedCreateWithoutSchedulesInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
   createdAt?: Date | string
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutLocationInput
   shiftTemplates?: Prisma.ShiftTemplateUncheckedCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationCreateOrConnectWithoutSchedulesInput = {
@@ -841,11 +1079,17 @@ export type LocationUpdateWithoutSchedulesInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutLocationsNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutLocationNestedInput
   shiftTemplates?: Prisma.ShiftTemplateUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutSchedulesInput = {
@@ -856,9 +1100,111 @@ export type LocationUncheckedUpdateWithoutSchedulesInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutLocationNestedInput
   shiftTemplates?: Prisma.ShiftTemplateUncheckedUpdateManyWithoutLocationNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutLocationNestedInput
+}
+
+export type LocationCreateWithoutSharingListingsInput = {
+  id?: string
+  name: string
+  timezone?: string
+  generationDayOfWeek?: number
+  freezeWindowHours?: number
+  escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
+  createdAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutLocationsInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutLocationInput
+  shiftTemplates?: Prisma.ShiftTemplateCreateNestedManyWithoutLocationInput
+  schedules?: Prisma.ScheduleCreateNestedManyWithoutLocationInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutLocationInput
+}
+
+export type LocationUncheckedCreateWithoutSharingListingsInput = {
+  id?: string
+  ownerId: string
+  name: string
+  timezone?: string
+  generationDayOfWeek?: number
+  freezeWindowHours?: number
+  escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
+  createdAt?: Date | string
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutLocationInput
+  shiftTemplates?: Prisma.ShiftTemplateUncheckedCreateNestedManyWithoutLocationInput
+  schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutLocationInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutLocationInput
+}
+
+export type LocationCreateOrConnectWithoutSharingListingsInput = {
+  where: Prisma.LocationWhereUniqueInput
+  create: Prisma.XOR<Prisma.LocationCreateWithoutSharingListingsInput, Prisma.LocationUncheckedCreateWithoutSharingListingsInput>
+}
+
+export type LocationUpsertWithoutSharingListingsInput = {
+  update: Prisma.XOR<Prisma.LocationUpdateWithoutSharingListingsInput, Prisma.LocationUncheckedUpdateWithoutSharingListingsInput>
+  create: Prisma.XOR<Prisma.LocationCreateWithoutSharingListingsInput, Prisma.LocationUncheckedCreateWithoutSharingListingsInput>
+  where?: Prisma.LocationWhereInput
+}
+
+export type LocationUpdateToOneWithWhereWithoutSharingListingsInput = {
+  where?: Prisma.LocationWhereInput
+  data: Prisma.XOR<Prisma.LocationUpdateWithoutSharingListingsInput, Prisma.LocationUncheckedUpdateWithoutSharingListingsInput>
+}
+
+export type LocationUpdateWithoutSharingListingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
+  escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutLocationsNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutLocationNestedInput
+  shiftTemplates?: Prisma.ShiftTemplateUpdateManyWithoutLocationNestedInput
+  schedules?: Prisma.ScheduleUpdateManyWithoutLocationNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutLocationNestedInput
+}
+
+export type LocationUncheckedUpdateWithoutSharingListingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
+  escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutLocationNestedInput
+  shiftTemplates?: Prisma.ShiftTemplateUncheckedUpdateManyWithoutLocationNestedInput
+  schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutLocationNestedInput
 }
 
@@ -869,11 +1215,17 @@ export type LocationCreateWithoutAuditLogsInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
   createdAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutLocationsInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutLocationInput
   shiftTemplates?: Prisma.ShiftTemplateCreateNestedManyWithoutLocationInput
   schedules?: Prisma.ScheduleCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateWithoutAuditLogsInput = {
@@ -884,10 +1236,16 @@ export type LocationUncheckedCreateWithoutAuditLogsInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
   createdAt?: Date | string
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutLocationInput
   shiftTemplates?: Prisma.ShiftTemplateUncheckedCreateNestedManyWithoutLocationInput
   schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationCreateOrConnectWithoutAuditLogsInput = {
@@ -913,11 +1271,17 @@ export type LocationUpdateWithoutAuditLogsInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutLocationsNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutLocationNestedInput
   shiftTemplates?: Prisma.ShiftTemplateUpdateManyWithoutLocationNestedInput
   schedules?: Prisma.ScheduleUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutAuditLogsInput = {
@@ -928,10 +1292,16 @@ export type LocationUncheckedUpdateWithoutAuditLogsInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutLocationNestedInput
   shiftTemplates?: Prisma.ShiftTemplateUncheckedUpdateManyWithoutLocationNestedInput
   schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationCreateManyOwnerInput = {
@@ -941,6 +1311,11 @@ export type LocationCreateManyOwnerInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
   createdAt?: Date | string
 }
 
@@ -951,11 +1326,17 @@ export type LocationUpdateWithoutOwnerInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employees?: Prisma.EmployeeUpdateManyWithoutLocationNestedInput
   shiftTemplates?: Prisma.ShiftTemplateUpdateManyWithoutLocationNestedInput
   schedules?: Prisma.ScheduleUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutOwnerInput = {
@@ -965,11 +1346,17 @@ export type LocationUncheckedUpdateWithoutOwnerInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutLocationNestedInput
   shiftTemplates?: Prisma.ShiftTemplateUncheckedUpdateManyWithoutLocationNestedInput
   schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateManyWithoutOwnerInput = {
@@ -979,6 +1366,11 @@ export type LocationUncheckedUpdateManyWithoutOwnerInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -992,6 +1384,7 @@ export type LocationCountOutputType = {
   shiftTemplates: number
   schedules: number
   auditLogs: number
+  sharingListings: number
 }
 
 export type LocationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -999,6 +1392,7 @@ export type LocationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   shiftTemplates?: boolean | LocationCountOutputTypeCountShiftTemplatesArgs
   schedules?: boolean | LocationCountOutputTypeCountSchedulesArgs
   auditLogs?: boolean | LocationCountOutputTypeCountAuditLogsArgs
+  sharingListings?: boolean | LocationCountOutputTypeCountSharingListingsArgs
 }
 
 /**
@@ -1039,6 +1433,13 @@ export type LocationCountOutputTypeCountAuditLogsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.AuditLogWhereInput
 }
 
+/**
+ * LocationCountOutputType without action
+ */
+export type LocationCountOutputTypeCountSharingListingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SharingListingWhereInput
+}
+
 
 export type LocationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1048,12 +1449,18 @@ export type LocationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   generationDayOfWeek?: boolean
   freezeWindowHours?: boolean
   escalationTimeoutHours?: boolean
+  address?: boolean
+  lat?: boolean
+  lng?: boolean
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: boolean
   createdAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   employees?: boolean | Prisma.Location$employeesArgs<ExtArgs>
   shiftTemplates?: boolean | Prisma.Location$shiftTemplatesArgs<ExtArgs>
   schedules?: boolean | Prisma.Location$schedulesArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Location$auditLogsArgs<ExtArgs>
+  sharingListings?: boolean | Prisma.Location$sharingListingsArgs<ExtArgs>
   _count?: boolean | Prisma.LocationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["location"]>
 
@@ -1065,6 +1472,11 @@ export type LocationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   generationDayOfWeek?: boolean
   freezeWindowHours?: boolean
   escalationTimeoutHours?: boolean
+  address?: boolean
+  lat?: boolean
+  lng?: boolean
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: boolean
   createdAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["location"]>
@@ -1077,6 +1489,11 @@ export type LocationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   generationDayOfWeek?: boolean
   freezeWindowHours?: boolean
   escalationTimeoutHours?: boolean
+  address?: boolean
+  lat?: boolean
+  lng?: boolean
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: boolean
   createdAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["location"]>
@@ -1089,16 +1506,22 @@ export type LocationSelectScalar = {
   generationDayOfWeek?: boolean
   freezeWindowHours?: boolean
   escalationTimeoutHours?: boolean
+  address?: boolean
+  lat?: boolean
+  lng?: boolean
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: boolean
   createdAt?: boolean
 }
 
-export type LocationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "name" | "timezone" | "generationDayOfWeek" | "freezeWindowHours" | "escalationTimeoutHours" | "createdAt", ExtArgs["result"]["location"]>
+export type LocationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "name" | "timezone" | "generationDayOfWeek" | "freezeWindowHours" | "escalationTimeoutHours" | "address" | "lat" | "lng" | "isDiscoverable" | "discoveryRadiusKm" | "createdAt", ExtArgs["result"]["location"]>
 export type LocationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   employees?: boolean | Prisma.Location$employeesArgs<ExtArgs>
   shiftTemplates?: boolean | Prisma.Location$shiftTemplatesArgs<ExtArgs>
   schedules?: boolean | Prisma.Location$schedulesArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Location$auditLogsArgs<ExtArgs>
+  sharingListings?: boolean | Prisma.Location$sharingListingsArgs<ExtArgs>
   _count?: boolean | Prisma.LocationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LocationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1116,6 +1539,7 @@ export type $LocationPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     shiftTemplates: Prisma.$ShiftTemplatePayload<ExtArgs>[]
     schedules: Prisma.$SchedulePayload<ExtArgs>[]
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
+    sharingListings: Prisma.$SharingListingPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1125,6 +1549,11 @@ export type $LocationPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     generationDayOfWeek: number
     freezeWindowHours: number
     escalationTimeoutHours: number
+    address: string | null
+    lat: number | null
+    lng: number | null
+    isDiscoverable: boolean
+    discoveryRadiusKm: number
     createdAt: Date
   }, ExtArgs["result"]["location"]>
   composites: {}
@@ -1525,6 +1954,7 @@ export interface Prisma__LocationClient<T, Null = never, ExtArgs extends runtime
   shiftTemplates<T extends Prisma.Location$shiftTemplatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Location$shiftTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShiftTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   schedules<T extends Prisma.Location$schedulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Location$schedulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.Location$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Location$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sharingListings<T extends Prisma.Location$sharingListingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Location$sharingListingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SharingListingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1561,6 +1991,11 @@ export interface LocationFieldRefs {
   readonly generationDayOfWeek: Prisma.FieldRef<"Location", 'Int'>
   readonly freezeWindowHours: Prisma.FieldRef<"Location", 'Int'>
   readonly escalationTimeoutHours: Prisma.FieldRef<"Location", 'Int'>
+  readonly address: Prisma.FieldRef<"Location", 'String'>
+  readonly lat: Prisma.FieldRef<"Location", 'Float'>
+  readonly lng: Prisma.FieldRef<"Location", 'Float'>
+  readonly isDiscoverable: Prisma.FieldRef<"Location", 'Boolean'>
+  readonly discoveryRadiusKm: Prisma.FieldRef<"Location", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Location", 'DateTime'>
 }
     
@@ -2056,6 +2491,30 @@ export type Location$auditLogsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.AuditLogScalarFieldEnum | Prisma.AuditLogScalarFieldEnum[]
+}
+
+/**
+ * Location.sharingListings
+ */
+export type Location$sharingListingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SharingListing
+   */
+  select?: Prisma.SharingListingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SharingListing
+   */
+  omit?: Prisma.SharingListingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SharingListingInclude<ExtArgs> | null
+  where?: Prisma.SharingListingWhereInput
+  orderBy?: Prisma.SharingListingOrderByWithRelationInput | Prisma.SharingListingOrderByWithRelationInput[]
+  cursor?: Prisma.SharingListingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SharingListingScalarFieldEnum | Prisma.SharingListingScalarFieldEnum[]
 }
 
 /**

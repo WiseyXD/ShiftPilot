@@ -55,6 +55,22 @@ export const ShiftStatus = {
 export type ShiftStatus = (typeof ShiftStatus)[keyof typeof ShiftStatus]
 
 
+export const SharingListingType = {
+  OFFER: 'OFFER',
+  REQUEST: 'REQUEST'
+} as const
+
+export type SharingListingType = (typeof SharingListingType)[keyof typeof SharingListingType]
+
+
+export const SharingListingStatus = {
+  OPEN: 'OPEN',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type SharingListingStatus = (typeof SharingListingStatus)[keyof typeof SharingListingStatus]
+
+
 export const SwapRequestStatus = {
   PENDING: 'PENDING',
   COMPLETED: 'COMPLETED',

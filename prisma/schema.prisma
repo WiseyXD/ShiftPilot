@@ -43,6 +43,16 @@ enum ShiftStatus {
   UNASSIGNED
 }
 
+enum SharingListingType {
+  OFFER
+  REQUEST
+}
+
+enum SharingListingStatus {
+  OPEN
+  CANCELLED
+}
+
 enum SwapRequestStatus {
   PENDING
   COMPLETED
@@ -76,13 +86,20 @@ model Location {
   generationDayOfWeek    Int      @default(3) // 0=Sun 1=Mon ... 6=Sat; default Wednesday
   freezeWindowHours      Int      @default(24)
   escalationTimeoutHours Int      @default(2)
+  // Marketplace discovery — venues are invisible to other owners unless they opt in
+  address                String?
+  lat                    Float?
+  lng                    Float?
+  isDiscoverable         Boolean  @default(false)
+  discoveryRadiusKm      Int      @default(3)
   createdAt              DateTime @default(now())
 
-  owner          User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  employees      Employee[]
-  shiftTemplates ShiftTemplate[]
-  schedules      Schedule[]
-  auditLogs      AuditLog[]
+  owner           User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  employees       Employee[]
+  shiftTemplates  ShiftTemplate[]
+  schedules       Schedule[]
+  auditLogs       AuditLog[]
+  sharingListings SharingListing[]
 
   @@index([ownerId])
 }
@@ -106,6 +123,7 @@ model Employee {
   shifts                Shift[]
   swapRequestsInitiated SwapRequest[]          @relation("SwapRequester")
   swapRequestsProposed  SwapRequest[]          @relation("SwapProposed")
+  sharingListings       SharingListing[]
 
   @@unique([locationId, email])
   @@index([locationId])
@@ -209,6 +227,28 @@ model SwapRequest {
 
   @@index([shiftId])
   @@index([requesterId])
+}
+
+// ─── Staff-Sharing Marketplace ────────────────────────────────────────────────
+
+model SharingListing {
+  id              String               @id @default(cuid())
+  locationId      String
+  type            SharingListingType
+  role            String
+  date            DateTime
+  startTime       String // "17:00"
+  endTime         String // "22:00"
+  employeeId      String? // the lender's employee — required for OFFER listings
+  hourlyRateCents Int? // null = negotiable
+  status          SharingListingStatus @default(OPEN)
+  createdAt       DateTime             @default(now())
+
+  location Location  @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  employee Employee? @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([locationId])
+  @@index([status])
 }
 
 // ─── Action Tokens ────────────────────────────────────────────────────────────

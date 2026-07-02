@@ -63,6 +63,11 @@ export type Shift = Prisma.ShiftModel
  */
 export type SwapRequest = Prisma.SwapRequestModel
 /**
+ * Model SharingListing
+ * 
+ */
+export type SharingListing = Prisma.SharingListingModel
+/**
  * Model ActionToken
  * 
  */

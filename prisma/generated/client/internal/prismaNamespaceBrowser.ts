@@ -60,6 +60,7 @@ export const ModelName = {
   Schedule: 'Schedule',
   Shift: 'Shift',
   SwapRequest: 'SwapRequest',
+  SharingListing: 'SharingListing',
   ActionToken: 'ActionToken',
   AuditLog: 'AuditLog'
 } as const
@@ -102,6 +103,11 @@ export const LocationScalarFieldEnum = {
   generationDayOfWeek: 'generationDayOfWeek',
   freezeWindowHours: 'freezeWindowHours',
   escalationTimeoutHours: 'escalationTimeoutHours',
+  address: 'address',
+  lat: 'lat',
+  lng: 'lng',
+  isDiscoverable: 'isDiscoverable',
+  discoveryRadiusKm: 'discoveryRadiusKm',
   createdAt: 'createdAt'
 } as const
 
@@ -191,6 +197,23 @@ export const SwapRequestScalarFieldEnum = {
 } as const
 
 export type SwapRequestScalarFieldEnum = (typeof SwapRequestScalarFieldEnum)[keyof typeof SwapRequestScalarFieldEnum]
+
+
+export const SharingListingScalarFieldEnum = {
+  id: 'id',
+  locationId: 'locationId',
+  type: 'type',
+  role: 'role',
+  date: 'date',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  employeeId: 'employeeId',
+  hourlyRateCents: 'hourlyRateCents',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type SharingListingScalarFieldEnum = (typeof SharingListingScalarFieldEnum)[keyof typeof SharingListingScalarFieldEnum]
 
 
 export const ActionTokenScalarFieldEnum = {

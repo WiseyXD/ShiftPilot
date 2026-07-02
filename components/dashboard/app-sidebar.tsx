@@ -14,6 +14,7 @@ import {
   Plus,
   Sparkles,
   Building2,
+  Store,
   LogOut,
 } from "lucide-react"
 import {
@@ -50,7 +51,11 @@ export function AppSidebar({ locations, user }: Props) {
   const pathname = usePathname()
   const locationMatch = pathname.match(/^\/dashboard\/([^/]+)/)
   const activeLocationId =
-    locationMatch && locationMatch[1] !== "demo" && locationMatch[1] !== "locations" && locationMatch[1] !== "billing"
+    locationMatch &&
+    locationMatch[1] !== "demo" &&
+    locationMatch[1] !== "locations" &&
+    locationMatch[1] !== "billing" &&
+    locationMatch[1] !== "marketplace"
       ? locationMatch[1]
       : null
   const activeLocation = locations.find((l) => l.id === activeLocationId)
@@ -124,6 +129,27 @@ export function AppSidebar({ locations, user }: Props) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Network */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Network</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isActive("/dashboard/marketplace")}
+                  tooltip="Staff marketplace"
+                >
+                  <Link href="/dashboard/marketplace">
+                    <Store />
+                    <span>Marketplace</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

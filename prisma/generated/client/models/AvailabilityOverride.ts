@@ -410,10 +410,6 @@ export type AvailabilityOverrideUncheckedUpdateManyWithoutShiftTemplateNestedInp
   deleteMany?: Prisma.AvailabilityOverrideScalarWhereInput | Prisma.AvailabilityOverrideScalarWhereInput[]
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type AvailabilityOverrideCreateWithoutEmployeeInput = {
   id?: string
   date: Date | string

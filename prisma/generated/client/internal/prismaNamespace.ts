@@ -393,6 +393,7 @@ export const ModelName = {
   Schedule: 'Schedule',
   Shift: 'Shift',
   SwapRequest: 'SwapRequest',
+  SharingListing: 'SharingListing',
   ActionToken: 'ActionToken',
   AuditLog: 'AuditLog'
 } as const
@@ -410,7 +411,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "actionToken" | "auditLog"
+    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "actionToken" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1080,6 +1081,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SharingListing: {
+      payload: Prisma.$SharingListingPayload<ExtArgs>
+      fields: Prisma.SharingListingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SharingListingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingListingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SharingListingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingListingPayload>
+        }
+        findFirst: {
+          args: Prisma.SharingListingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingListingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SharingListingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingListingPayload>
+        }
+        findMany: {
+          args: Prisma.SharingListingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingListingPayload>[]
+        }
+        create: {
+          args: Prisma.SharingListingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingListingPayload>
+        }
+        createMany: {
+          args: Prisma.SharingListingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SharingListingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingListingPayload>[]
+        }
+        delete: {
+          args: Prisma.SharingListingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingListingPayload>
+        }
+        update: {
+          args: Prisma.SharingListingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingListingPayload>
+        }
+        deleteMany: {
+          args: Prisma.SharingListingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SharingListingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SharingListingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingListingPayload>[]
+        }
+        upsert: {
+          args: Prisma.SharingListingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingListingPayload>
+        }
+        aggregate: {
+          args: Prisma.SharingListingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSharingListing>
+        }
+        groupBy: {
+          args: Prisma.SharingListingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SharingListingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SharingListingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SharingListingCountAggregateOutputType> | number
+        }
+      }
+    }
     ActionToken: {
       payload: Prisma.$ActionTokenPayload<ExtArgs>
       fields: Prisma.ActionTokenFieldRefs
@@ -1289,6 +1364,11 @@ export const LocationScalarFieldEnum = {
   generationDayOfWeek: 'generationDayOfWeek',
   freezeWindowHours: 'freezeWindowHours',
   escalationTimeoutHours: 'escalationTimeoutHours',
+  address: 'address',
+  lat: 'lat',
+  lng: 'lng',
+  isDiscoverable: 'isDiscoverable',
+  discoveryRadiusKm: 'discoveryRadiusKm',
   createdAt: 'createdAt'
 } as const
 
@@ -1378,6 +1458,23 @@ export const SwapRequestScalarFieldEnum = {
 } as const
 
 export type SwapRequestScalarFieldEnum = (typeof SwapRequestScalarFieldEnum)[keyof typeof SwapRequestScalarFieldEnum]
+
+
+export const SharingListingScalarFieldEnum = {
+  id: 'id',
+  locationId: 'locationId',
+  type: 'type',
+  role: 'role',
+  date: 'date',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  employeeId: 'employeeId',
+  hourlyRateCents: 'hourlyRateCents',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type SharingListingScalarFieldEnum = (typeof SharingListingScalarFieldEnum)[keyof typeof SharingListingScalarFieldEnum]
 
 
 export const ActionTokenScalarFieldEnum = {
@@ -1510,6 +1607,20 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -1559,6 +1670,34 @@ export type ListEnumSwapRequestStatusFieldRefInput<$PrismaModel> = FieldRefInput
 
 
 /**
+ * Reference to a field of type 'SharingListingType'
+ */
+export type EnumSharingListingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SharingListingType'>
+    
+
+
+/**
+ * Reference to a field of type 'SharingListingType[]'
+ */
+export type ListEnumSharingListingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SharingListingType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SharingListingStatus'
+ */
+export type EnumSharingListingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SharingListingStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'SharingListingStatus[]'
+ */
+export type ListEnumSharingListingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SharingListingStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'ActionTokenAction'
  */
 export type EnumActionTokenActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ActionTokenAction'>
@@ -1583,20 +1722,6 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
-    
-
-
-/**
- * Reference to a field of type 'Float'
- */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-/**
- * Reference to a field of type 'Float[]'
- */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -1718,6 +1843,7 @@ export type GlobalOmitConfig = {
   schedule?: Prisma.ScheduleOmit
   shift?: Prisma.ShiftOmit
   swapRequest?: Prisma.SwapRequestOmit
+  sharingListing?: Prisma.SharingListingOmit
   actionToken?: Prisma.ActionTokenOmit
   auditLog?: Prisma.AuditLogOmit
 }

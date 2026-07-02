@@ -247,6 +247,7 @@ export type EmployeeWhereInput = {
   shifts?: Prisma.ShiftListRelationFilter
   swapRequestsInitiated?: Prisma.SwapRequestListRelationFilter
   swapRequestsProposed?: Prisma.SwapRequestListRelationFilter
+  sharingListings?: Prisma.SharingListingListRelationFilter
 }
 
 export type EmployeeOrderByWithRelationInput = {
@@ -265,6 +266,7 @@ export type EmployeeOrderByWithRelationInput = {
   shifts?: Prisma.ShiftOrderByRelationAggregateInput
   swapRequestsInitiated?: Prisma.SwapRequestOrderByRelationAggregateInput
   swapRequestsProposed?: Prisma.SwapRequestOrderByRelationAggregateInput
+  sharingListings?: Prisma.SharingListingOrderByRelationAggregateInput
 }
 
 export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
@@ -287,6 +289,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   shifts?: Prisma.ShiftListRelationFilter
   swapRequestsInitiated?: Prisma.SwapRequestListRelationFilter
   swapRequestsProposed?: Prisma.SwapRequestListRelationFilter
+  sharingListings?: Prisma.SharingListingListRelationFilter
 }, "id" | "locationId_email">
 
 export type EmployeeOrderByWithAggregationInput = {
@@ -334,6 +337,7 @@ export type EmployeeCreateInput = {
   shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
   swapRequestsInitiated?: Prisma.SwapRequestCreateNestedManyWithoutRequesterInput
   swapRequestsProposed?: Prisma.SwapRequestCreateNestedManyWithoutProposedEmployeeInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateInput = {
@@ -351,6 +355,7 @@ export type EmployeeUncheckedCreateInput = {
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
   swapRequestsInitiated?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutRequesterInput
   swapRequestsProposed?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutProposedEmployeeInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUpdateInput = {
@@ -368,6 +373,7 @@ export type EmployeeUpdateInput = {
   shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
   swapRequestsInitiated?: Prisma.SwapRequestUpdateManyWithoutRequesterNestedInput
   swapRequestsProposed?: Prisma.SwapRequestUpdateManyWithoutProposedEmployeeNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateInput = {
@@ -385,6 +391,7 @@ export type EmployeeUncheckedUpdateInput = {
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
   swapRequestsInitiated?: Prisma.SwapRequestUncheckedUpdateManyWithoutRequesterNestedInput
   swapRequestsProposed?: Prisma.SwapRequestUncheckedUpdateManyWithoutProposedEmployeeNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateManyInput = {
@@ -618,6 +625,22 @@ export type EmployeeUpdateOneWithoutSwapRequestsProposedNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutSwapRequestsProposedInput, Prisma.EmployeeUpdateWithoutSwapRequestsProposedInput>, Prisma.EmployeeUncheckedUpdateWithoutSwapRequestsProposedInput>
 }
 
+export type EmployeeCreateNestedOneWithoutSharingListingsInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutSharingListingsInput, Prisma.EmployeeUncheckedCreateWithoutSharingListingsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutSharingListingsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneWithoutSharingListingsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutSharingListingsInput, Prisma.EmployeeUncheckedCreateWithoutSharingListingsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutSharingListingsInput
+  upsert?: Prisma.EmployeeUpsertWithoutSharingListingsInput
+  disconnect?: Prisma.EmployeeWhereInput | boolean
+  delete?: Prisma.EmployeeWhereInput | boolean
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutSharingListingsInput, Prisma.EmployeeUpdateWithoutSharingListingsInput>, Prisma.EmployeeUncheckedUpdateWithoutSharingListingsInput>
+}
+
 export type EmployeeCreateNestedOneWithoutActionTokensInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutActionTokensInput, Prisma.EmployeeUncheckedCreateWithoutActionTokensInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutActionTokensInput
@@ -648,6 +671,7 @@ export type EmployeeCreateWithoutLocationInput = {
   shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
   swapRequestsInitiated?: Prisma.SwapRequestCreateNestedManyWithoutRequesterInput
   swapRequestsProposed?: Prisma.SwapRequestCreateNestedManyWithoutProposedEmployeeInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutLocationInput = {
@@ -664,6 +688,7 @@ export type EmployeeUncheckedCreateWithoutLocationInput = {
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
   swapRequestsInitiated?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutRequesterInput
   swapRequestsProposed?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutProposedEmployeeInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutLocationInput = {
@@ -720,6 +745,7 @@ export type EmployeeCreateWithoutRecurringAvailabilityInput = {
   shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
   swapRequestsInitiated?: Prisma.SwapRequestCreateNestedManyWithoutRequesterInput
   swapRequestsProposed?: Prisma.SwapRequestCreateNestedManyWithoutProposedEmployeeInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutRecurringAvailabilityInput = {
@@ -736,6 +762,7 @@ export type EmployeeUncheckedCreateWithoutRecurringAvailabilityInput = {
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
   swapRequestsInitiated?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutRequesterInput
   swapRequestsProposed?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutProposedEmployeeInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutRecurringAvailabilityInput = {
@@ -768,6 +795,7 @@ export type EmployeeUpdateWithoutRecurringAvailabilityInput = {
   shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
   swapRequestsInitiated?: Prisma.SwapRequestUpdateManyWithoutRequesterNestedInput
   swapRequestsProposed?: Prisma.SwapRequestUpdateManyWithoutProposedEmployeeNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutRecurringAvailabilityInput = {
@@ -784,6 +812,7 @@ export type EmployeeUncheckedUpdateWithoutRecurringAvailabilityInput = {
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
   swapRequestsInitiated?: Prisma.SwapRequestUncheckedUpdateManyWithoutRequesterNestedInput
   swapRequestsProposed?: Prisma.SwapRequestUncheckedUpdateManyWithoutProposedEmployeeNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateWithoutAvailabilityOverridesInput = {
@@ -800,6 +829,7 @@ export type EmployeeCreateWithoutAvailabilityOverridesInput = {
   shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
   swapRequestsInitiated?: Prisma.SwapRequestCreateNestedManyWithoutRequesterInput
   swapRequestsProposed?: Prisma.SwapRequestCreateNestedManyWithoutProposedEmployeeInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutAvailabilityOverridesInput = {
@@ -816,6 +846,7 @@ export type EmployeeUncheckedCreateWithoutAvailabilityOverridesInput = {
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
   swapRequestsInitiated?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutRequesterInput
   swapRequestsProposed?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutProposedEmployeeInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutAvailabilityOverridesInput = {
@@ -848,6 +879,7 @@ export type EmployeeUpdateWithoutAvailabilityOverridesInput = {
   shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
   swapRequestsInitiated?: Prisma.SwapRequestUpdateManyWithoutRequesterNestedInput
   swapRequestsProposed?: Prisma.SwapRequestUpdateManyWithoutProposedEmployeeNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutAvailabilityOverridesInput = {
@@ -864,6 +896,7 @@ export type EmployeeUncheckedUpdateWithoutAvailabilityOverridesInput = {
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
   swapRequestsInitiated?: Prisma.SwapRequestUncheckedUpdateManyWithoutRequesterNestedInput
   swapRequestsProposed?: Prisma.SwapRequestUncheckedUpdateManyWithoutProposedEmployeeNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateWithoutShiftsInput = {
@@ -880,6 +913,7 @@ export type EmployeeCreateWithoutShiftsInput = {
   actionTokens?: Prisma.ActionTokenCreateNestedManyWithoutEmployeeInput
   swapRequestsInitiated?: Prisma.SwapRequestCreateNestedManyWithoutRequesterInput
   swapRequestsProposed?: Prisma.SwapRequestCreateNestedManyWithoutProposedEmployeeInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutShiftsInput = {
@@ -896,6 +930,7 @@ export type EmployeeUncheckedCreateWithoutShiftsInput = {
   actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
   swapRequestsInitiated?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutRequesterInput
   swapRequestsProposed?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutProposedEmployeeInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutShiftsInput = {
@@ -928,6 +963,7 @@ export type EmployeeUpdateWithoutShiftsInput = {
   actionTokens?: Prisma.ActionTokenUpdateManyWithoutEmployeeNestedInput
   swapRequestsInitiated?: Prisma.SwapRequestUpdateManyWithoutRequesterNestedInput
   swapRequestsProposed?: Prisma.SwapRequestUpdateManyWithoutProposedEmployeeNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutShiftsInput = {
@@ -944,6 +980,7 @@ export type EmployeeUncheckedUpdateWithoutShiftsInput = {
   actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
   swapRequestsInitiated?: Prisma.SwapRequestUncheckedUpdateManyWithoutRequesterNestedInput
   swapRequestsProposed?: Prisma.SwapRequestUncheckedUpdateManyWithoutProposedEmployeeNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateWithoutSwapRequestsInitiatedInput = {
@@ -960,6 +997,7 @@ export type EmployeeCreateWithoutSwapRequestsInitiatedInput = {
   actionTokens?: Prisma.ActionTokenCreateNestedManyWithoutEmployeeInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
   swapRequestsProposed?: Prisma.SwapRequestCreateNestedManyWithoutProposedEmployeeInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutSwapRequestsInitiatedInput = {
@@ -976,6 +1014,7 @@ export type EmployeeUncheckedCreateWithoutSwapRequestsInitiatedInput = {
   actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
   swapRequestsProposed?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutProposedEmployeeInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutSwapRequestsInitiatedInput = {
@@ -997,6 +1036,7 @@ export type EmployeeCreateWithoutSwapRequestsProposedInput = {
   actionTokens?: Prisma.ActionTokenCreateNestedManyWithoutEmployeeInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
   swapRequestsInitiated?: Prisma.SwapRequestCreateNestedManyWithoutRequesterInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutSwapRequestsProposedInput = {
@@ -1013,6 +1053,7 @@ export type EmployeeUncheckedCreateWithoutSwapRequestsProposedInput = {
   actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
   swapRequestsInitiated?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutRequesterInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutSwapRequestsProposedInput = {
@@ -1045,6 +1086,7 @@ export type EmployeeUpdateWithoutSwapRequestsInitiatedInput = {
   actionTokens?: Prisma.ActionTokenUpdateManyWithoutEmployeeNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
   swapRequestsProposed?: Prisma.SwapRequestUpdateManyWithoutProposedEmployeeNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutSwapRequestsInitiatedInput = {
@@ -1061,6 +1103,7 @@ export type EmployeeUncheckedUpdateWithoutSwapRequestsInitiatedInput = {
   actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
   swapRequestsProposed?: Prisma.SwapRequestUncheckedUpdateManyWithoutProposedEmployeeNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUpsertWithoutSwapRequestsProposedInput = {
@@ -1088,6 +1131,7 @@ export type EmployeeUpdateWithoutSwapRequestsProposedInput = {
   actionTokens?: Prisma.ActionTokenUpdateManyWithoutEmployeeNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
   swapRequestsInitiated?: Prisma.SwapRequestUpdateManyWithoutRequesterNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutSwapRequestsProposedInput = {
@@ -1104,6 +1148,91 @@ export type EmployeeUncheckedUpdateWithoutSwapRequestsProposedInput = {
   actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
   swapRequestsInitiated?: Prisma.SwapRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutSharingListingsInput = {
+  id?: string
+  name: string
+  email: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
+  createdAt?: Date | string
+  location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
+  recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenCreateNestedManyWithoutEmployeeInput
+  shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestCreateNestedManyWithoutRequesterInput
+  swapRequestsProposed?: Prisma.SwapRequestCreateNestedManyWithoutProposedEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutSharingListingsInput = {
+  id?: string
+  locationId: string
+  name: string
+  email: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
+  createdAt?: Date | string
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
+  shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutRequesterInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutProposedEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutSharingListingsInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutSharingListingsInput, Prisma.EmployeeUncheckedCreateWithoutSharingListingsInput>
+}
+
+export type EmployeeUpsertWithoutSharingListingsInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutSharingListingsInput, Prisma.EmployeeUncheckedUpdateWithoutSharingListingsInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutSharingListingsInput, Prisma.EmployeeUncheckedCreateWithoutSharingListingsInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutSharingListingsInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutSharingListingsInput, Prisma.EmployeeUncheckedUpdateWithoutSharingListingsInput>
+}
+
+export type EmployeeUpdateWithoutSharingListingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUpdateManyWithoutEmployeeNestedInput
+  shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUpdateManyWithoutRequesterNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUpdateManyWithoutProposedEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutSharingListingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  locationId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
+  shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedUpdateManyWithoutProposedEmployeeNestedInput
 }
 
 export type EmployeeCreateWithoutActionTokensInput = {
@@ -1120,6 +1249,7 @@ export type EmployeeCreateWithoutActionTokensInput = {
   shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
   swapRequestsInitiated?: Prisma.SwapRequestCreateNestedManyWithoutRequesterInput
   swapRequestsProposed?: Prisma.SwapRequestCreateNestedManyWithoutProposedEmployeeInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutActionTokensInput = {
@@ -1136,6 +1266,7 @@ export type EmployeeUncheckedCreateWithoutActionTokensInput = {
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
   swapRequestsInitiated?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutRequesterInput
   swapRequestsProposed?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutProposedEmployeeInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutActionTokensInput = {
@@ -1168,6 +1299,7 @@ export type EmployeeUpdateWithoutActionTokensInput = {
   shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
   swapRequestsInitiated?: Prisma.SwapRequestUpdateManyWithoutRequesterNestedInput
   swapRequestsProposed?: Prisma.SwapRequestUpdateManyWithoutProposedEmployeeNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutActionTokensInput = {
@@ -1184,6 +1316,7 @@ export type EmployeeUncheckedUpdateWithoutActionTokensInput = {
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
   swapRequestsInitiated?: Prisma.SwapRequestUncheckedUpdateManyWithoutRequesterNestedInput
   swapRequestsProposed?: Prisma.SwapRequestUncheckedUpdateManyWithoutProposedEmployeeNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateManyLocationInput = {
@@ -1210,6 +1343,7 @@ export type EmployeeUpdateWithoutLocationInput = {
   shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
   swapRequestsInitiated?: Prisma.SwapRequestUpdateManyWithoutRequesterNestedInput
   swapRequestsProposed?: Prisma.SwapRequestUpdateManyWithoutProposedEmployeeNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutLocationInput = {
@@ -1226,6 +1360,7 @@ export type EmployeeUncheckedUpdateWithoutLocationInput = {
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
   swapRequestsInitiated?: Prisma.SwapRequestUncheckedUpdateManyWithoutRequesterNestedInput
   swapRequestsProposed?: Prisma.SwapRequestUncheckedUpdateManyWithoutProposedEmployeeNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateManyWithoutLocationInput = {
@@ -1250,6 +1385,7 @@ export type EmployeeCountOutputType = {
   shifts: number
   swapRequestsInitiated: number
   swapRequestsProposed: number
+  sharingListings: number
 }
 
 export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1259,6 +1395,7 @@ export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   shifts?: boolean | EmployeeCountOutputTypeCountShiftsArgs
   swapRequestsInitiated?: boolean | EmployeeCountOutputTypeCountSwapRequestsInitiatedArgs
   swapRequestsProposed?: boolean | EmployeeCountOutputTypeCountSwapRequestsProposedArgs
+  sharingListings?: boolean | EmployeeCountOutputTypeCountSharingListingsArgs
 }
 
 /**
@@ -1313,6 +1450,13 @@ export type EmployeeCountOutputTypeCountSwapRequestsProposedArgs<ExtArgs extends
   where?: Prisma.SwapRequestWhereInput
 }
 
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountSharingListingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SharingListingWhereInput
+}
+
 
 export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1330,6 +1474,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   shifts?: boolean | Prisma.Employee$shiftsArgs<ExtArgs>
   swapRequestsInitiated?: boolean | Prisma.Employee$swapRequestsInitiatedArgs<ExtArgs>
   swapRequestsProposed?: boolean | Prisma.Employee$swapRequestsProposedArgs<ExtArgs>
+  sharingListings?: boolean | Prisma.Employee$sharingListingsArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employee"]>
 
@@ -1377,6 +1522,7 @@ export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   shifts?: boolean | Prisma.Employee$shiftsArgs<ExtArgs>
   swapRequestsInitiated?: boolean | Prisma.Employee$swapRequestsInitiatedArgs<ExtArgs>
   swapRequestsProposed?: boolean | Prisma.Employee$swapRequestsProposedArgs<ExtArgs>
+  sharingListings?: boolean | Prisma.Employee$sharingListingsArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EmployeeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1396,6 +1542,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     shifts: Prisma.$ShiftPayload<ExtArgs>[]
     swapRequestsInitiated: Prisma.$SwapRequestPayload<ExtArgs>[]
     swapRequestsProposed: Prisma.$SwapRequestPayload<ExtArgs>[]
+    sharingListings: Prisma.$SharingListingPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1807,6 +1954,7 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
   shifts<T extends Prisma.Employee$shiftsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$shiftsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShiftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   swapRequestsInitiated<T extends Prisma.Employee$swapRequestsInitiatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$swapRequestsInitiatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SwapRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   swapRequestsProposed<T extends Prisma.Employee$swapRequestsProposedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$swapRequestsProposedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SwapRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sharingListings<T extends Prisma.Employee$sharingListingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$sharingListingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SharingListingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2386,6 +2534,30 @@ export type Employee$swapRequestsProposedArgs<ExtArgs extends runtime.Types.Exte
   take?: number
   skip?: number
   distinct?: Prisma.SwapRequestScalarFieldEnum | Prisma.SwapRequestScalarFieldEnum[]
+}
+
+/**
+ * Employee.sharingListings
+ */
+export type Employee$sharingListingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SharingListing
+   */
+  select?: Prisma.SharingListingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SharingListing
+   */
+  omit?: Prisma.SharingListingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SharingListingInclude<ExtArgs> | null
+  where?: Prisma.SharingListingWhereInput
+  orderBy?: Prisma.SharingListingOrderByWithRelationInput | Prisma.SharingListingOrderByWithRelationInput[]
+  cursor?: Prisma.SharingListingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SharingListingScalarFieldEnum | Prisma.SharingListingScalarFieldEnum[]
 }
 
 /**
