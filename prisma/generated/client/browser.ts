@@ -68,6 +68,11 @@ export type SwapRequest = Prisma.SwapRequestModel
  */
 export type SharingListing = Prisma.SharingListingModel
 /**
+ * Model SharingDeal
+ * 
+ */
+export type SharingDeal = Prisma.SharingDealModel
+/**
  * Model ActionToken
  * 
  */

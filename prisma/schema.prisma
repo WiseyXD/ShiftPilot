@@ -51,6 +51,13 @@ enum SharingListingType {
 enum SharingListingStatus {
   OPEN
   CANCELLED
+  MATCHED
+}
+
+enum SharingDealStatus {
+  AWAITING_MANAGER // waiting for the listing owner's manager to confirm
+  MANAGERS_AGREED // both managers in; worker consent comes next
+  DECLINED
 }
 
 enum SwapRequestStatus {
@@ -100,6 +107,8 @@ model Location {
   schedules       Schedule[]
   auditLogs       AuditLog[]
   sharingListings SharingListing[]
+  lenderDeals     SharingDeal[]    @relation("LenderDeals")
+  borrowerDeals   SharingDeal[]    @relation("BorrowerDeals")
 
   @@index([ownerId])
 }
@@ -124,6 +133,7 @@ model Employee {
   swapRequestsInitiated SwapRequest[]          @relation("SwapRequester")
   swapRequestsProposed  SwapRequest[]          @relation("SwapProposed")
   sharingListings       SharingListing[]
+  sharingDeals          SharingDeal[]
 
   @@unique([locationId, email])
   @@index([locationId])
@@ -201,10 +211,12 @@ model Shift {
   employeeId      String?
   dayOfWeek       Int         @default(0) // 0=Sun 1=Mon ... 6=Sat
   status          ShiftStatus @default(PENDING)
+  sharingDealId   String? // set on the borrower's shift (and the lender's LENT_OUT shift) when a deal fills
 
   schedule      Schedule      @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
   shiftTemplate ShiftTemplate @relation(fields: [shiftTemplateId], references: [id], onDelete: Cascade)
   employee      Employee?     @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+  sharingDeal   SharingDeal?  @relation(fields: [sharingDealId], references: [id], onDelete: SetNull)
   swapRequests  SwapRequest[]
 
   @@index([scheduleId])
@@ -244,11 +256,33 @@ model SharingListing {
   status          SharingListingStatus @default(OPEN)
   createdAt       DateTime             @default(now())
 
-  location Location  @relation(fields: [locationId], references: [id], onDelete: Cascade)
-  employee Employee? @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  location Location      @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  employee Employee?     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  deals    SharingDeal[]
 
   @@index([locationId])
   @@index([status])
+}
+
+model SharingDeal {
+  id                 String            @id @default(cuid())
+  listingId          String
+  lenderLocationId   String
+  borrowerLocationId String
+  employeeId         String // always the LENDER's employee — never a cross-tenant reference
+  agreedRateCents    Int? // null = negotiable, settled offline
+  status             SharingDealStatus @default(AWAITING_MANAGER)
+  createdAt          DateTime          @default(now())
+
+  listing          SharingListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  lenderLocation   Location       @relation("LenderDeals", fields: [lenderLocationId], references: [id], onDelete: Cascade)
+  borrowerLocation Location       @relation("BorrowerDeals", fields: [borrowerLocationId], references: [id], onDelete: Cascade)
+  employee         Employee       @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  shifts           Shift[]
+
+  @@index([listingId])
+  @@index([lenderLocationId])
+  @@index([borrowerLocationId])
 }
 
 // ─── Action Tokens ────────────────────────────────────────────────────────────

@@ -68,3 +68,49 @@ export async function getDiscoveryFeed(self: VenueGeo): Promise<AnonymizedListin
     venue.sharingListings.map((listing) => anonymizeListing(listing, distanceKm))
   )
 }
+
+export interface DealRow {
+  id: string
+  status: "AWAITING_MANAGER" | "MANAGERS_AGREED" | "DECLINED"
+  direction: "LENDING" | "BORROWING"
+  role: string
+  date: Date
+  startTime: string
+  endTime: string
+  agreedRateCents: number | null
+  counterpartyName: string
+  /** The lent worker — exposed to the LENDER's manager only (anti-poaching). */
+  employeeName: string | null
+  /** Whether the acting venue posted the listing (and therefore holds the confirm). */
+  isListingOwner: boolean
+}
+
+export async function getDealsForLocation(locationId: string): Promise<DealRow[]> {
+  const deals = await prisma.sharingDeal.findMany({
+    where: { OR: [{ lenderLocationId: locationId }, { borrowerLocationId: locationId }] },
+    orderBy: { createdAt: "desc" },
+    include: {
+      listing: { select: { role: true, date: true, startTime: true, endTime: true, locationId: true } },
+      lenderLocation: { select: { name: true } },
+      borrowerLocation: { select: { name: true } },
+      employee: { select: { name: true } },
+    },
+  })
+
+  return deals.map((deal) => {
+    const isLender = deal.lenderLocationId === locationId
+    return {
+      id: deal.id,
+      status: deal.status,
+      direction: isLender ? "LENDING" : "BORROWING",
+      role: deal.listing.role,
+      date: deal.listing.date,
+      startTime: deal.listing.startTime,
+      endTime: deal.listing.endTime,
+      agreedRateCents: deal.agreedRateCents,
+      counterpartyName: isLender ? deal.borrowerLocation.name : deal.lenderLocation.name,
+      employeeName: isLender ? deal.employee.name : null,
+      isListingOwner: deal.listing.locationId === locationId,
+    }
+  })
+}

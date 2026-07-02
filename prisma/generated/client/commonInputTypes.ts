@@ -306,6 +306,23 @@ export type EnumSharingListingStatusWithAggregatesFilter<$PrismaModel = never> =
   _max?: Prisma.NestedEnumSharingListingStatusFilter<$PrismaModel>
 }
 
+export type EnumSharingDealStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.SharingDealStatus | Prisma.EnumSharingDealStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SharingDealStatus[] | Prisma.ListEnumSharingDealStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SharingDealStatus[] | Prisma.ListEnumSharingDealStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSharingDealStatusFilter<$PrismaModel> | $Enums.SharingDealStatus
+}
+
+export type EnumSharingDealStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SharingDealStatus | Prisma.EnumSharingDealStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SharingDealStatus[] | Prisma.ListEnumSharingDealStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SharingDealStatus[] | Prisma.ListEnumSharingDealStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSharingDealStatusWithAggregatesFilter<$PrismaModel> | $Enums.SharingDealStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSharingDealStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSharingDealStatusFilter<$PrismaModel>
+}
+
 export type EnumActionTokenActionFilter<$PrismaModel = never> = {
   equals?: $Enums.ActionTokenAction | Prisma.EnumActionTokenActionFieldRefInput<$PrismaModel>
   in?: $Enums.ActionTokenAction[] | Prisma.ListEnumActionTokenActionFieldRefInput<$PrismaModel>
@@ -691,6 +708,23 @@ export type NestedEnumSharingListingStatusWithAggregatesFilter<$PrismaModel = ne
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumSharingListingStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumSharingListingStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumSharingDealStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.SharingDealStatus | Prisma.EnumSharingDealStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SharingDealStatus[] | Prisma.ListEnumSharingDealStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SharingDealStatus[] | Prisma.ListEnumSharingDealStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSharingDealStatusFilter<$PrismaModel> | $Enums.SharingDealStatus
+}
+
+export type NestedEnumSharingDealStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SharingDealStatus | Prisma.EnumSharingDealStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SharingDealStatus[] | Prisma.ListEnumSharingDealStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SharingDealStatus[] | Prisma.ListEnumSharingDealStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSharingDealStatusWithAggregatesFilter<$PrismaModel> | $Enums.SharingDealStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSharingDealStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSharingDealStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumActionTokenActionFilter<$PrismaModel = never> = {

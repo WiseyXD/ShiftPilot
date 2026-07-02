@@ -14,10 +14,11 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { DiscoverySettingsForm } from "@/components/marketplace/discovery-settings-form"
 import { CreateListingForm } from "@/components/marketplace/create-listing-form"
-import { getDiscoveryFeed, getNearbyVenues } from "@/lib/marketplace/queries"
+import { RespondForm } from "@/components/marketplace/respond-form"
+import { getDealsForLocation, getDiscoveryFeed, getNearbyVenues } from "@/lib/marketplace/queries"
 import { formatRate } from "@/lib/marketplace/listings"
-import { cancelListing } from "@/app/actions/marketplace"
-import { Building2, Inbox, MapPin, MapPinOff, Newspaper, Store } from "lucide-react"
+import { cancelListing, confirmDeal, declineDeal } from "@/app/actions/marketplace"
+import { Building2, Handshake, Inbox, MapPin, MapPinOff, Newspaper, Store } from "lucide-react"
 
 const LISTING_TYPE_STYLES = {
   OFFER: "bg-blue-100 text-blue-700 border-blue-200",
@@ -27,6 +28,19 @@ const LISTING_TYPE_STYLES = {
 const LISTING_STATUS_STYLES = {
   OPEN: "bg-green-100 text-green-700 border-green-200",
   CANCELLED: "bg-slate-100 text-slate-600 border-slate-200",
+  MATCHED: "bg-blue-100 text-blue-700 border-blue-200",
+} as const
+
+const DEAL_STATUS_LABELS = {
+  AWAITING_MANAGER: "Awaiting confirmation",
+  MANAGERS_AGREED: "Managers agreed",
+  DECLINED: "Declined",
+} as const
+
+const DEAL_STATUS_STYLES = {
+  AWAITING_MANAGER: "bg-amber-100 text-amber-700 border-amber-200",
+  MANAGERS_AGREED: "bg-blue-100 text-blue-700 border-blue-200",
+  DECLINED: "bg-red-100 text-red-700 border-red-200",
 } as const
 
 // Listing dates are stored at UTC midnight, so format in UTC to avoid drifting
@@ -90,7 +104,11 @@ export default async function MarketplacePage({
 
   const acting = locations.find((l) => l.id === locationParam) ?? locations[0]
   const discoveryReady = acting.isDiscoverable && acting.lat != null && acting.lng != null
-  const [nearby, feed] = await Promise.all([getNearbyVenues(acting), getDiscoveryFeed(acting)])
+  const [nearby, feed, deals] = await Promise.all([
+    getNearbyVenues(acting),
+    getDiscoveryFeed(acting),
+    getDealsForLocation(acting.id),
+  ])
 
   return (
     <div className="space-y-6">
@@ -151,7 +169,7 @@ export default async function MarketplacePage({
               ) : (
                 <ul className="divide-y divide-slate-100">
                   {feed.map((card) => (
-                    <li key={card.id} className="py-3 space-y-1">
+                    <li key={card.id} className="py-3 space-y-2">
                       <div className="flex flex-wrap items-center gap-2">
                         <Badge variant="outline" className={LISTING_TYPE_STYLES[card.type]}>
                           {card.type === "OFFER" ? "Staff available" : "Staff needed"}
@@ -166,6 +184,87 @@ export default async function MarketplacePage({
                         <MapPin className="h-3.5 w-3.5 text-slate-400" />
                         Venue nearby · {card.distanceKm.toFixed(1)} km away
                       </p>
+                      <RespondForm
+                        listingId={card.id}
+                        listingType={card.type}
+                        actingLocationId={acting.id}
+                        employees={acting.employees}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Deals</CardTitle>
+              <CardDescription>
+                Loans in progress where {acting.name} is lending or borrowing
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {deals.length === 0 ? (
+                <div className="py-8 flex flex-col items-center text-center gap-3 border border-dashed rounded-lg">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+                    <Handshake className="h-6 w-6 text-slate-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-slate-900">No deals yet</h3>
+                    <p className="text-sm text-slate-500 mt-1 max-w-sm">
+                      Respond to a listing in the discovery feed to start one.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <ul className="divide-y divide-slate-100">
+                  {deals.map((deal) => (
+                    <li key={deal.id} className="py-3 flex items-start justify-between gap-3">
+                      <div className="min-w-0 space-y-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Badge variant="secondary">
+                            {deal.direction === "LENDING" ? "Lending" : "Borrowing"}
+                          </Badge>
+                          <span className="font-medium text-slate-900">{deal.role}</span>
+                          {deal.employeeName && (
+                            <span className="text-sm text-slate-500">({deal.employeeName})</span>
+                          )}
+                          <span className="text-sm text-slate-500">
+                            {deal.direction === "LENDING" ? "to" : "from"} {deal.counterpartyName}
+                          </span>
+                        </div>
+                        <p className="text-sm text-slate-500">
+                          {formatListingDate(deal.date)} · {deal.startTime}–{deal.endTime} ·{" "}
+                          {formatRate(deal.agreedRateCents)}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Badge variant="outline" className={DEAL_STATUS_STYLES[deal.status]}>
+                          {DEAL_STATUS_LABELS[deal.status]}
+                        </Badge>
+                        {deal.status === "AWAITING_MANAGER" &&
+                          (deal.isListingOwner ? (
+                            <>
+                              <form action={confirmDeal.bind(null, deal.id)}>
+                                <Button type="submit" size="sm">
+                                  Confirm
+                                </Button>
+                              </form>
+                              <form action={declineDeal.bind(null, deal.id)}>
+                                <Button type="submit" size="sm" variant="ghost">
+                                  Decline
+                                </Button>
+                              </form>
+                            </>
+                          ) : (
+                            <form action={declineDeal.bind(null, deal.id)}>
+                              <Button type="submit" size="sm" variant="ghost">
+                                Withdraw
+                              </Button>
+                            </form>
+                          ))}
+                      </div>
                     </li>
                   ))}
                 </ul>

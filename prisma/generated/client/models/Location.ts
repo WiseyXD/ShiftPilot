@@ -306,6 +306,8 @@ export type LocationWhereInput = {
   schedules?: Prisma.ScheduleListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
   sharingListings?: Prisma.SharingListingListRelationFilter
+  lenderDeals?: Prisma.SharingDealListRelationFilter
+  borrowerDeals?: Prisma.SharingDealListRelationFilter
 }
 
 export type LocationOrderByWithRelationInput = {
@@ -328,6 +330,8 @@ export type LocationOrderByWithRelationInput = {
   schedules?: Prisma.ScheduleOrderByRelationAggregateInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
   sharingListings?: Prisma.SharingListingOrderByRelationAggregateInput
+  lenderDeals?: Prisma.SharingDealOrderByRelationAggregateInput
+  borrowerDeals?: Prisma.SharingDealOrderByRelationAggregateInput
 }
 
 export type LocationWhereUniqueInput = Prisma.AtLeast<{
@@ -353,6 +357,8 @@ export type LocationWhereUniqueInput = Prisma.AtLeast<{
   schedules?: Prisma.ScheduleListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
   sharingListings?: Prisma.SharingListingListRelationFilter
+  lenderDeals?: Prisma.SharingDealListRelationFilter
+  borrowerDeals?: Prisma.SharingDealListRelationFilter
 }, "id">
 
 export type LocationOrderByWithAggregationInput = {
@@ -414,6 +420,8 @@ export type LocationCreateInput = {
   schedules?: Prisma.ScheduleCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutLocationInput
   sharingListings?: Prisma.SharingListingCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealCreateNestedManyWithoutLenderLocationInput
+  borrowerDeals?: Prisma.SharingDealCreateNestedManyWithoutBorrowerLocationInput
 }
 
 export type LocationUncheckedCreateInput = {
@@ -435,6 +443,8 @@ export type LocationUncheckedCreateInput = {
   schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutLocationInput
   sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutLenderLocationInput
+  borrowerDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutBorrowerLocationInput
 }
 
 export type LocationUpdateInput = {
@@ -456,6 +466,8 @@ export type LocationUpdateInput = {
   schedules?: Prisma.ScheduleUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutLocationNestedInput
   sharingListings?: Prisma.SharingListingUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUpdateManyWithoutLenderLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUpdateManyWithoutBorrowerLocationNestedInput
 }
 
 export type LocationUncheckedUpdateInput = {
@@ -477,6 +489,8 @@ export type LocationUncheckedUpdateInput = {
   schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutLocationNestedInput
   sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutLenderLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutBorrowerLocationNestedInput
 }
 
 export type LocationCreateManyInput = {
@@ -725,6 +739,34 @@ export type LocationUpdateOneRequiredWithoutSharingListingsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.LocationUpdateToOneWithWhereWithoutSharingListingsInput, Prisma.LocationUpdateWithoutSharingListingsInput>, Prisma.LocationUncheckedUpdateWithoutSharingListingsInput>
 }
 
+export type LocationCreateNestedOneWithoutLenderDealsInput = {
+  create?: Prisma.XOR<Prisma.LocationCreateWithoutLenderDealsInput, Prisma.LocationUncheckedCreateWithoutLenderDealsInput>
+  connectOrCreate?: Prisma.LocationCreateOrConnectWithoutLenderDealsInput
+  connect?: Prisma.LocationWhereUniqueInput
+}
+
+export type LocationCreateNestedOneWithoutBorrowerDealsInput = {
+  create?: Prisma.XOR<Prisma.LocationCreateWithoutBorrowerDealsInput, Prisma.LocationUncheckedCreateWithoutBorrowerDealsInput>
+  connectOrCreate?: Prisma.LocationCreateOrConnectWithoutBorrowerDealsInput
+  connect?: Prisma.LocationWhereUniqueInput
+}
+
+export type LocationUpdateOneRequiredWithoutLenderDealsNestedInput = {
+  create?: Prisma.XOR<Prisma.LocationCreateWithoutLenderDealsInput, Prisma.LocationUncheckedCreateWithoutLenderDealsInput>
+  connectOrCreate?: Prisma.LocationCreateOrConnectWithoutLenderDealsInput
+  upsert?: Prisma.LocationUpsertWithoutLenderDealsInput
+  connect?: Prisma.LocationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LocationUpdateToOneWithWhereWithoutLenderDealsInput, Prisma.LocationUpdateWithoutLenderDealsInput>, Prisma.LocationUncheckedUpdateWithoutLenderDealsInput>
+}
+
+export type LocationUpdateOneRequiredWithoutBorrowerDealsNestedInput = {
+  create?: Prisma.XOR<Prisma.LocationCreateWithoutBorrowerDealsInput, Prisma.LocationUncheckedCreateWithoutBorrowerDealsInput>
+  connectOrCreate?: Prisma.LocationCreateOrConnectWithoutBorrowerDealsInput
+  upsert?: Prisma.LocationUpsertWithoutBorrowerDealsInput
+  connect?: Prisma.LocationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LocationUpdateToOneWithWhereWithoutBorrowerDealsInput, Prisma.LocationUpdateWithoutBorrowerDealsInput>, Prisma.LocationUncheckedUpdateWithoutBorrowerDealsInput>
+}
+
 export type LocationCreateNestedOneWithoutAuditLogsInput = {
   create?: Prisma.XOR<Prisma.LocationCreateWithoutAuditLogsInput, Prisma.LocationUncheckedCreateWithoutAuditLogsInput>
   connectOrCreate?: Prisma.LocationCreateOrConnectWithoutAuditLogsInput
@@ -757,6 +799,8 @@ export type LocationCreateWithoutOwnerInput = {
   schedules?: Prisma.ScheduleCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutLocationInput
   sharingListings?: Prisma.SharingListingCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealCreateNestedManyWithoutLenderLocationInput
+  borrowerDeals?: Prisma.SharingDealCreateNestedManyWithoutBorrowerLocationInput
 }
 
 export type LocationUncheckedCreateWithoutOwnerInput = {
@@ -777,6 +821,8 @@ export type LocationUncheckedCreateWithoutOwnerInput = {
   schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutLocationInput
   sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutLenderLocationInput
+  borrowerDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutBorrowerLocationInput
 }
 
 export type LocationCreateOrConnectWithoutOwnerInput = {
@@ -842,6 +888,8 @@ export type LocationCreateWithoutEmployeesInput = {
   schedules?: Prisma.ScheduleCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutLocationInput
   sharingListings?: Prisma.SharingListingCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealCreateNestedManyWithoutLenderLocationInput
+  borrowerDeals?: Prisma.SharingDealCreateNestedManyWithoutBorrowerLocationInput
 }
 
 export type LocationUncheckedCreateWithoutEmployeesInput = {
@@ -862,6 +910,8 @@ export type LocationUncheckedCreateWithoutEmployeesInput = {
   schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutLocationInput
   sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutLenderLocationInput
+  borrowerDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutBorrowerLocationInput
 }
 
 export type LocationCreateOrConnectWithoutEmployeesInput = {
@@ -898,6 +948,8 @@ export type LocationUpdateWithoutEmployeesInput = {
   schedules?: Prisma.ScheduleUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutLocationNestedInput
   sharingListings?: Prisma.SharingListingUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUpdateManyWithoutLenderLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUpdateManyWithoutBorrowerLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutEmployeesInput = {
@@ -918,6 +970,8 @@ export type LocationUncheckedUpdateWithoutEmployeesInput = {
   schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutLocationNestedInput
   sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutLenderLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutBorrowerLocationNestedInput
 }
 
 export type LocationCreateWithoutShiftTemplatesInput = {
@@ -938,6 +992,8 @@ export type LocationCreateWithoutShiftTemplatesInput = {
   schedules?: Prisma.ScheduleCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutLocationInput
   sharingListings?: Prisma.SharingListingCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealCreateNestedManyWithoutLenderLocationInput
+  borrowerDeals?: Prisma.SharingDealCreateNestedManyWithoutBorrowerLocationInput
 }
 
 export type LocationUncheckedCreateWithoutShiftTemplatesInput = {
@@ -958,6 +1014,8 @@ export type LocationUncheckedCreateWithoutShiftTemplatesInput = {
   schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutLocationInput
   sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutLenderLocationInput
+  borrowerDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutBorrowerLocationInput
 }
 
 export type LocationCreateOrConnectWithoutShiftTemplatesInput = {
@@ -994,6 +1052,8 @@ export type LocationUpdateWithoutShiftTemplatesInput = {
   schedules?: Prisma.ScheduleUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutLocationNestedInput
   sharingListings?: Prisma.SharingListingUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUpdateManyWithoutLenderLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUpdateManyWithoutBorrowerLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutShiftTemplatesInput = {
@@ -1014,6 +1074,8 @@ export type LocationUncheckedUpdateWithoutShiftTemplatesInput = {
   schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutLocationNestedInput
   sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutLenderLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutBorrowerLocationNestedInput
 }
 
 export type LocationCreateWithoutSchedulesInput = {
@@ -1034,6 +1096,8 @@ export type LocationCreateWithoutSchedulesInput = {
   shiftTemplates?: Prisma.ShiftTemplateCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutLocationInput
   sharingListings?: Prisma.SharingListingCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealCreateNestedManyWithoutLenderLocationInput
+  borrowerDeals?: Prisma.SharingDealCreateNestedManyWithoutBorrowerLocationInput
 }
 
 export type LocationUncheckedCreateWithoutSchedulesInput = {
@@ -1054,6 +1118,8 @@ export type LocationUncheckedCreateWithoutSchedulesInput = {
   shiftTemplates?: Prisma.ShiftTemplateUncheckedCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutLocationInput
   sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutLenderLocationInput
+  borrowerDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutBorrowerLocationInput
 }
 
 export type LocationCreateOrConnectWithoutSchedulesInput = {
@@ -1090,6 +1156,8 @@ export type LocationUpdateWithoutSchedulesInput = {
   shiftTemplates?: Prisma.ShiftTemplateUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutLocationNestedInput
   sharingListings?: Prisma.SharingListingUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUpdateManyWithoutLenderLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUpdateManyWithoutBorrowerLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutSchedulesInput = {
@@ -1110,6 +1178,8 @@ export type LocationUncheckedUpdateWithoutSchedulesInput = {
   shiftTemplates?: Prisma.ShiftTemplateUncheckedUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutLocationNestedInput
   sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutLenderLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutBorrowerLocationNestedInput
 }
 
 export type LocationCreateWithoutSharingListingsInput = {
@@ -1130,6 +1200,8 @@ export type LocationCreateWithoutSharingListingsInput = {
   shiftTemplates?: Prisma.ShiftTemplateCreateNestedManyWithoutLocationInput
   schedules?: Prisma.ScheduleCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealCreateNestedManyWithoutLenderLocationInput
+  borrowerDeals?: Prisma.SharingDealCreateNestedManyWithoutBorrowerLocationInput
 }
 
 export type LocationUncheckedCreateWithoutSharingListingsInput = {
@@ -1150,6 +1222,8 @@ export type LocationUncheckedCreateWithoutSharingListingsInput = {
   shiftTemplates?: Prisma.ShiftTemplateUncheckedCreateNestedManyWithoutLocationInput
   schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutLocationInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutLenderLocationInput
+  borrowerDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutBorrowerLocationInput
 }
 
 export type LocationCreateOrConnectWithoutSharingListingsInput = {
@@ -1186,6 +1260,8 @@ export type LocationUpdateWithoutSharingListingsInput = {
   shiftTemplates?: Prisma.ShiftTemplateUpdateManyWithoutLocationNestedInput
   schedules?: Prisma.ScheduleUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUpdateManyWithoutLenderLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUpdateManyWithoutBorrowerLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutSharingListingsInput = {
@@ -1206,6 +1282,216 @@ export type LocationUncheckedUpdateWithoutSharingListingsInput = {
   shiftTemplates?: Prisma.ShiftTemplateUncheckedUpdateManyWithoutLocationNestedInput
   schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutLenderLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutBorrowerLocationNestedInput
+}
+
+export type LocationCreateWithoutLenderDealsInput = {
+  id?: string
+  name: string
+  timezone?: string
+  generationDayOfWeek?: number
+  freezeWindowHours?: number
+  escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
+  createdAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutLocationsInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutLocationInput
+  shiftTemplates?: Prisma.ShiftTemplateCreateNestedManyWithoutLocationInput
+  schedules?: Prisma.ScheduleCreateNestedManyWithoutLocationInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutLocationInput
+  borrowerDeals?: Prisma.SharingDealCreateNestedManyWithoutBorrowerLocationInput
+}
+
+export type LocationUncheckedCreateWithoutLenderDealsInput = {
+  id?: string
+  ownerId: string
+  name: string
+  timezone?: string
+  generationDayOfWeek?: number
+  freezeWindowHours?: number
+  escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
+  createdAt?: Date | string
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutLocationInput
+  shiftTemplates?: Prisma.ShiftTemplateUncheckedCreateNestedManyWithoutLocationInput
+  schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutLocationInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutLocationInput
+  borrowerDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutBorrowerLocationInput
+}
+
+export type LocationCreateOrConnectWithoutLenderDealsInput = {
+  where: Prisma.LocationWhereUniqueInput
+  create: Prisma.XOR<Prisma.LocationCreateWithoutLenderDealsInput, Prisma.LocationUncheckedCreateWithoutLenderDealsInput>
+}
+
+export type LocationCreateWithoutBorrowerDealsInput = {
+  id?: string
+  name: string
+  timezone?: string
+  generationDayOfWeek?: number
+  freezeWindowHours?: number
+  escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
+  createdAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutLocationsInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutLocationInput
+  shiftTemplates?: Prisma.ShiftTemplateCreateNestedManyWithoutLocationInput
+  schedules?: Prisma.ScheduleCreateNestedManyWithoutLocationInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealCreateNestedManyWithoutLenderLocationInput
+}
+
+export type LocationUncheckedCreateWithoutBorrowerDealsInput = {
+  id?: string
+  ownerId: string
+  name: string
+  timezone?: string
+  generationDayOfWeek?: number
+  freezeWindowHours?: number
+  escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
+  createdAt?: Date | string
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutLocationInput
+  shiftTemplates?: Prisma.ShiftTemplateUncheckedCreateNestedManyWithoutLocationInput
+  schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutLocationInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutLenderLocationInput
+}
+
+export type LocationCreateOrConnectWithoutBorrowerDealsInput = {
+  where: Prisma.LocationWhereUniqueInput
+  create: Prisma.XOR<Prisma.LocationCreateWithoutBorrowerDealsInput, Prisma.LocationUncheckedCreateWithoutBorrowerDealsInput>
+}
+
+export type LocationUpsertWithoutLenderDealsInput = {
+  update: Prisma.XOR<Prisma.LocationUpdateWithoutLenderDealsInput, Prisma.LocationUncheckedUpdateWithoutLenderDealsInput>
+  create: Prisma.XOR<Prisma.LocationCreateWithoutLenderDealsInput, Prisma.LocationUncheckedCreateWithoutLenderDealsInput>
+  where?: Prisma.LocationWhereInput
+}
+
+export type LocationUpdateToOneWithWhereWithoutLenderDealsInput = {
+  where?: Prisma.LocationWhereInput
+  data: Prisma.XOR<Prisma.LocationUpdateWithoutLenderDealsInput, Prisma.LocationUncheckedUpdateWithoutLenderDealsInput>
+}
+
+export type LocationUpdateWithoutLenderDealsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
+  escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutLocationsNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutLocationNestedInput
+  shiftTemplates?: Prisma.ShiftTemplateUpdateManyWithoutLocationNestedInput
+  schedules?: Prisma.ScheduleUpdateManyWithoutLocationNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUpdateManyWithoutBorrowerLocationNestedInput
+}
+
+export type LocationUncheckedUpdateWithoutLenderDealsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
+  escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutLocationNestedInput
+  shiftTemplates?: Prisma.ShiftTemplateUncheckedUpdateManyWithoutLocationNestedInput
+  schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutLocationNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutBorrowerLocationNestedInput
+}
+
+export type LocationUpsertWithoutBorrowerDealsInput = {
+  update: Prisma.XOR<Prisma.LocationUpdateWithoutBorrowerDealsInput, Prisma.LocationUncheckedUpdateWithoutBorrowerDealsInput>
+  create: Prisma.XOR<Prisma.LocationCreateWithoutBorrowerDealsInput, Prisma.LocationUncheckedCreateWithoutBorrowerDealsInput>
+  where?: Prisma.LocationWhereInput
+}
+
+export type LocationUpdateToOneWithWhereWithoutBorrowerDealsInput = {
+  where?: Prisma.LocationWhereInput
+  data: Prisma.XOR<Prisma.LocationUpdateWithoutBorrowerDealsInput, Prisma.LocationUncheckedUpdateWithoutBorrowerDealsInput>
+}
+
+export type LocationUpdateWithoutBorrowerDealsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
+  escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutLocationsNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutLocationNestedInput
+  shiftTemplates?: Prisma.ShiftTemplateUpdateManyWithoutLocationNestedInput
+  schedules?: Prisma.ScheduleUpdateManyWithoutLocationNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUpdateManyWithoutLenderLocationNestedInput
+}
+
+export type LocationUncheckedUpdateWithoutBorrowerDealsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
+  escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutLocationNestedInput
+  shiftTemplates?: Prisma.ShiftTemplateUncheckedUpdateManyWithoutLocationNestedInput
+  schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutLocationNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutLenderLocationNestedInput
 }
 
 export type LocationCreateWithoutAuditLogsInput = {
@@ -1226,6 +1512,8 @@ export type LocationCreateWithoutAuditLogsInput = {
   shiftTemplates?: Prisma.ShiftTemplateCreateNestedManyWithoutLocationInput
   schedules?: Prisma.ScheduleCreateNestedManyWithoutLocationInput
   sharingListings?: Prisma.SharingListingCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealCreateNestedManyWithoutLenderLocationInput
+  borrowerDeals?: Prisma.SharingDealCreateNestedManyWithoutBorrowerLocationInput
 }
 
 export type LocationUncheckedCreateWithoutAuditLogsInput = {
@@ -1246,6 +1534,8 @@ export type LocationUncheckedCreateWithoutAuditLogsInput = {
   shiftTemplates?: Prisma.ShiftTemplateUncheckedCreateNestedManyWithoutLocationInput
   schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutLocationInput
   sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutLenderLocationInput
+  borrowerDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutBorrowerLocationInput
 }
 
 export type LocationCreateOrConnectWithoutAuditLogsInput = {
@@ -1282,6 +1572,8 @@ export type LocationUpdateWithoutAuditLogsInput = {
   shiftTemplates?: Prisma.ShiftTemplateUpdateManyWithoutLocationNestedInput
   schedules?: Prisma.ScheduleUpdateManyWithoutLocationNestedInput
   sharingListings?: Prisma.SharingListingUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUpdateManyWithoutLenderLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUpdateManyWithoutBorrowerLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutAuditLogsInput = {
@@ -1302,6 +1594,8 @@ export type LocationUncheckedUpdateWithoutAuditLogsInput = {
   shiftTemplates?: Prisma.ShiftTemplateUncheckedUpdateManyWithoutLocationNestedInput
   schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutLocationNestedInput
   sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutLenderLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutBorrowerLocationNestedInput
 }
 
 export type LocationCreateManyOwnerInput = {
@@ -1337,6 +1631,8 @@ export type LocationUpdateWithoutOwnerInput = {
   schedules?: Prisma.ScheduleUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutLocationNestedInput
   sharingListings?: Prisma.SharingListingUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUpdateManyWithoutLenderLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUpdateManyWithoutBorrowerLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutOwnerInput = {
@@ -1357,6 +1653,8 @@ export type LocationUncheckedUpdateWithoutOwnerInput = {
   schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutLocationNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutLocationNestedInput
   sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutLenderLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutBorrowerLocationNestedInput
 }
 
 export type LocationUncheckedUpdateManyWithoutOwnerInput = {
@@ -1385,6 +1683,8 @@ export type LocationCountOutputType = {
   schedules: number
   auditLogs: number
   sharingListings: number
+  lenderDeals: number
+  borrowerDeals: number
 }
 
 export type LocationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1393,6 +1693,8 @@ export type LocationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   schedules?: boolean | LocationCountOutputTypeCountSchedulesArgs
   auditLogs?: boolean | LocationCountOutputTypeCountAuditLogsArgs
   sharingListings?: boolean | LocationCountOutputTypeCountSharingListingsArgs
+  lenderDeals?: boolean | LocationCountOutputTypeCountLenderDealsArgs
+  borrowerDeals?: boolean | LocationCountOutputTypeCountBorrowerDealsArgs
 }
 
 /**
@@ -1440,6 +1742,20 @@ export type LocationCountOutputTypeCountSharingListingsArgs<ExtArgs extends runt
   where?: Prisma.SharingListingWhereInput
 }
 
+/**
+ * LocationCountOutputType without action
+ */
+export type LocationCountOutputTypeCountLenderDealsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SharingDealWhereInput
+}
+
+/**
+ * LocationCountOutputType without action
+ */
+export type LocationCountOutputTypeCountBorrowerDealsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SharingDealWhereInput
+}
+
 
 export type LocationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1461,6 +1777,8 @@ export type LocationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   schedules?: boolean | Prisma.Location$schedulesArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Location$auditLogsArgs<ExtArgs>
   sharingListings?: boolean | Prisma.Location$sharingListingsArgs<ExtArgs>
+  lenderDeals?: boolean | Prisma.Location$lenderDealsArgs<ExtArgs>
+  borrowerDeals?: boolean | Prisma.Location$borrowerDealsArgs<ExtArgs>
   _count?: boolean | Prisma.LocationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["location"]>
 
@@ -1522,6 +1840,8 @@ export type LocationInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   schedules?: boolean | Prisma.Location$schedulesArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Location$auditLogsArgs<ExtArgs>
   sharingListings?: boolean | Prisma.Location$sharingListingsArgs<ExtArgs>
+  lenderDeals?: boolean | Prisma.Location$lenderDealsArgs<ExtArgs>
+  borrowerDeals?: boolean | Prisma.Location$borrowerDealsArgs<ExtArgs>
   _count?: boolean | Prisma.LocationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LocationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1540,6 +1860,8 @@ export type $LocationPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     schedules: Prisma.$SchedulePayload<ExtArgs>[]
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
     sharingListings: Prisma.$SharingListingPayload<ExtArgs>[]
+    lenderDeals: Prisma.$SharingDealPayload<ExtArgs>[]
+    borrowerDeals: Prisma.$SharingDealPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1955,6 +2277,8 @@ export interface Prisma__LocationClient<T, Null = never, ExtArgs extends runtime
   schedules<T extends Prisma.Location$schedulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Location$schedulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.Location$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Location$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sharingListings<T extends Prisma.Location$sharingListingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Location$sharingListingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SharingListingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  lenderDeals<T extends Prisma.Location$lenderDealsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Location$lenderDealsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SharingDealPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  borrowerDeals<T extends Prisma.Location$borrowerDealsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Location$borrowerDealsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SharingDealPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2515,6 +2839,54 @@ export type Location$sharingListingsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.SharingListingScalarFieldEnum | Prisma.SharingListingScalarFieldEnum[]
+}
+
+/**
+ * Location.lenderDeals
+ */
+export type Location$lenderDealsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SharingDeal
+   */
+  select?: Prisma.SharingDealSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SharingDeal
+   */
+  omit?: Prisma.SharingDealOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SharingDealInclude<ExtArgs> | null
+  where?: Prisma.SharingDealWhereInput
+  orderBy?: Prisma.SharingDealOrderByWithRelationInput | Prisma.SharingDealOrderByWithRelationInput[]
+  cursor?: Prisma.SharingDealWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SharingDealScalarFieldEnum | Prisma.SharingDealScalarFieldEnum[]
+}
+
+/**
+ * Location.borrowerDeals
+ */
+export type Location$borrowerDealsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SharingDeal
+   */
+  select?: Prisma.SharingDealSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SharingDeal
+   */
+  omit?: Prisma.SharingDealOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SharingDealInclude<ExtArgs> | null
+  where?: Prisma.SharingDealWhereInput
+  orderBy?: Prisma.SharingDealOrderByWithRelationInput | Prisma.SharingDealOrderByWithRelationInput[]
+  cursor?: Prisma.SharingDealWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SharingDealScalarFieldEnum | Prisma.SharingDealScalarFieldEnum[]
 }
 
 /**

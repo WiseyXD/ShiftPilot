@@ -394,6 +394,7 @@ export const ModelName = {
   Shift: 'Shift',
   SwapRequest: 'SwapRequest',
   SharingListing: 'SharingListing',
+  SharingDeal: 'SharingDeal',
   ActionToken: 'ActionToken',
   AuditLog: 'AuditLog'
 } as const
@@ -411,7 +412,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "actionToken" | "auditLog"
+    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "sharingDeal" | "actionToken" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1155,6 +1156,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SharingDeal: {
+      payload: Prisma.$SharingDealPayload<ExtArgs>
+      fields: Prisma.SharingDealFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SharingDealFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingDealPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SharingDealFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingDealPayload>
+        }
+        findFirst: {
+          args: Prisma.SharingDealFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingDealPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SharingDealFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingDealPayload>
+        }
+        findMany: {
+          args: Prisma.SharingDealFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingDealPayload>[]
+        }
+        create: {
+          args: Prisma.SharingDealCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingDealPayload>
+        }
+        createMany: {
+          args: Prisma.SharingDealCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SharingDealCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingDealPayload>[]
+        }
+        delete: {
+          args: Prisma.SharingDealDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingDealPayload>
+        }
+        update: {
+          args: Prisma.SharingDealUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingDealPayload>
+        }
+        deleteMany: {
+          args: Prisma.SharingDealDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SharingDealUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SharingDealUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingDealPayload>[]
+        }
+        upsert: {
+          args: Prisma.SharingDealUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SharingDealPayload>
+        }
+        aggregate: {
+          args: Prisma.SharingDealAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSharingDeal>
+        }
+        groupBy: {
+          args: Prisma.SharingDealGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SharingDealGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SharingDealCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SharingDealCountAggregateOutputType> | number
+        }
+      }
+    }
     ActionToken: {
       payload: Prisma.$ActionTokenPayload<ExtArgs>
       fields: Prisma.ActionTokenFieldRefs
@@ -1442,7 +1517,8 @@ export const ShiftScalarFieldEnum = {
   shiftTemplateId: 'shiftTemplateId',
   employeeId: 'employeeId',
   dayOfWeek: 'dayOfWeek',
-  status: 'status'
+  status: 'status',
+  sharingDealId: 'sharingDealId'
 } as const
 
 export type ShiftScalarFieldEnum = (typeof ShiftScalarFieldEnum)[keyof typeof ShiftScalarFieldEnum]
@@ -1475,6 +1551,20 @@ export const SharingListingScalarFieldEnum = {
 } as const
 
 export type SharingListingScalarFieldEnum = (typeof SharingListingScalarFieldEnum)[keyof typeof SharingListingScalarFieldEnum]
+
+
+export const SharingDealScalarFieldEnum = {
+  id: 'id',
+  listingId: 'listingId',
+  lenderLocationId: 'lenderLocationId',
+  borrowerLocationId: 'borrowerLocationId',
+  employeeId: 'employeeId',
+  agreedRateCents: 'agreedRateCents',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type SharingDealScalarFieldEnum = (typeof SharingDealScalarFieldEnum)[keyof typeof SharingDealScalarFieldEnum]
 
 
 export const ActionTokenScalarFieldEnum = {
@@ -1698,6 +1788,20 @@ export type ListEnumSharingListingStatusFieldRefInput<$PrismaModel> = FieldRefIn
 
 
 /**
+ * Reference to a field of type 'SharingDealStatus'
+ */
+export type EnumSharingDealStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SharingDealStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'SharingDealStatus[]'
+ */
+export type ListEnumSharingDealStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SharingDealStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'ActionTokenAction'
  */
 export type EnumActionTokenActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ActionTokenAction'>
@@ -1844,6 +1948,7 @@ export type GlobalOmitConfig = {
   shift?: Prisma.ShiftOmit
   swapRequest?: Prisma.SwapRequestOmit
   sharingListing?: Prisma.SharingListingOmit
+  sharingDeal?: Prisma.SharingDealOmit
   actionToken?: Prisma.ActionTokenOmit
   auditLog?: Prisma.AuditLogOmit
 }

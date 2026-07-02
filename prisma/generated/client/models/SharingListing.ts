@@ -266,6 +266,7 @@ export type SharingListingWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"SharingListing"> | Date | string
   location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
+  deals?: Prisma.SharingDealListRelationFilter
 }
 
 export type SharingListingOrderByWithRelationInput = {
@@ -282,6 +283,7 @@ export type SharingListingOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   location?: Prisma.LocationOrderByWithRelationInput
   employee?: Prisma.EmployeeOrderByWithRelationInput
+  deals?: Prisma.SharingDealOrderByRelationAggregateInput
 }
 
 export type SharingListingWhereUniqueInput = Prisma.AtLeast<{
@@ -301,6 +303,7 @@ export type SharingListingWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"SharingListing"> | Date | string
   location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
+  deals?: Prisma.SharingDealListRelationFilter
 }, "id">
 
 export type SharingListingOrderByWithAggregationInput = {
@@ -351,6 +354,7 @@ export type SharingListingCreateInput = {
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutSharingListingsInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutSharingListingsInput
+  deals?: Prisma.SharingDealCreateNestedManyWithoutListingInput
 }
 
 export type SharingListingUncheckedCreateInput = {
@@ -365,6 +369,7 @@ export type SharingListingUncheckedCreateInput = {
   hourlyRateCents?: number | null
   status?: $Enums.SharingListingStatus
   createdAt?: Date | string
+  deals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type SharingListingUpdateInput = {
@@ -379,6 +384,7 @@ export type SharingListingUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutSharingListingsNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutSharingListingsNestedInput
+  deals?: Prisma.SharingDealUpdateManyWithoutListingNestedInput
 }
 
 export type SharingListingUncheckedUpdateInput = {
@@ -393,6 +399,7 @@ export type SharingListingUncheckedUpdateInput = {
   hourlyRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumSharingListingStatusFieldUpdateOperationsInput | $Enums.SharingListingStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deals?: Prisma.SharingDealUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type SharingListingCreateManyInput = {
@@ -495,6 +502,11 @@ export type SharingListingSumOrderByAggregateInput = {
   hourlyRateCents?: Prisma.SortOrder
 }
 
+export type SharingListingScalarRelationFilter = {
+  is?: Prisma.SharingListingWhereInput
+  isNot?: Prisma.SharingListingWhereInput
+}
+
 export type SharingListingCreateNestedManyWithoutLocationInput = {
   create?: Prisma.XOR<Prisma.SharingListingCreateWithoutLocationInput, Prisma.SharingListingUncheckedCreateWithoutLocationInput> | Prisma.SharingListingCreateWithoutLocationInput[] | Prisma.SharingListingUncheckedCreateWithoutLocationInput[]
   connectOrCreate?: Prisma.SharingListingCreateOrConnectWithoutLocationInput | Prisma.SharingListingCreateOrConnectWithoutLocationInput[]
@@ -595,6 +607,20 @@ export type EnumSharingListingStatusFieldUpdateOperationsInput = {
   set?: $Enums.SharingListingStatus
 }
 
+export type SharingListingCreateNestedOneWithoutDealsInput = {
+  create?: Prisma.XOR<Prisma.SharingListingCreateWithoutDealsInput, Prisma.SharingListingUncheckedCreateWithoutDealsInput>
+  connectOrCreate?: Prisma.SharingListingCreateOrConnectWithoutDealsInput
+  connect?: Prisma.SharingListingWhereUniqueInput
+}
+
+export type SharingListingUpdateOneRequiredWithoutDealsNestedInput = {
+  create?: Prisma.XOR<Prisma.SharingListingCreateWithoutDealsInput, Prisma.SharingListingUncheckedCreateWithoutDealsInput>
+  connectOrCreate?: Prisma.SharingListingCreateOrConnectWithoutDealsInput
+  upsert?: Prisma.SharingListingUpsertWithoutDealsInput
+  connect?: Prisma.SharingListingWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SharingListingUpdateToOneWithWhereWithoutDealsInput, Prisma.SharingListingUpdateWithoutDealsInput>, Prisma.SharingListingUncheckedUpdateWithoutDealsInput>
+}
+
 export type SharingListingCreateWithoutLocationInput = {
   id?: string
   type: $Enums.SharingListingType
@@ -606,6 +632,7 @@ export type SharingListingCreateWithoutLocationInput = {
   status?: $Enums.SharingListingStatus
   createdAt?: Date | string
   employee?: Prisma.EmployeeCreateNestedOneWithoutSharingListingsInput
+  deals?: Prisma.SharingDealCreateNestedManyWithoutListingInput
 }
 
 export type SharingListingUncheckedCreateWithoutLocationInput = {
@@ -619,6 +646,7 @@ export type SharingListingUncheckedCreateWithoutLocationInput = {
   hourlyRateCents?: number | null
   status?: $Enums.SharingListingStatus
   createdAt?: Date | string
+  deals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type SharingListingCreateOrConnectWithoutLocationInput = {
@@ -675,6 +703,7 @@ export type SharingListingCreateWithoutEmployeeInput = {
   status?: $Enums.SharingListingStatus
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutSharingListingsInput
+  deals?: Prisma.SharingDealCreateNestedManyWithoutListingInput
 }
 
 export type SharingListingUncheckedCreateWithoutEmployeeInput = {
@@ -688,6 +717,7 @@ export type SharingListingUncheckedCreateWithoutEmployeeInput = {
   hourlyRateCents?: number | null
   status?: $Enums.SharingListingStatus
   createdAt?: Date | string
+  deals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type SharingListingCreateOrConnectWithoutEmployeeInput = {
@@ -716,6 +746,78 @@ export type SharingListingUpdateManyWithWhereWithoutEmployeeInput = {
   data: Prisma.XOR<Prisma.SharingListingUpdateManyMutationInput, Prisma.SharingListingUncheckedUpdateManyWithoutEmployeeInput>
 }
 
+export type SharingListingCreateWithoutDealsInput = {
+  id?: string
+  type: $Enums.SharingListingType
+  role: string
+  date: Date | string
+  startTime: string
+  endTime: string
+  hourlyRateCents?: number | null
+  status?: $Enums.SharingListingStatus
+  createdAt?: Date | string
+  location: Prisma.LocationCreateNestedOneWithoutSharingListingsInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutSharingListingsInput
+}
+
+export type SharingListingUncheckedCreateWithoutDealsInput = {
+  id?: string
+  locationId: string
+  type: $Enums.SharingListingType
+  role: string
+  date: Date | string
+  startTime: string
+  endTime: string
+  employeeId?: string | null
+  hourlyRateCents?: number | null
+  status?: $Enums.SharingListingStatus
+  createdAt?: Date | string
+}
+
+export type SharingListingCreateOrConnectWithoutDealsInput = {
+  where: Prisma.SharingListingWhereUniqueInput
+  create: Prisma.XOR<Prisma.SharingListingCreateWithoutDealsInput, Prisma.SharingListingUncheckedCreateWithoutDealsInput>
+}
+
+export type SharingListingUpsertWithoutDealsInput = {
+  update: Prisma.XOR<Prisma.SharingListingUpdateWithoutDealsInput, Prisma.SharingListingUncheckedUpdateWithoutDealsInput>
+  create: Prisma.XOR<Prisma.SharingListingCreateWithoutDealsInput, Prisma.SharingListingUncheckedCreateWithoutDealsInput>
+  where?: Prisma.SharingListingWhereInput
+}
+
+export type SharingListingUpdateToOneWithWhereWithoutDealsInput = {
+  where?: Prisma.SharingListingWhereInput
+  data: Prisma.XOR<Prisma.SharingListingUpdateWithoutDealsInput, Prisma.SharingListingUncheckedUpdateWithoutDealsInput>
+}
+
+export type SharingListingUpdateWithoutDealsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumSharingListingTypeFieldUpdateOperationsInput | $Enums.SharingListingType
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  hourlyRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  status?: Prisma.EnumSharingListingStatusFieldUpdateOperationsInput | $Enums.SharingListingStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  location?: Prisma.LocationUpdateOneRequiredWithoutSharingListingsNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutSharingListingsNestedInput
+}
+
+export type SharingListingUncheckedUpdateWithoutDealsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  locationId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumSharingListingTypeFieldUpdateOperationsInput | $Enums.SharingListingType
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  status?: Prisma.EnumSharingListingStatusFieldUpdateOperationsInput | $Enums.SharingListingStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type SharingListingCreateManyLocationInput = {
   id?: string
   type: $Enums.SharingListingType
@@ -740,6 +842,7 @@ export type SharingListingUpdateWithoutLocationInput = {
   status?: Prisma.EnumSharingListingStatusFieldUpdateOperationsInput | $Enums.SharingListingStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneWithoutSharingListingsNestedInput
+  deals?: Prisma.SharingDealUpdateManyWithoutListingNestedInput
 }
 
 export type SharingListingUncheckedUpdateWithoutLocationInput = {
@@ -753,6 +856,7 @@ export type SharingListingUncheckedUpdateWithoutLocationInput = {
   hourlyRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumSharingListingStatusFieldUpdateOperationsInput | $Enums.SharingListingStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deals?: Prisma.SharingDealUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type SharingListingUncheckedUpdateManyWithoutLocationInput = {
@@ -792,6 +896,7 @@ export type SharingListingUpdateWithoutEmployeeInput = {
   status?: Prisma.EnumSharingListingStatusFieldUpdateOperationsInput | $Enums.SharingListingStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutSharingListingsNestedInput
+  deals?: Prisma.SharingDealUpdateManyWithoutListingNestedInput
 }
 
 export type SharingListingUncheckedUpdateWithoutEmployeeInput = {
@@ -805,6 +910,7 @@ export type SharingListingUncheckedUpdateWithoutEmployeeInput = {
   hourlyRateCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumSharingListingStatusFieldUpdateOperationsInput | $Enums.SharingListingStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deals?: Prisma.SharingDealUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type SharingListingUncheckedUpdateManyWithoutEmployeeInput = {
@@ -821,6 +927,35 @@ export type SharingListingUncheckedUpdateManyWithoutEmployeeInput = {
 }
 
 
+/**
+ * Count Type SharingListingCountOutputType
+ */
+
+export type SharingListingCountOutputType = {
+  deals: number
+}
+
+export type SharingListingCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  deals?: boolean | SharingListingCountOutputTypeCountDealsArgs
+}
+
+/**
+ * SharingListingCountOutputType without action
+ */
+export type SharingListingCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SharingListingCountOutputType
+   */
+  select?: Prisma.SharingListingCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * SharingListingCountOutputType without action
+ */
+export type SharingListingCountOutputTypeCountDealsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SharingDealWhereInput
+}
+
 
 export type SharingListingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -836,6 +971,8 @@ export type SharingListingSelect<ExtArgs extends runtime.Types.Extensions.Intern
   createdAt?: boolean
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.SharingListing$employeeArgs<ExtArgs>
+  deals?: boolean | Prisma.SharingListing$dealsArgs<ExtArgs>
+  _count?: boolean | Prisma.SharingListingCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["sharingListing"]>
 
 export type SharingListingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -888,6 +1025,8 @@ export type SharingListingOmit<ExtArgs extends runtime.Types.Extensions.Internal
 export type SharingListingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.SharingListing$employeeArgs<ExtArgs>
+  deals?: boolean | Prisma.SharingListing$dealsArgs<ExtArgs>
+  _count?: boolean | Prisma.SharingListingCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SharingListingIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
@@ -903,6 +1042,7 @@ export type $SharingListingPayload<ExtArgs extends runtime.Types.Extensions.Inte
   objects: {
     location: Prisma.$LocationPayload<ExtArgs>
     employee: Prisma.$EmployeePayload<ExtArgs> | null
+    deals: Prisma.$SharingDealPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1312,6 +1452,7 @@ export interface Prisma__SharingListingClient<T, Null = never, ExtArgs extends r
   readonly [Symbol.toStringTag]: "PrismaPromise"
   location<T extends Prisma.LocationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LocationDefaultArgs<ExtArgs>>): Prisma.Prisma__LocationClient<runtime.Types.Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   employee<T extends Prisma.SharingListing$employeeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SharingListing$employeeArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  deals<T extends Prisma.SharingListing$dealsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SharingListing$dealsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SharingDealPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1769,6 +1910,30 @@ export type SharingListing$employeeArgs<ExtArgs extends runtime.Types.Extensions
    */
   include?: Prisma.EmployeeInclude<ExtArgs> | null
   where?: Prisma.EmployeeWhereInput
+}
+
+/**
+ * SharingListing.deals
+ */
+export type SharingListing$dealsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SharingDeal
+   */
+  select?: Prisma.SharingDealSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SharingDeal
+   */
+  omit?: Prisma.SharingDealOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SharingDealInclude<ExtArgs> | null
+  where?: Prisma.SharingDealWhereInput
+  orderBy?: Prisma.SharingDealOrderByWithRelationInput | Prisma.SharingDealOrderByWithRelationInput[]
+  cursor?: Prisma.SharingDealWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SharingDealScalarFieldEnum | Prisma.SharingDealScalarFieldEnum[]
 }
 
 /**

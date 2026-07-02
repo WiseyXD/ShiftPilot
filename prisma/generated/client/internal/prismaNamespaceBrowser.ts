@@ -61,6 +61,7 @@ export const ModelName = {
   Shift: 'Shift',
   SwapRequest: 'SwapRequest',
   SharingListing: 'SharingListing',
+  SharingDeal: 'SharingDeal',
   ActionToken: 'ActionToken',
   AuditLog: 'AuditLog'
 } as const
@@ -181,7 +182,8 @@ export const ShiftScalarFieldEnum = {
   shiftTemplateId: 'shiftTemplateId',
   employeeId: 'employeeId',
   dayOfWeek: 'dayOfWeek',
-  status: 'status'
+  status: 'status',
+  sharingDealId: 'sharingDealId'
 } as const
 
 export type ShiftScalarFieldEnum = (typeof ShiftScalarFieldEnum)[keyof typeof ShiftScalarFieldEnum]
@@ -214,6 +216,20 @@ export const SharingListingScalarFieldEnum = {
 } as const
 
 export type SharingListingScalarFieldEnum = (typeof SharingListingScalarFieldEnum)[keyof typeof SharingListingScalarFieldEnum]
+
+
+export const SharingDealScalarFieldEnum = {
+  id: 'id',
+  listingId: 'listingId',
+  lenderLocationId: 'lenderLocationId',
+  borrowerLocationId: 'borrowerLocationId',
+  employeeId: 'employeeId',
+  agreedRateCents: 'agreedRateCents',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type SharingDealScalarFieldEnum = (typeof SharingDealScalarFieldEnum)[keyof typeof SharingDealScalarFieldEnum]
 
 
 export const ActionTokenScalarFieldEnum = {

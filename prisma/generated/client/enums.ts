@@ -65,10 +65,20 @@ export type SharingListingType = (typeof SharingListingType)[keyof typeof Sharin
 
 export const SharingListingStatus = {
   OPEN: 'OPEN',
-  CANCELLED: 'CANCELLED'
+  CANCELLED: 'CANCELLED',
+  MATCHED: 'MATCHED'
 } as const
 
 export type SharingListingStatus = (typeof SharingListingStatus)[keyof typeof SharingListingStatus]
+
+
+export const SharingDealStatus = {
+  AWAITING_MANAGER: 'AWAITING_MANAGER',
+  MANAGERS_AGREED: 'MANAGERS_AGREED',
+  DECLINED: 'DECLINED'
+} as const
+
+export type SharingDealStatus = (typeof SharingDealStatus)[keyof typeof SharingDealStatus]
 
 
 export const SwapRequestStatus = {
