@@ -14,10 +14,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { DiscoverySettingsForm } from "@/components/marketplace/discovery-settings-form"
 import { CreateListingForm } from "@/components/marketplace/create-listing-form"
-import { getNearbyVenues } from "@/lib/marketplace/queries"
+import { getDiscoveryFeed, getNearbyVenues } from "@/lib/marketplace/queries"
 import { formatRate } from "@/lib/marketplace/listings"
 import { cancelListing } from "@/app/actions/marketplace"
-import { Building2, Inbox, MapPinOff, Store } from "lucide-react"
+import { Building2, Inbox, MapPin, MapPinOff, Newspaper, Store } from "lucide-react"
 
 const LISTING_TYPE_STYLES = {
   OFFER: "bg-blue-100 text-blue-700 border-blue-200",
@@ -90,7 +90,7 @@ export default async function MarketplacePage({
 
   const acting = locations.find((l) => l.id === locationParam) ?? locations[0]
   const discoveryReady = acting.isDiscoverable && acting.lat != null && acting.lng != null
-  const nearby = await getNearbyVenues(acting)
+  const [nearby, feed] = await Promise.all([getNearbyVenues(acting), getDiscoveryFeed(acting)])
 
   return (
     <div className="space-y-6">
@@ -113,6 +113,66 @@ export default async function MarketplacePage({
 
       <div className="grid gap-6 lg:grid-cols-3 items-start">
         <div className="lg:col-span-2 space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Discovery feed</CardTitle>
+              <CardDescription>
+                Anonymized offers and requests from venues near {acting.name} — names are
+                revealed once a deal is accepted
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {!discoveryReady ? (
+                <div className="py-8 flex flex-col items-center text-center gap-3 border border-dashed rounded-lg">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+                    <MapPinOff className="h-6 w-6 text-slate-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-slate-900">Discovery is off</h3>
+                    <p className="text-sm text-slate-500 mt-1 max-w-sm">
+                      Add your address and turn on discovery to browse listings from nearby
+                      venues.
+                    </p>
+                  </div>
+                </div>
+              ) : feed.length === 0 ? (
+                <div className="py-8 flex flex-col items-center text-center gap-3 border border-dashed rounded-lg">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+                    <Newspaper className="h-6 w-6 text-slate-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-slate-900">No listings nearby</h3>
+                    <p className="text-sm text-slate-500 mt-1 max-w-sm">
+                      Nothing on offer within {acting.discoveryRadiusKm} km right now — new
+                      listings from opted-in neighbours show up here.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <ul className="divide-y divide-slate-100">
+                  {feed.map((card) => (
+                    <li key={card.id} className="py-3 space-y-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Badge variant="outline" className={LISTING_TYPE_STYLES[card.type]}>
+                          {card.type === "OFFER" ? "Staff available" : "Staff needed"}
+                        </Badge>
+                        <span className="font-medium text-slate-900">{card.role}</span>
+                      </div>
+                      <p className="text-sm text-slate-500">
+                        {formatListingDate(card.date)} · {card.startTime}–{card.endTime} ·{" "}
+                        {formatRate(card.hourlyRateCents)}
+                      </p>
+                      <p className="text-sm text-slate-500 flex items-center gap-1">
+                        <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                        Venue nearby · {card.distanceKm.toFixed(1)} km away
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Nearby venues</CardTitle>
