@@ -8,6 +8,7 @@ import { buildDealFromListing, applyDealAction, type DealAction } from "@/lib/ma
 import { filterNearbyVenues } from "@/lib/marketplace/discovery"
 import { sendEmail } from "@/lib/email/send"
 import { NotificationEmail } from "@/lib/email/templates/notification"
+import { inngest } from "@/lib/inngest/client"
 import { revalidatePath } from "next/cache"
 
 type ActionState = { error: string } | null
@@ -240,6 +241,8 @@ async function actOnDeal(dealId: string, action: DealAction, userId: string) {
       where: { id: deal.listing.id },
       data: { status: "MATCHED" },
     })
+    // Kick off the durable worker-consent workflow (email + waitForEvent).
+    await inngest.send({ name: "marketplace/loan.agreed", data: { dealId: deal.id } })
   }
 
   const other = actor === "LISTING_OWNER" ? responderSide : listingSide

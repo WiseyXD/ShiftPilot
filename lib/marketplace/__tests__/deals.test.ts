@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest"
-import { buildDealFromListing, applyDealAction } from "../deals"
+import {
+  buildDealFromListing,
+  applyDealAction,
+  applyWorkerResponse,
+  canSeeWorkerName,
+} from "../deals"
 
 const offerListing = {
   type: "OFFER" as const,
@@ -108,6 +113,65 @@ describe("applyDealAction", () => {
   it("locks MANAGERS_AGREED — manager actions are over, worker consent owns the next step", () => {
     for (const action of ["CONFIRM", "DECLINE"] as const) {
       expect(applyDealAction("MANAGERS_AGREED", "RESPONDER", action).ok).toBe(false)
+    }
+  })
+
+  it("locks worker-outcome statuses against manager actions too", () => {
+    for (const status of ["FILLED", "WORKER_DECLINED", "EXPIRED"] as const) {
+      expect(applyDealAction(status, "LISTING_OWNER", "DECLINE").ok).toBe(false)
+    }
+  })
+})
+
+describe("applyWorkerResponse", () => {
+  it("accepting from MANAGERS_AGREED fills the deal", () => {
+    expect(applyWorkerResponse("MANAGERS_AGREED", "ACCEPT_LOAN")).toEqual({
+      ok: true,
+      next: "FILLED",
+    })
+  })
+
+  it("declining from MANAGERS_AGREED marks the worker's refusal", () => {
+    expect(applyWorkerResponse("MANAGERS_AGREED", "DECLINE_LOAN")).toEqual({
+      ok: true,
+      next: "WORKER_DECLINED",
+    })
+  })
+
+  it("refuses in every other status — a settled deal can't be flipped by a stale link", () => {
+    for (const status of [
+      "AWAITING_MANAGER",
+      "DECLINED",
+      "FILLED",
+      "WORKER_DECLINED",
+      "EXPIRED",
+    ] as const) {
+      for (const response of ["ACCEPT_LOAN", "DECLINE_LOAN"] as const) {
+        const result = applyWorkerResponse(status, response)
+        expect(result.ok).toBe(false)
+        if (!result.ok) expect(result.error.length).toBeGreaterThan(0)
+      }
+    }
+  })
+})
+
+describe("canSeeWorkerName", () => {
+  it("the lender always sees their own employee", () => {
+    for (const status of ["AWAITING_MANAGER", "MANAGERS_AGREED", "FILLED", "DECLINED"] as const) {
+      expect(canSeeWorkerName(true, status)).toBe(true)
+    }
+  })
+
+  it("the borrower sees the name only once the deal is FILLED", () => {
+    expect(canSeeWorkerName(false, "FILLED")).toBe(true)
+    for (const status of [
+      "AWAITING_MANAGER",
+      "MANAGERS_AGREED",
+      "DECLINED",
+      "WORKER_DECLINED",
+      "EXPIRED",
+    ] as const) {
+      expect(canSeeWorkerName(false, status)).toBe(false)
     }
   })
 })

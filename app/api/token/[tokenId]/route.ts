@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/prisma/client"
 import { validateToken } from "@/lib/tokens/validate"
+import { applyWorkerResponse } from "@/lib/marketplace/deals"
 import { inngest } from "@/lib/inngest/client"
 import { isInFreezeWindow } from "@/lib/scheduling/freeze"
 import { sendEmail } from "@/lib/email/send"
@@ -163,6 +164,45 @@ async function handleAction(action: string, payload: unknown) {
     case "REJECT_SWAP":
       await inngest.send({ name: "swap/manager-response", data: { ...p, response: action } })
       return NextResponse.json({ ok: true, message: action === "APPROVE_SWAP" ? "Swap approved." : "Swap rejected." })
+
+    case "ACCEPT_LOAN":
+    case "DECLINE_LOAN": {
+      const deal = await prisma.sharingDeal.findUnique({ where: { id: p.dealId } })
+      if (!deal) {
+        return NextResponse.json({ error: "This loan no longer exists." }, { status: 404 })
+      }
+      const transition = applyWorkerResponse(deal.status, action)
+      if (!transition.ok) {
+        return NextResponse.json({ error: transition.error }, { status: 409 })
+      }
+      // The DB is the source of truth (WhatsApp taps land here too) — mutate
+      // first, guarded against a racing click on the other link, then wake the
+      // waiting workflow to send the notifications.
+      const { count } = await prisma.sharingDeal.updateMany({
+        where: { id: deal.id, status: "MANAGERS_AGREED" },
+        data: { status: transition.next },
+      })
+      if (count === 0) {
+        return NextResponse.json({ error: "This loan was already answered." }, { status: 409 })
+      }
+      if (transition.next === "WORKER_DECLINED") {
+        await prisma.sharingListing.updateMany({
+          where: { id: deal.listingId, status: "MATCHED" },
+          data: { status: "OPEN" },
+        })
+      }
+      await inngest.send({
+        name: "marketplace/loan.response",
+        data: { dealId: deal.id, response: action },
+      })
+      return NextResponse.json({
+        ok: true,
+        message:
+          action === "ACCEPT_LOAN"
+            ? "You're on! Both venues have been notified — see you there."
+            : "No problem — we've let both managers know.",
+      })
+    }
 
     default:
       return NextResponse.json({ ok: true, action })

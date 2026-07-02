@@ -3,9 +3,16 @@
 
 import type { ListingType } from "./listings"
 
-export type SharingDealStatus = "AWAITING_MANAGER" | "MANAGERS_AGREED" | "DECLINED"
+export type SharingDealStatus =
+  | "AWAITING_MANAGER"
+  | "MANAGERS_AGREED"
+  | "DECLINED"
+  | "FILLED"
+  | "WORKER_DECLINED"
+  | "EXPIRED"
 export type DealActor = "LISTING_OWNER" | "RESPONDER"
 export type DealAction = "CONFIRM" | "DECLINE"
+export type WorkerResponse = "ACCEPT_LOAN" | "DECLINE_LOAN"
 
 interface RespondableListing {
   type: ListingType
@@ -81,7 +88,9 @@ export function applyDealAction(
       error:
         status === "DECLINED"
           ? "This deal was declined and can't be reopened"
-          : "Both managers already agreed — it's with the worker now",
+          : status === "MANAGERS_AGREED"
+            ? "Both managers already agreed — it's with the worker now"
+            : "This deal is already settled",
     }
   }
 
@@ -93,4 +102,28 @@ export function applyDealAction(
     return { ok: false, error: "Only the venue that posted the listing can confirm" }
   }
   return { ok: true, next: "MANAGERS_AGREED" }
+}
+
+const WORKER_GUARD_MESSAGES: Record<Exclude<SharingDealStatus, "MANAGERS_AGREED">, string> = {
+  AWAITING_MANAGER: "The managers haven't both agreed yet — hang tight.",
+  DECLINED: "This deal was declined by a manager, so there's nothing to respond to.",
+  FILLED: "You've already accepted this loan.",
+  WORKER_DECLINED: "You've already declined this loan.",
+  EXPIRED: "This request expired before you responded — ask your manager if it's still on.",
+}
+
+export function applyWorkerResponse(
+  status: SharingDealStatus,
+  response: WorkerResponse
+): DealTransition {
+  if (status !== "MANAGERS_AGREED") {
+    return { ok: false, error: WORKER_GUARD_MESSAGES[status] }
+  }
+  return { ok: true, next: response === "ACCEPT_LOAN" ? "FILLED" : "WORKER_DECLINED" }
+}
+
+// Anti-poaching reveal rule: the lender always knows their own employee; the
+// borrower learns the name only after the worker has said yes.
+export function canSeeWorkerName(isLender: boolean, status: SharingDealStatus): boolean {
+  return isLender || status === "FILLED"
 }

@@ -33,14 +33,20 @@ const LISTING_STATUS_STYLES = {
 
 const DEAL_STATUS_LABELS = {
   AWAITING_MANAGER: "Awaiting confirmation",
-  MANAGERS_AGREED: "Managers agreed",
+  MANAGERS_AGREED: "Awaiting worker",
   DECLINED: "Declined",
+  FILLED: "Filled",
+  WORKER_DECLINED: "Worker declined",
+  EXPIRED: "Expired",
 } as const
 
 const DEAL_STATUS_STYLES = {
   AWAITING_MANAGER: "bg-amber-100 text-amber-700 border-amber-200",
   MANAGERS_AGREED: "bg-blue-100 text-blue-700 border-blue-200",
   DECLINED: "bg-red-100 text-red-700 border-red-200",
+  FILLED: "bg-green-100 text-green-700 border-green-200",
+  WORKER_DECLINED: "bg-red-100 text-red-700 border-red-200",
+  EXPIRED: "bg-slate-100 text-slate-600 border-slate-200",
 } as const
 
 // Listing dates are stored at UTC midnight, so format in UTC to avoid drifting

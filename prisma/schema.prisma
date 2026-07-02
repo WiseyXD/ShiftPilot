@@ -27,6 +27,8 @@ enum ActionTokenAction {
   APPROVE_SWAP
   REJECT_SWAP
   APPROVE_SCHEDULE
+  ACCEPT_LOAN
+  DECLINE_LOAN
 }
 
 enum ScheduleStatus {
@@ -57,7 +59,10 @@ enum SharingListingStatus {
 enum SharingDealStatus {
   AWAITING_MANAGER // waiting for the listing owner's manager to confirm
   MANAGERS_AGREED // both managers in; worker consent comes next
-  DECLINED
+  DECLINED // a manager said no (terminal)
+  FILLED // worker accepted — loan is on
+  WORKER_DECLINED // worker said no (terminal); listing reopens
+  EXPIRED // worker never answered (terminal); listing reopens
 }
 
 enum SwapRequestStatus {

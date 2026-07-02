@@ -6,6 +6,7 @@ import { weeklyScheduleGeneration } from "@/lib/inngest/functions/schedule-gener
 import { shiftNotifications, shiftReminders } from "@/lib/inngest/functions/shift-notifications"
 import { replacementEngine } from "@/lib/inngest/functions/replacement-engine"
 import { swapBroker } from "@/lib/inngest/functions/swap-broker"
+import { loanConsent } from "@/lib/inngest/functions/loan-consent"
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
@@ -17,5 +18,6 @@ export const { GET, POST, PUT } = serve({
     shiftReminders,
     replacementEngine,
     swapBroker,
+    loanConsent,
   ],
 })

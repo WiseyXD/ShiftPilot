@@ -29,7 +29,9 @@ export const ActionTokenAction = {
   DECLINE_SWAP: 'DECLINE_SWAP',
   APPROVE_SWAP: 'APPROVE_SWAP',
   REJECT_SWAP: 'REJECT_SWAP',
-  APPROVE_SCHEDULE: 'APPROVE_SCHEDULE'
+  APPROVE_SCHEDULE: 'APPROVE_SCHEDULE',
+  ACCEPT_LOAN: 'ACCEPT_LOAN',
+  DECLINE_LOAN: 'DECLINE_LOAN'
 } as const
 
 export type ActionTokenAction = (typeof ActionTokenAction)[keyof typeof ActionTokenAction]
@@ -75,7 +77,10 @@ export type SharingListingStatus = (typeof SharingListingStatus)[keyof typeof Sh
 export const SharingDealStatus = {
   AWAITING_MANAGER: 'AWAITING_MANAGER',
   MANAGERS_AGREED: 'MANAGERS_AGREED',
-  DECLINED: 'DECLINED'
+  DECLINED: 'DECLINED',
+  FILLED: 'FILLED',
+  WORKER_DECLINED: 'WORKER_DECLINED',
+  EXPIRED: 'EXPIRED'
 } as const
 
 export type SharingDealStatus = (typeof SharingDealStatus)[keyof typeof SharingDealStatus]

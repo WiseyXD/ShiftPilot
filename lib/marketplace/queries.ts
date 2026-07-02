@@ -5,6 +5,7 @@
 import { prisma } from "@/prisma/client"
 import { filterNearbyVenues, type VenueGeo } from "./discovery"
 import { anonymizeListing, type AnonymizedListingCard } from "./anonymize"
+import { canSeeWorkerName, type SharingDealStatus } from "./deals"
 
 export interface NearbyVenueRow extends VenueGeo {
   name: string
@@ -71,7 +72,7 @@ export async function getDiscoveryFeed(self: VenueGeo): Promise<AnonymizedListin
 
 export interface DealRow {
   id: string
-  status: "AWAITING_MANAGER" | "MANAGERS_AGREED" | "DECLINED"
+  status: SharingDealStatus
   direction: "LENDING" | "BORROWING"
   role: string
   date: Date
@@ -79,7 +80,7 @@ export interface DealRow {
   endTime: string
   agreedRateCents: number | null
   counterpartyName: string
-  /** The lent worker — exposed to the LENDER's manager only (anti-poaching). */
+  /** The lent worker — lender always; borrower only once FILLED (anti-poaching). */
   employeeName: string | null
   /** Whether the acting venue posted the listing (and therefore holds the confirm). */
   isListingOwner: boolean
@@ -109,7 +110,7 @@ export async function getDealsForLocation(locationId: string): Promise<DealRow[]
       endTime: deal.listing.endTime,
       agreedRateCents: deal.agreedRateCents,
       counterpartyName: isLender ? deal.borrowerLocation.name : deal.lenderLocation.name,
-      employeeName: isLender ? deal.employee.name : null,
+      employeeName: canSeeWorkerName(isLender, deal.status) ? deal.employee.name : null,
       isListingOwner: deal.listing.locationId === locationId,
     }
   })
