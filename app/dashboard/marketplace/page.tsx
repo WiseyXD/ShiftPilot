@@ -18,7 +18,16 @@ import { RespondForm } from "@/components/marketplace/respond-form"
 import { getDealsForLocation, getDiscoveryFeed, getNearbyVenues } from "@/lib/marketplace/queries"
 import { formatRate } from "@/lib/marketplace/listings"
 import { cancelListing, confirmDeal, declineDeal } from "@/app/actions/marketplace"
-import { Building2, Handshake, Inbox, MapPin, MapPinOff, Newspaper, Store } from "lucide-react"
+import {
+  Building2,
+  Handshake,
+  Inbox,
+  MapPin,
+  MapPinOff,
+  MessageCircle,
+  Newspaper,
+  Store,
+} from "lucide-react"
 
 const LISTING_TYPE_STYLES = {
   OFFER: "bg-blue-100 text-blue-700 border-blue-200",
@@ -264,12 +273,36 @@ export default async function MarketplacePage({
                               </form>
                             </>
                           ) : (
-                            <form action={declineDeal.bind(null, deal.id)}>
-                              <Button type="submit" size="sm" variant="ghost">
-                                Withdraw
-                              </Button>
-                            </form>
+                            <>
+                              <a
+                                href={`/api/marketplace/nudge/${deal.id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <Button size="sm" variant="outline">
+                                  <MessageCircle className="h-3.5 w-3.5" />
+                                  Nudge on WhatsApp
+                                </Button>
+                              </a>
+                              <form action={declineDeal.bind(null, deal.id)}>
+                                <Button type="submit" size="sm" variant="ghost">
+                                  Withdraw
+                                </Button>
+                              </form>
+                            </>
                           ))}
+                        {deal.status === "MANAGERS_AGREED" && deal.direction === "LENDING" && (
+                          <a
+                            href={`/api/marketplace/nudge/${deal.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Button size="sm" variant="outline">
+                              <MessageCircle className="h-3.5 w-3.5" />
+                              Nudge worker on WhatsApp
+                            </Button>
+                          </a>
+                        )}
                       </div>
                     </li>
                   ))}
