@@ -5,6 +5,7 @@ import { sendEmail } from "@/lib/email/send"
 import { NotificationEmail } from "@/lib/email/templates/notification"
 import { LoanConsentEmail } from "@/lib/email/templates/loan-consent"
 import { formatRate } from "@/lib/marketplace/listings"
+import { applyLoanRosterEffects } from "@/lib/marketplace/roster-effects"
 import * as React from "react"
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL
@@ -105,6 +106,11 @@ export const loanConsent = inngest.createFunction(
     }
 
     const accepted = response.data.response === "ACCEPT_LOAN"
+
+    if (accepted) {
+      // Lender's in-window shift → LENT_OUT; borrower's unfilled shift → badge.
+      await step.run("apply-roster-effects", () => applyLoanRosterEffects(dealId))
+    }
 
     await step.run("notify-managers", async () => {
       await sendEmail({

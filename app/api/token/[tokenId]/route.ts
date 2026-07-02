@@ -139,15 +139,37 @@ async function handleAction(action: string, payload: unknown) {
       return NextResponse.json({ ok: true, message: "Noted. We'll find someone to cover." })
     }
 
-    case "REPORT_SICK":
+    case "REPORT_SICK": {
+      const sickShift = await prisma.shift.findUnique({ where: { id: p.shiftId } })
+      if (!sickShift) {
+        return NextResponse.json({ error: "Shift not found" }, { status: 404 })
+      }
+      // A lent-out shift isn't the lender's to cover — no decline, no backfill.
+      if (sickShift.status === "LENT_OUT") {
+        return NextResponse.json(
+          { error: "This shift is lent out to another venue — talk to your manager directly." },
+          { status: 409 }
+        )
+      }
       await prisma.shift.update({
         where: { id: p.shiftId },
         data: { status: "DECLINED" },
       })
       await inngest.send({ name: "shift/sick-call", data: { shiftId: p.shiftId } })
       return NextResponse.json({ ok: true, message: "Feel better soon. We'll handle coverage." })
+    }
 
     case "REQUEST_SWAP": {
+      const swapShift = await prisma.shift.findUnique({ where: { id: p.shiftId } })
+      if (!swapShift) {
+        return NextResponse.json({ error: "Shift not found" }, { status: 404 })
+      }
+      if (swapShift.status === "LENT_OUT") {
+        return NextResponse.json(
+          { error: "This shift is lent out to another venue — it can't be swapped." },
+          { status: 409 }
+        )
+      }
       const swapRequest = await prisma.swapRequest.create({
         data: { shiftId: p.shiftId, requesterId: p.requesterId },
       })

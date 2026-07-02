@@ -51,7 +51,8 @@ export const ShiftStatus = {
   ACCEPTED: 'ACCEPTED',
   DECLINED: 'DECLINED',
   REASSIGNED: 'REASSIGNED',
-  UNASSIGNED: 'UNASSIGNED'
+  UNASSIGNED: 'UNASSIGNED',
+  LENT_OUT: 'LENT_OUT'
 } as const
 
 export type ShiftStatus = (typeof ShiftStatus)[keyof typeof ShiftStatus]

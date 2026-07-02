@@ -16,7 +16,10 @@ const STATUS_STYLES: Record<string, string> = {
   DECLINED: "bg-red-100 text-red-700 border-red-200",
   REASSIGNED: "bg-blue-100 text-blue-700 border-blue-200",
   UNASSIGNED: "bg-yellow-100 text-yellow-700 border-yellow-200",
+  LENT_OUT: "bg-purple-100 text-purple-700 border-purple-200",
 }
+
+const BORROWED_STYLE = "bg-purple-100 text-purple-700 border-purple-200"
 
 export default async function SchedulePage({
   params,
@@ -38,7 +41,17 @@ export default async function SchedulePage({
     include: {
       location: true,
       shifts: {
-        include: { shiftTemplate: true, employee: true },
+        include: {
+          shiftTemplate: true,
+          employee: true,
+          sharingDeal: {
+            select: {
+              listing: { select: { role: true } },
+              lenderLocation: { select: { name: true } },
+              employee: { select: { name: true } },
+            },
+          },
+        },
         orderBy: [{ shiftTemplate: { startTime: "asc" } }],
       },
     },
@@ -143,15 +156,36 @@ export default async function SchedulePage({
                       <td key={dow} className="px-2 py-2 text-center align-middle">
                         {shift ? (
                           <div className="space-y-1 inline-flex flex-col items-center px-2 py-1 rounded-md hover:bg-slate-50 transition-colors">
-                            <p className="text-xs font-medium text-slate-900">
-                              {shift.employee?.name ?? <span className="text-yellow-600">Unfilled</span>}
-                            </p>
-                            <Badge
-                              variant="outline"
-                              className={`text-[10px] px-1.5 py-0 h-4 ${STATUS_STYLES[shift.status]}`}
-                            >
-                              {shift.status.toLowerCase()}
-                            </Badge>
+                            {shift.sharingDeal && !shift.employee ? (
+                              // Borrowed cover: worker name is safe to show here —
+                              // roster effects only run once the deal is FILLED.
+                              <>
+                                <p className="text-xs font-medium text-slate-900">
+                                  {shift.sharingDeal.employee.name}
+                                </p>
+                                <Badge
+                                  variant="outline"
+                                  className={`text-[10px] px-1.5 py-0 h-4 ${BORROWED_STYLE}`}
+                                >
+                                  Borrowed: {shift.sharingDeal.listing.role} —{" "}
+                                  {shift.sharingDeal.lenderLocation.name}
+                                </Badge>
+                              </>
+                            ) : (
+                              <>
+                                <p className="text-xs font-medium text-slate-900">
+                                  {shift.employee?.name ?? (
+                                    <span className="text-yellow-600">Unfilled</span>
+                                  )}
+                                </p>
+                                <Badge
+                                  variant="outline"
+                                  className={`text-[10px] px-1.5 py-0 h-4 ${STATUS_STYLES[shift.status]}`}
+                                >
+                                  {shift.status === "LENT_OUT" ? "lent out" : shift.status.toLowerCase()}
+                                </Badge>
+                              </>
+                            )}
                           </div>
                         ) : (
                           <span className="text-slate-300">—</span>

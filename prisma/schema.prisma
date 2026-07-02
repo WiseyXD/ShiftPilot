@@ -43,6 +43,7 @@ enum ShiftStatus {
   DECLINED
   REASSIGNED
   UNASSIGNED
+  LENT_OUT // worker is lent to another venue — ALWAYS suppresses the backfill engine
 }
 
 enum SharingListingType {
