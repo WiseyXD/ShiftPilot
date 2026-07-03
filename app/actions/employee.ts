@@ -14,6 +14,7 @@ type ContractFields = {
   phone: string | null
   hourlyWageCents: number | null
   isWerkstudent: boolean
+  lectureFree: boolean
 }
 
 function parseContractFields(formData: FormData): { error: string } | ContractFields {
@@ -28,7 +29,8 @@ function parseContractFields(formData: FormData): { error: string } | ContractFi
   if (wage !== null && (Number.isNaN(wage) || wage < 0)) return { error: "Invalid hourly wage" as const }
   const hourlyWageCents = wage === null ? null : Math.round(wage * 100)
   const isWerkstudent = formData.get("isWerkstudent") === "on"
-  return { category, birthDate, phone, hourlyWageCents, isWerkstudent }
+  const lectureFree = isWerkstudent && formData.get("lectureFree") === "on"
+  return { category, birthDate, phone, hourlyWageCents, isWerkstudent, lectureFree }
 }
 
 async function assertOwnsLocation(locationId: string, ownerId: string) {

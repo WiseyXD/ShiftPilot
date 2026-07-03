@@ -24,7 +24,13 @@ interface Employee {
   maxHours: number
   category: EmployeeCategory
   birthDate?: Date | string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
+  lectureFree?: boolean
 }
+
+// Net hours already worked earlier this month, per employee — for the Minijob cap.
+export type MonthHours = Record<string, number>
 
 interface ShiftTemplate {
   id: string
@@ -64,7 +70,8 @@ export function fallbackAssign(
   templates: ShiftTemplate[],
   employees: Employee[],
   availability: EffectiveAvailability[],
-  rules: ComplianceRules = DEFAULT_COMPLIANCE_RULES
+  rules: ComplianceRules = DEFAULT_COMPLIANCE_RULES,
+  monthHours: MonthHours = {}
 ): GeneratedAssignment[] {
   const availSet = new Set(
     availability.filter((a) => a.available).map((a) => `${a.employeeId}:${a.shiftTemplateId}:${a.dayOfWeek}`)
@@ -86,7 +93,12 @@ export function fallbackAssign(
         if (current + hours > emp.maxHours) return false
         if (tmpl.requiredRoles.length > 0 && !tmpl.requiredRoles.some((r) => emp.roles.includes(r))) return false
         // Legal limits are priority 1 — never violable.
-        if (checkEmployeeAssignment(emp, slot, assignedShifts[emp.id] ?? [], rules) !== null) return false
+        if (
+          checkEmployeeAssignment(emp, slot, assignedShifts[emp.id] ?? [], rules, {
+            monthNetHoursBeforeWeek: monthHours[emp.id] ?? 0,
+          }) !== null
+        )
+          return false
         return true
       })
 
@@ -111,7 +123,8 @@ export async function generateSchedule(
   templates: ShiftTemplate[],
   employees: Employee[],
   availability: EffectiveAvailability[],
-  rules: ComplianceRules = DEFAULT_COMPLIANCE_RULES
+  rules: ComplianceRules = DEFAULT_COMPLIANCE_RULES,
+  monthHours: MonthHours = {}
 ): Promise<{ assignments: GeneratedAssignment[]; reasoning: string }> {
   try {
     const model = new ChatOpenAI({ model: "gpt-4o", temperature: 0 })
@@ -171,7 +184,9 @@ Set employeeId to null if no eligible employee is available.
           employeeId = null
         } else {
           const slot = slotShift(a.dayOfWeek, tmpl)
-          const violation = checkEmployeeAssignment(emp, slot, acceptedShifts[emp.id] ?? [], rules)
+          const violation = checkEmployeeAssignment(emp, slot, acceptedShifts[emp.id] ?? [], rules, {
+            monthNetHoursBeforeWeek: monthHours[emp.id] ?? 0,
+          })
           if (violation) {
             voided.push(`${emp.name}: ${violation.rule} — ${violation.detail}`)
             employeeId = null
@@ -194,7 +209,7 @@ Set employeeId to null if no eligible employee is available.
     return { assignments, reasoning }
   } catch {
     // Fallback to deterministic algorithm if LLM fails
-    const assignments = fallbackAssign(templates, employees, availability, rules)
+    const assignments = fallbackAssign(templates, employees, availability, rules, monthHours)
     return { assignments, reasoning: "Deterministic fallback (LLM unavailable)" }
   }
 }

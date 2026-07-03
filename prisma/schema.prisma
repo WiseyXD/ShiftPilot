@@ -140,6 +140,7 @@ model Employee {
   phone           String? // digits only, for the WhatsApp channel
   hourlyWageCents Int? // needed for the Minijob earnings cap
   isWerkstudent   Boolean          @default(false)
+  lectureFree     Boolean          @default(false) // Werkstudent: lecture-free period lifts the 20h cap
   createdAt       DateTime         @default(now())
 
   location              Location               @relation(fields: [locationId], references: [id], onDelete: Cascade)

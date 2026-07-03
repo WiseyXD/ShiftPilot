@@ -2,14 +2,35 @@
 // gets nothing at all. Pure — the single entry point every assignment door uses.
 
 import { checkAssignment, netWorkHours, type PlannedShift, type Violation } from "./arbzg"
+import { minijobEarningsCents } from "./caps"
 import type { ComplianceRules } from "./rules"
 
 export type ComplianceViolation =
   | Violation
-  | { rule: "UNDER_15" | "NIGHT_CUTOFF" | "FIVE_DAY_WEEK" | "SUNDAY_MINOR"; detail: string }
+  | {
+      rule:
+        | "UNDER_15"
+        | "NIGHT_CUTOFF"
+        | "FIVE_DAY_WEEK"
+        | "SUNDAY_MINOR"
+        | "MINIJOB_CAP"
+        | "WERKSTUDENT_WEEKLY"
+      detail: string
+    }
 
 export interface AgedEmployee {
   birthDate?: Date | string | null
+  category?: "MINIJOB_ZEITARBEIT" | "TEILZEIT_FEST"
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
+  lectureFree?: boolean
+}
+
+export interface AssignmentContext {
+  // Net hours already worked earlier THIS MONTH (before the week under
+  // consideration) — feeds the Minijob earnings cap. Defaults to 0 when the
+  // caller has no month history.
+  monthNetHoursBeforeWeek?: number
 }
 
 // Full years at `date`, birthday boundary respected (UTC on both sides).
@@ -34,8 +55,12 @@ export function checkEmployeeAssignment(
   employee: AgedEmployee,
   candidate: PlannedShift,
   existing: PlannedShift[],
-  rules: ComplianceRules
+  rules: ComplianceRules,
+  context: AssignmentContext = {}
 ): ComplianceViolation | null {
+  const statusViolation = checkStatusCaps(employee, candidate, existing, rules, context)
+  if (statusViolation) return statusViolation
+
   const age = employee.birthDate ? ageOn(employee.birthDate, candidate.start) : null
 
   // Unknown age is treated as adult — v1 pragmatism; the JArbSchG UI hint
@@ -77,6 +102,41 @@ export function checkEmployeeAssignment(
     return {
       rule: "FIVE_DAY_WEEK",
       detail: `already ${workedDays.size} working days this week — minors get a ${minor.maxWorkDaysPerWeek}-day week`,
+    }
+  }
+
+  return null
+}
+
+// Money/status caps orthogonal to age: Minijob earnings, Werkstudent hours.
+function checkStatusCaps(
+  employee: AgedEmployee,
+  candidate: PlannedShift,
+  existing: PlannedShift[],
+  rules: ComplianceRules,
+  context: AssignmentContext
+): ComplianceViolation | null {
+  const weekNet =
+    netWorkHours(candidate, rules.arbzg) +
+    existing.reduce((sum, s) => sum + netWorkHours(s, rules.arbzg), 0)
+
+  if (employee.category === "MINIJOB_ZEITARBEIT" && employee.hourlyWageCents) {
+    const monthNet = (context.monthNetHoursBeforeWeek ?? 0) + weekNet
+    const earnings = minijobEarningsCents(employee.hourlyWageCents, monthNet)
+    if (earnings > rules.minijob.monthlyEarningsCapCents) {
+      return {
+        rule: "MINIJOB_CAP",
+        detail: `${(earnings / 100).toFixed(2)} € this month would exceed the ${(rules.minijob.monthlyEarningsCapCents / 100).toFixed(0)} € Minijob cap`,
+      }
+    }
+  }
+
+  if (employee.isWerkstudent && !employee.lectureFree) {
+    if (weekNet > rules.werkstudent.maxWeeklyHoursLecture) {
+      return {
+        rule: "WERKSTUDENT_WEEKLY",
+        detail: `${weekNet.toFixed(2)} h this week exceeds the ${rules.werkstudent.maxWeeklyHoursLecture} h Werkstudent limit during lecture time`,
+      }
     }
   }
 

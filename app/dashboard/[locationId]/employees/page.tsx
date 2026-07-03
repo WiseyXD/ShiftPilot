@@ -105,14 +105,24 @@ function AddEmployeeForm({ locationId }: { locationId: string }) {
             <Input name="hourlyWage" type="number" step="0.01" min={0} placeholder="13.90" />
           </div>
         </div>
-        <label className="flex items-center gap-2 cursor-pointer">
-          <input
-            type="checkbox"
-            name="isWerkstudent"
-            className="rounded border-slate-300 text-slate-900 focus:ring-slate-900"
-          />
-          <span className="text-sm text-slate-700">Werkstudent (20 h/week limit applies)</span>
-        </label>
+        <div className="flex flex-wrap gap-4">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              name="isWerkstudent"
+              className="rounded border-slate-300 text-slate-900 focus:ring-slate-900"
+            />
+            <span className="text-sm text-slate-700">Werkstudent (20 h/week limit applies)</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              name="lectureFree"
+              className="rounded border-slate-300 text-slate-900 focus:ring-slate-900"
+            />
+            <span className="text-sm text-slate-700">Currently lecture-free (lifts the 20 h cap)</span>
+          </label>
+        </div>
         <Button type="submit" disabled={pending}>
           {pending ? "Adding…" : "Add employee"}
         </Button>

@@ -3,6 +3,9 @@ import { prisma } from "@/prisma/client"
 import { getEffectiveAvailability } from "@/lib/scheduling/availability"
 import { generateSchedule } from "@/lib/scheduling/generate"
 import { loadRules } from "@/lib/compliance/load"
+import { loadMonthNetHoursBeforeWeek } from "@/lib/compliance/hours"
+import { minijobCapWarning } from "@/lib/compliance/caps"
+import { netWorkHours } from "@/lib/compliance/arbzg"
 import { generateToken } from "@/lib/tokens/generate"
 import { sendEmail } from "@/lib/email/send"
 import { ScheduleDraftEmail } from "@/lib/email/templates/schedule-draft"
@@ -36,12 +39,51 @@ export const weeklyScheduleGeneration = inngest.createFunction(
 
         const availability = await getEffectiveAvailability(location.id, weekStart)
         const rules = await loadRules(weekStart)
+        const monthHours = await loadMonthNetHoursBeforeWeek(
+          location.employees.map((e) => e.id),
+          weekStart,
+          rules.arbzg
+        )
         const { assignments, reasoning } = await generateSchedule(
           location.shiftTemplates,
           location.employees,
           availability,
-          rules
+          rules,
+          monthHours
         )
+
+        // Early warning: minijobbers approaching the earnings cap after this
+        // week's assignments — the manager hears about it before blocks start.
+        const tmplTimes = new Map(location.shiftTemplates.map((t) => [t.id, t]))
+        for (const emp of location.employees) {
+          if (emp.category !== "MINIJOB_ZEITARBEIT" || !emp.hourlyWageCents) continue
+          const weekNet = assignments
+            .filter((a) => a.employeeId === emp.id)
+            .reduce((sum, a) => {
+              const t = tmplTimes.get(a.shiftTemplateId)
+              if (!t) return sum
+              const day = new Date(2001, 0, 1)
+              const [sh, sm] = t.startTime.split(":").map(Number)
+              const [eh, em] = t.endTime.split(":").map(Number)
+              const start = new Date(day)
+              start.setHours(sh, sm, 0, 0)
+              const end = new Date(day)
+              end.setHours(eh, em, 0, 0)
+              return sum + netWorkHours({ start, end }, rules.arbzg)
+            }, 0)
+          const monthNet = (monthHours[emp.id] ?? 0) + weekNet
+          if (minijobCapWarning(emp.hourlyWageCents, monthNet, rules.minijob)) {
+            await prisma.auditLog.create({
+              data: {
+                locationId: location.id,
+                action: "MINIJOB_CAP_WARNING",
+                aiReasoning: `${emp.name}: ~${((emp.hourlyWageCents * monthNet) / 100).toFixed(2)} € scheduled this month — approaching the ${(rules.minijob.monthlyEarningsCapCents / 100).toFixed(0)} € cap`,
+                candidatesConsidered: [{ employeeId: emp.id }],
+                outcome: "warning",
+              },
+            })
+          }
+        }
 
         // Persist schedule + shifts
         const schedule = await prisma.schedule.create({

@@ -50,6 +50,7 @@ export type EmployeeMinAggregateOutputType = {
   phone: string | null
   hourlyWageCents: number | null
   isWerkstudent: boolean | null
+  lectureFree: boolean | null
   createdAt: Date | null
 }
 
@@ -65,6 +66,7 @@ export type EmployeeMaxAggregateOutputType = {
   phone: string | null
   hourlyWageCents: number | null
   isWerkstudent: boolean | null
+  lectureFree: boolean | null
   createdAt: Date | null
 }
 
@@ -81,6 +83,7 @@ export type EmployeeCountAggregateOutputType = {
   phone: number
   hourlyWageCents: number
   isWerkstudent: number
+  lectureFree: number
   createdAt: number
   _all: number
 }
@@ -110,6 +113,7 @@ export type EmployeeMinAggregateInputType = {
   phone?: true
   hourlyWageCents?: true
   isWerkstudent?: true
+  lectureFree?: true
   createdAt?: true
 }
 
@@ -125,6 +129,7 @@ export type EmployeeMaxAggregateInputType = {
   phone?: true
   hourlyWageCents?: true
   isWerkstudent?: true
+  lectureFree?: true
   createdAt?: true
 }
 
@@ -141,6 +146,7 @@ export type EmployeeCountAggregateInputType = {
   phone?: true
   hourlyWageCents?: true
   isWerkstudent?: true
+  lectureFree?: true
   createdAt?: true
   _all?: true
 }
@@ -244,6 +250,7 @@ export type EmployeeGroupByOutputType = {
   phone: string | null
   hourlyWageCents: number | null
   isWerkstudent: boolean
+  lectureFree: boolean
   createdAt: Date
   _count: EmployeeCountAggregateOutputType | null
   _avg: EmployeeAvgAggregateOutputType | null
@@ -283,6 +290,7 @@ export type EmployeeWhereInput = {
   phone?: Prisma.StringNullableFilter<"Employee"> | string | null
   hourlyWageCents?: Prisma.IntNullableFilter<"Employee"> | number | null
   isWerkstudent?: Prisma.BoolFilter<"Employee"> | boolean
+  lectureFree?: Prisma.BoolFilter<"Employee"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>
   recurringAvailability?: Prisma.RecurringAvailabilityListRelationFilter
@@ -308,6 +316,7 @@ export type EmployeeOrderByWithRelationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   hourlyWageCents?: Prisma.SortOrderInput | Prisma.SortOrder
   isWerkstudent?: Prisma.SortOrder
+  lectureFree?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   location?: Prisma.LocationOrderByWithRelationInput
   recurringAvailability?: Prisma.RecurringAvailabilityOrderByRelationAggregateInput
@@ -337,6 +346,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   phone?: Prisma.StringNullableFilter<"Employee"> | string | null
   hourlyWageCents?: Prisma.IntNullableFilter<"Employee"> | number | null
   isWerkstudent?: Prisma.BoolFilter<"Employee"> | boolean
+  lectureFree?: Prisma.BoolFilter<"Employee"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>
   recurringAvailability?: Prisma.RecurringAvailabilityListRelationFilter
@@ -362,6 +372,7 @@ export type EmployeeOrderByWithAggregationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   hourlyWageCents?: Prisma.SortOrderInput | Prisma.SortOrder
   isWerkstudent?: Prisma.SortOrder
+  lectureFree?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.EmployeeCountOrderByAggregateInput
   _avg?: Prisma.EmployeeAvgOrderByAggregateInput
@@ -386,6 +397,7 @@ export type EmployeeScalarWhereWithAggregatesInput = {
   phone?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   hourlyWageCents?: Prisma.IntNullableWithAggregatesFilter<"Employee"> | number | null
   isWerkstudent?: Prisma.BoolWithAggregatesFilter<"Employee"> | boolean
+  lectureFree?: Prisma.BoolWithAggregatesFilter<"Employee"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
 }
 
@@ -401,6 +413,7 @@ export type EmployeeCreateInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -426,6 +439,7 @@ export type EmployeeUncheckedCreateInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -449,6 +463,7 @@ export type EmployeeUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -474,6 +489,7 @@ export type EmployeeUncheckedUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -498,6 +514,7 @@ export type EmployeeCreateManyInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
 }
 
@@ -513,6 +530,7 @@ export type EmployeeUpdateManyMutationInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -529,6 +547,7 @@ export type EmployeeUncheckedUpdateManyInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -568,6 +587,7 @@ export type EmployeeCountOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   hourlyWageCents?: Prisma.SortOrder
   isWerkstudent?: Prisma.SortOrder
+  lectureFree?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -589,6 +609,7 @@ export type EmployeeMaxOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   hourlyWageCents?: Prisma.SortOrder
   isWerkstudent?: Prisma.SortOrder
+  lectureFree?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -604,6 +625,7 @@ export type EmployeeMinOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   hourlyWageCents?: Prisma.SortOrder
   isWerkstudent?: Prisma.SortOrder
+  lectureFree?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -822,6 +844,7 @@ export type EmployeeCreateWithoutLocationInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutEmployeeInput
@@ -845,6 +868,7 @@ export type EmployeeUncheckedCreateWithoutLocationInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -898,6 +922,7 @@ export type EmployeeScalarWhereInput = {
   phone?: Prisma.StringNullableFilter<"Employee"> | string | null
   hourlyWageCents?: Prisma.IntNullableFilter<"Employee"> | number | null
   isWerkstudent?: Prisma.BoolFilter<"Employee"> | boolean
+  lectureFree?: Prisma.BoolFilter<"Employee"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
 }
 
@@ -913,6 +938,7 @@ export type EmployeeCreateWithoutRecurringAvailabilityInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutEmployeeInput
@@ -937,6 +963,7 @@ export type EmployeeUncheckedCreateWithoutRecurringAvailabilityInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
   actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
@@ -975,6 +1002,7 @@ export type EmployeeUpdateWithoutRecurringAvailabilityInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutEmployeeNestedInput
@@ -999,6 +1027,7 @@ export type EmployeeUncheckedUpdateWithoutRecurringAvailabilityInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
   actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1021,6 +1050,7 @@ export type EmployeeCreateWithoutAvailabilityOverridesInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1045,6 +1075,7 @@ export type EmployeeUncheckedCreateWithoutAvailabilityOverridesInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1083,6 +1114,7 @@ export type EmployeeUpdateWithoutAvailabilityOverridesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1107,6 +1139,7 @@ export type EmployeeUncheckedUpdateWithoutAvailabilityOverridesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1129,6 +1162,7 @@ export type EmployeeCreateWithoutShiftsInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1153,6 +1187,7 @@ export type EmployeeUncheckedCreateWithoutShiftsInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1191,6 +1226,7 @@ export type EmployeeUpdateWithoutShiftsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1215,6 +1251,7 @@ export type EmployeeUncheckedUpdateWithoutShiftsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1237,6 +1274,7 @@ export type EmployeeCreateWithoutSwapRequestsInitiatedInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1261,6 +1299,7 @@ export type EmployeeUncheckedCreateWithoutSwapRequestsInitiatedInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1288,6 +1327,7 @@ export type EmployeeCreateWithoutSwapRequestsProposedInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1312,6 +1352,7 @@ export type EmployeeUncheckedCreateWithoutSwapRequestsProposedInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1350,6 +1391,7 @@ export type EmployeeUpdateWithoutSwapRequestsInitiatedInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1374,6 +1416,7 @@ export type EmployeeUncheckedUpdateWithoutSwapRequestsInitiatedInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1407,6 +1450,7 @@ export type EmployeeUpdateWithoutSwapRequestsProposedInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1431,6 +1475,7 @@ export type EmployeeUncheckedUpdateWithoutSwapRequestsProposedInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1453,6 +1498,7 @@ export type EmployeeCreateWithoutSharingListingsInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1477,6 +1523,7 @@ export type EmployeeUncheckedCreateWithoutSharingListingsInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1515,6 +1562,7 @@ export type EmployeeUpdateWithoutSharingListingsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1539,6 +1587,7 @@ export type EmployeeUncheckedUpdateWithoutSharingListingsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1561,6 +1610,7 @@ export type EmployeeCreateWithoutSharingDealsInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1585,6 +1635,7 @@ export type EmployeeUncheckedCreateWithoutSharingDealsInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1623,6 +1674,7 @@ export type EmployeeUpdateWithoutSharingDealsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1647,6 +1699,7 @@ export type EmployeeUncheckedUpdateWithoutSharingDealsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1669,6 +1722,7 @@ export type EmployeeCreateWithoutActionTokensInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1693,6 +1747,7 @@ export type EmployeeUncheckedCreateWithoutActionTokensInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1731,6 +1786,7 @@ export type EmployeeUpdateWithoutActionTokensInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1755,6 +1811,7 @@ export type EmployeeUncheckedUpdateWithoutActionTokensInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1777,6 +1834,7 @@ export type EmployeeCreateManyLocationInput = {
   phone?: string | null
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: Date | string
 }
 
@@ -1792,6 +1850,7 @@ export type EmployeeUpdateWithoutLocationInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutEmployeeNestedInput
@@ -1815,6 +1874,7 @@ export type EmployeeUncheckedUpdateWithoutLocationInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1838,6 +1898,7 @@ export type EmployeeUncheckedUpdateManyWithoutLocationInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1948,6 +2009,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   phone?: boolean
   hourlyWageCents?: boolean
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: boolean
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
   recurringAvailability?: boolean | Prisma.Employee$recurringAvailabilityArgs<ExtArgs>
@@ -1974,6 +2036,7 @@ export type EmployeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   phone?: boolean
   hourlyWageCents?: boolean
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: boolean
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employee"]>
@@ -1991,6 +2054,7 @@ export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   phone?: boolean
   hourlyWageCents?: boolean
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: boolean
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employee"]>
@@ -2008,10 +2072,11 @@ export type EmployeeSelectScalar = {
   phone?: boolean
   hourlyWageCents?: boolean
   isWerkstudent?: boolean
+  lectureFree?: boolean
   createdAt?: boolean
 }
 
-export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "locationId" | "name" | "email" | "roles" | "minHours" | "maxHours" | "category" | "birthDate" | "phone" | "hourlyWageCents" | "isWerkstudent" | "createdAt", ExtArgs["result"]["employee"]>
+export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "locationId" | "name" | "email" | "roles" | "minHours" | "maxHours" | "category" | "birthDate" | "phone" | "hourlyWageCents" | "isWerkstudent" | "lectureFree" | "createdAt", ExtArgs["result"]["employee"]>
 export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
   recurringAvailability?: boolean | Prisma.Employee$recurringAvailabilityArgs<ExtArgs>
@@ -2057,6 +2122,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     phone: string | null
     hourlyWageCents: number | null
     isWerkstudent: boolean
+    lectureFree: boolean
     createdAt: Date
   }, ExtArgs["result"]["employee"]>
   composites: {}
@@ -2502,6 +2568,7 @@ export interface EmployeeFieldRefs {
   readonly phone: Prisma.FieldRef<"Employee", 'String'>
   readonly hourlyWageCents: Prisma.FieldRef<"Employee", 'Int'>
   readonly isWerkstudent: Prisma.FieldRef<"Employee", 'Boolean'>
+  readonly lectureFree: Prisma.FieldRef<"Employee", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Employee", 'DateTime'>
 }
     

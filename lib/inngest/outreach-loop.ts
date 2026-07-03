@@ -9,6 +9,7 @@ import {
   type PlannedShift,
 } from "@/lib/compliance/check"
 import { loadRules } from "@/lib/compliance/load"
+import { loadMonthNetHoursBeforeWeek } from "@/lib/compliance/hours"
 import type { ComplianceRules } from "@/lib/compliance/rules"
 import type { Prisma } from "@/prisma/generated/client/client"
 import * as React from "react"
@@ -261,6 +262,13 @@ export async function buildShiftCandidates(opts: {
   // explained in the audit log.
   const rules = (await step.run("load-compliance-rules", () => loadRules(new Date()))) as ComplianceRules
   const weekStart = new Date(shift.schedule.weekStart)
+  const monthHours = (await step.run("load-month-hours", () =>
+    loadMonthNetHoursBeforeWeek(
+      hydrated.map((c) => c.employeeId),
+      weekStart,
+      rules.arbzg
+    )
+  )) as Record<string, number>
   const candidateSlot: PlannedShift = {
     start: getShiftStart(weekStart, shift.dayOfWeek, shift.shiftTemplate.startTime),
     end: getShiftEnd(weekStart, shift.dayOfWeek, shift.shiftTemplate.endTime),
@@ -277,10 +285,17 @@ export async function buildShiftCandidates(opts: {
         end: getShiftEnd(weekStart, s.dayOfWeek, s.shiftTemplate.endTime),
       }))
     const violation = checkEmployeeAssignment(
-      { birthDate: emp?.birthDate ?? null },
+      {
+        birthDate: emp?.birthDate ?? null,
+        category: emp?.category,
+        hourlyWageCents: emp?.hourlyWageCents,
+        isWerkstudent: emp?.isWerkstudent,
+        lectureFree: emp?.lectureFree,
+      },
       candidateSlot,
       existing,
-      rules
+      rules,
+      { monthNetHoursBeforeWeek: monthHours[candidate.employeeId] ?? 0 }
     )
     if (violation) blocked.push({ candidate, violation })
     else legal.push(candidate)

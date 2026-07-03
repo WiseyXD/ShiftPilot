@@ -48,14 +48,39 @@ export const DEFAULT_JARBSCHG_RULES: JArbSchGRules = {
   minAgeYears: 15,
 }
 
+// Minijob (2026): cap is coupled to minimum wage — pure data, will change.
+export interface MinijobRules {
+  monthlyEarningsCapCents: number // 60300 (603 €)
+  warnAtFraction: number // 0.8 — alert the manager before blocking
+}
+
+export const DEFAULT_MINIJOB_RULES: MinijobRules = {
+  monthlyEarningsCapCents: 60300,
+  warnAtFraction: 0.8,
+}
+
+export interface WerkstudentRules {
+  maxWeeklyHoursLecture: number // 20 during lecture time
+  maxWeeksOverPerYear: number // 26 — beyond this the privilege falls
+}
+
+export const DEFAULT_WERKSTUDENT_RULES: WerkstudentRules = {
+  maxWeeklyHoursLecture: 20,
+  maxWeeksOverPerYear: 26,
+}
+
 export interface ComplianceRules {
   arbzg: ArbZGRules
   jarbschg: JArbSchGRules
+  minijob: MinijobRules
+  werkstudent: WerkstudentRules
 }
 
 export const DEFAULT_COMPLIANCE_RULES: ComplianceRules = {
   arbzg: DEFAULT_ARBZG_RULES,
   jarbschg: DEFAULT_JARBSCHG_RULES,
+  minijob: DEFAULT_MINIJOB_RULES,
+  werkstudent: DEFAULT_WERKSTUDENT_RULES,
 }
 
 export interface RuleVersion {

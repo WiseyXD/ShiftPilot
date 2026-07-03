@@ -12,5 +12,7 @@ export async function loadRules(date: Date): Promise<ComplianceRules> {
   return {
     arbzg: stored?.arbzg ?? DEFAULT_COMPLIANCE_RULES.arbzg,
     jarbschg: stored?.jarbschg ?? DEFAULT_COMPLIANCE_RULES.jarbschg,
+    minijob: stored?.minijob ?? DEFAULT_COMPLIANCE_RULES.minijob,
+    werkstudent: stored?.werkstudent ?? DEFAULT_COMPLIANCE_RULES.werkstudent,
   }
 }
