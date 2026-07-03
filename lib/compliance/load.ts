@@ -1,12 +1,16 @@
 // DB boundary: newest rule set effective on the date, defaults if none seeded.
 
 import { prisma } from "@/prisma/client"
-import { DEFAULT_ARBZG_RULES, type ArbZGRules } from "./rules"
+import { DEFAULT_COMPLIANCE_RULES, type ComplianceRules } from "./rules"
 
-export async function loadRules(date: Date): Promise<ArbZGRules> {
+export async function loadRules(date: Date): Promise<ComplianceRules> {
   const row = await prisma.complianceRuleSet.findFirst({
     where: { effectiveFrom: { lte: date } },
     orderBy: { effectiveFrom: "desc" },
   })
-  return (row?.rules as ArbZGRules | undefined) ?? DEFAULT_ARBZG_RULES
+  const stored = row?.rules as Partial<ComplianceRules> | undefined
+  return {
+    arbzg: stored?.arbzg ?? DEFAULT_COMPLIANCE_RULES.arbzg,
+    jarbschg: stored?.jarbschg ?? DEFAULT_COMPLIANCE_RULES.jarbschg,
+  }
 }

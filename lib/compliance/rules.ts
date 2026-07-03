@@ -22,6 +22,42 @@ export const DEFAULT_ARBZG_RULES: ArbZGRules = {
   ],
 }
 
+// JArbSchG (15–17): stricter caps, earlier nights, 5-day week.
+export interface JArbSchGRules {
+  maxDailyHours: number // 8
+  maxWeeklyHours: number // 40
+  minRestHours: number // 12
+  breakTiers: { moreThanHours: number; breakMinutes: number }[] // >4.5h→30, >6h→60
+  nightEndDefault: string // "20:00" — 15-year-olds
+  nightEndGastro16Plus: string // "22:00" — 16+ in gastronomy
+  maxWorkDaysPerWeek: number // 5
+  minAgeYears: number // 15 — under this: no employment at all
+}
+
+export const DEFAULT_JARBSCHG_RULES: JArbSchGRules = {
+  maxDailyHours: 8,
+  maxWeeklyHours: 40,
+  minRestHours: 12,
+  breakTiers: [
+    { moreThanHours: 4.5, breakMinutes: 30 },
+    { moreThanHours: 6, breakMinutes: 60 },
+  ],
+  nightEndDefault: "20:00",
+  nightEndGastro16Plus: "22:00",
+  maxWorkDaysPerWeek: 5,
+  minAgeYears: 15,
+}
+
+export interface ComplianceRules {
+  arbzg: ArbZGRules
+  jarbschg: JArbSchGRules
+}
+
+export const DEFAULT_COMPLIANCE_RULES: ComplianceRules = {
+  arbzg: DEFAULT_ARBZG_RULES,
+  jarbschg: DEFAULT_JARBSCHG_RULES,
+}
+
 export interface RuleVersion {
   effectiveFrom: Date
   rules: ArbZGRules

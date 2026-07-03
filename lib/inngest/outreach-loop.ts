@@ -3,9 +3,13 @@ import { generateToken } from "@/lib/tokens/generate"
 import { sendEmail } from "@/lib/email/send"
 import { rankReplacementCandidates } from "@/lib/scheduling/replacement"
 import { getShiftStart, getShiftEnd } from "@/lib/scheduling/shift-date"
-import { checkAssignment, type PlannedShift, type Violation } from "@/lib/compliance/arbzg"
+import {
+  checkEmployeeAssignment,
+  type ComplianceViolation,
+  type PlannedShift,
+} from "@/lib/compliance/check"
 import { loadRules } from "@/lib/compliance/load"
-import type { ArbZGRules } from "@/lib/compliance/rules"
+import type { ComplianceRules } from "@/lib/compliance/rules"
 import type { Prisma } from "@/prisma/generated/client/client"
 import * as React from "react"
 
@@ -253,8 +257,9 @@ export async function buildShiftCandidates(opts: {
   }
 
   // Legal filter — a candidate whose acceptance would break working-time law
-  // is never contacted, and the exclusion is explained in the audit log.
-  const rules = (await step.run("load-compliance-rules", () => loadRules(new Date()))) as ArbZGRules
+  // (ArbZG, or JArbSchG for minors) is never contacted, and the exclusion is
+  // explained in the audit log.
+  const rules = (await step.run("load-compliance-rules", () => loadRules(new Date()))) as ComplianceRules
   const weekStart = new Date(shift.schedule.weekStart)
   const candidateSlot: PlannedShift = {
     start: getShiftStart(weekStart, shift.dayOfWeek, shift.shiftTemplate.startTime),
@@ -262,15 +267,21 @@ export async function buildShiftCandidates(opts: {
   }
 
   const legal: OutreachCandidate[] = []
-  const blocked: { candidate: OutreachCandidate; violation: Violation }[] = []
+  const blocked: { candidate: OutreachCandidate; violation: ComplianceViolation }[] = []
   for (const candidate of hydrated) {
+    const emp = employees.find((e) => e.id === candidate.employeeId)
     const existing: PlannedShift[] = shift.schedule.shifts
       .filter((s) => s.employeeId === candidate.employeeId && s.status !== "DECLINED")
       .map((s) => ({
         start: getShiftStart(weekStart, s.dayOfWeek, s.shiftTemplate.startTime),
         end: getShiftEnd(weekStart, s.dayOfWeek, s.shiftTemplate.endTime),
       }))
-    const violation = checkAssignment(candidateSlot, existing, rules)
+    const violation = checkEmployeeAssignment(
+      { birthDate: emp?.birthDate ?? null },
+      candidateSlot,
+      existing,
+      rules
+    )
     if (violation) blocked.push({ candidate, violation })
     else legal.push(candidate)
   }

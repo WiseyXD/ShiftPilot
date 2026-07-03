@@ -3,8 +3,8 @@ import { z } from "zod"
 import type { EffectiveAvailability } from "./availability"
 import type { EmployeeCategory } from "@/prisma/generated/client/client"
 import { isAssignable, needsAvailability } from "./categories"
-import { checkAssignment, type PlannedShift } from "@/lib/compliance/arbzg"
-import { DEFAULT_ARBZG_RULES, type ArbZGRules } from "@/lib/compliance/rules"
+import { checkEmployeeAssignment, type PlannedShift } from "@/lib/compliance/check"
+import { DEFAULT_COMPLIANCE_RULES, type ComplianceRules } from "@/lib/compliance/rules"
 import { getShiftStart, getShiftEnd } from "./shift-date"
 
 // Nominal week for legal math — generation reasons about a week shape, not a
@@ -23,6 +23,7 @@ interface Employee {
   minHours: number
   maxHours: number
   category: EmployeeCategory
+  birthDate?: Date | string | null
 }
 
 interface ShiftTemplate {
@@ -63,7 +64,7 @@ export function fallbackAssign(
   templates: ShiftTemplate[],
   employees: Employee[],
   availability: EffectiveAvailability[],
-  rules: ArbZGRules = DEFAULT_ARBZG_RULES
+  rules: ComplianceRules = DEFAULT_COMPLIANCE_RULES
 ): GeneratedAssignment[] {
   const availSet = new Set(
     availability.filter((a) => a.available).map((a) => `${a.employeeId}:${a.shiftTemplateId}:${a.dayOfWeek}`)
@@ -85,7 +86,7 @@ export function fallbackAssign(
         if (current + hours > emp.maxHours) return false
         if (tmpl.requiredRoles.length > 0 && !tmpl.requiredRoles.some((r) => emp.roles.includes(r))) return false
         // Legal limits are priority 1 — never violable.
-        if (checkAssignment(slot, assignedShifts[emp.id] ?? [], rules) !== null) return false
+        if (checkEmployeeAssignment(emp, slot, assignedShifts[emp.id] ?? [], rules) !== null) return false
         return true
       })
 
@@ -110,7 +111,7 @@ export async function generateSchedule(
   templates: ShiftTemplate[],
   employees: Employee[],
   availability: EffectiveAvailability[],
-  rules: ArbZGRules = DEFAULT_ARBZG_RULES
+  rules: ComplianceRules = DEFAULT_COMPLIANCE_RULES
 ): Promise<{ assignments: GeneratedAssignment[]; reasoning: string }> {
   try {
     const model = new ChatOpenAI({ model: "gpt-4o", temperature: 0 })
@@ -136,7 +137,7 @@ You are a shift scheduler. Generate a weekly schedule that:
 3. Only assigns employees who have the required role for the shift
 4. Distributes shifts fairly (balance hours across employees)
 5. Fills every shift template for every day of the week (days 0-6, 0=Sunday)
-6. German working-time law applies: at most ${rules.maxDailyHours}h net per day and ${rules.maxWeeklyHours}h net per week per employee, and at least ${rules.minRestHours}h rest between shifts on consecutive days. Violations will be voided by the system.
+6. German working-time law applies: at most ${rules.arbzg.maxDailyHours}h net per day and ${rules.arbzg.maxWeeklyHours}h net per week per employee (minors 15-17: ${rules.jarbschg.maxDailyHours}h/${rules.jarbschg.maxWeeklyHours}h, no Sundays, done by ${rules.jarbschg.nightEndGastro16Plus}), and at least ${rules.arbzg.minRestHours}h rest between shifts on consecutive days. Violations will be voided by the system.
 
 Shift templates:
 ${JSON.stringify(templates, null, 2)}
@@ -170,7 +171,7 @@ Set employeeId to null if no eligible employee is available.
           employeeId = null
         } else {
           const slot = slotShift(a.dayOfWeek, tmpl)
-          const violation = checkAssignment(slot, acceptedShifts[emp.id] ?? [], rules)
+          const violation = checkEmployeeAssignment(emp, slot, acceptedShifts[emp.id] ?? [], rules)
           if (violation) {
             voided.push(`${emp.name}: ${violation.rule} — ${violation.detail}`)
             employeeId = null

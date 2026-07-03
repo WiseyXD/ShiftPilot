@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { useParams } from "next/navigation"
 import { PageHeader } from "@/components/dashboard/page-header"
+import { ageOn } from "@/lib/compliance/check"
 import { Trash2, Users, UserPlus } from "lucide-react"
 
 const COMMON_ROLES = ["Barista", "Chef", "Server", "Cashier", "Manager", "Kitchen", "Host"]
@@ -135,6 +136,7 @@ export default function EmployeesPage() {
       maxHours: number
       category?: "MINIJOB_ZEITARBEIT" | "TEILZEIT_FEST"
       isWerkstudent?: boolean
+      birthDate?: string | null
     }[]
   >([])
 
@@ -189,6 +191,24 @@ export default function EmployeesPage() {
                               Werkstudent
                             </Badge>
                           )}
+                          {emp.birthDate && ageOn(emp.birthDate, new Date()) < 15 && (
+                            <Badge
+                              variant="outline"
+                              className="ml-1 text-[10px] px-1.5 py-0 h-4 bg-red-100 text-red-700 border-red-200"
+                            >
+                              Under 15 — not schedulable
+                            </Badge>
+                          )}
+                          {emp.birthDate &&
+                            ageOn(emp.birthDate, new Date()) >= 15 &&
+                            ageOn(emp.birthDate, new Date()) < 18 && (
+                              <Badge
+                                variant="outline"
+                                className="ml-1 text-[10px] px-1.5 py-0 h-4 bg-purple-100 text-purple-700 border-purple-200"
+                              >
+                                Minor — JArbSchG rules
+                              </Badge>
+                            )}
                         </span>
                       )}
                     </p>
