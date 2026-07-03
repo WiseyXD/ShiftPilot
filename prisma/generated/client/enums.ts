@@ -31,10 +31,19 @@ export const ActionTokenAction = {
   REJECT_SWAP: 'REJECT_SWAP',
   APPROVE_SCHEDULE: 'APPROVE_SCHEDULE',
   ACCEPT_LOAN: 'ACCEPT_LOAN',
-  DECLINE_LOAN: 'DECLINE_LOAN'
+  DECLINE_LOAN: 'DECLINE_LOAN',
+  REQUEST_CHANGE: 'REQUEST_CHANGE'
 } as const
 
 export type ActionTokenAction = (typeof ActionTokenAction)[keyof typeof ActionTokenAction]
+
+
+export const EmployeeCategory = {
+  MINIJOB_ZEITARBEIT: 'MINIJOB_ZEITARBEIT',
+  TEILZEIT_FEST: 'TEILZEIT_FEST'
+} as const
+
+export type EmployeeCategory = (typeof EmployeeCategory)[keyof typeof EmployeeCategory]
 
 
 export const ScheduleStatus = {

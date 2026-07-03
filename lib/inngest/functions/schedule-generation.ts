@@ -50,6 +50,7 @@ export const weeklyScheduleGeneration = inngest.createFunction(
               create: assignments.map((a) => ({
                 shiftTemplateId: a.shiftTemplateId,
                 employeeId: a.employeeId,
+                dayOfWeek: a.dayOfWeek,
                 status: a.filled ? "PENDING" : "UNASSIGNED",
               })),
             },

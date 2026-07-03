@@ -187,6 +187,46 @@ async function handleAction(action: string, payload: unknown) {
       await inngest.send({ name: "swap/manager-response", data: { ...p, response: action } })
       return NextResponse.json({ ok: true, message: action === "APPROVE_SWAP" ? "Swap approved." : "Swap rejected." })
 
+    case "REQUEST_CHANGE": {
+      // Category-B employees can't decline — this only informs the manager.
+      // Nothing on the shift changes; the manager decides.
+      const shift = await prisma.shift.findUnique({
+        where: { id: p.shiftId },
+        include: {
+          shiftTemplate: true,
+          employee: true,
+          schedule: { include: { location: { include: { owner: true } } } },
+        },
+      })
+      if (!shift || !shift.employee) {
+        return NextResponse.json({ error: "Shift not found" }, { status: 404 })
+      }
+      const start = getShiftStart(new Date(shift.schedule.weekStart), shift.dayOfWeek, shift.shiftTemplate.startTime)
+      await sendEmail({
+        to: shift.schedule.location.owner.email,
+        subject: `Change request: ${shift.employee.name} — ${shift.shiftTemplate.name} on ${formatShiftDate(start)}`,
+        react: React.createElement(NotificationEmail, {
+          heading: "An employee requests a shift change",
+          body: `${shift.employee.name} asks to change their ${shift.shiftTemplate.name} shift on ${formatShiftDate(start)} (${shift.shiftTemplate.startTime}–${shift.shiftTemplate.endTime}) at ${shift.schedule.location.name}. The shift stays assigned until you decide.`,
+          ctaLabel: "View schedule",
+          ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/${shift.schedule.locationId}/schedules/${shift.scheduleId}`,
+        }),
+      })
+      await prisma.auditLog.create({
+        data: {
+          locationId: shift.schedule.locationId,
+          action: "CHANGE_REQUESTED",
+          aiReasoning: "",
+          candidatesConsidered: [],
+          outcome: `${shift.employee.name} requested a change for shift ${shift.id}`,
+        },
+      })
+      return NextResponse.json({
+        ok: true,
+        message: "Your manager has been notified. The shift stays yours until they decide.",
+      })
+    }
+
     case "ACCEPT_LOAN":
     case "DECLINE_LOAN": {
       const deal = await prisma.sharingDeal.findUnique({ where: { id: p.dealId } })

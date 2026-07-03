@@ -1458,6 +1458,11 @@ export const EmployeeScalarFieldEnum = {
   roles: 'roles',
   minHours: 'minHours',
   maxHours: 'maxHours',
+  category: 'category',
+  birthDate: 'birthDate',
+  phone: 'phone',
+  hourlyWageCents: 'hourlyWageCents',
+  isWerkstudent: 'isWerkstudent',
   createdAt: 'createdAt'
 } as const
 
@@ -1714,6 +1719,20 @@ export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeCategory'
+ */
+export type EnumEmployeeCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeCategory'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeCategory[]'
+ */
+export type ListEnumEmployeeCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeCategory[]'>
     
 
 

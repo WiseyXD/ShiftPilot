@@ -4,6 +4,7 @@ import { generateToken } from "@/lib/tokens/generate"
 import { sendEmail } from "@/lib/email/send"
 import { ShiftAssignmentEmail } from "@/lib/email/templates/shift-assignment"
 import { getShiftStart, getShiftEnd, buildGoogleCalendarUrl } from "@/lib/scheduling/shift-date"
+import { notificationMode } from "@/lib/scheduling/categories"
 import * as React from "react"
 
 export const shiftNotifications = inngest.createFunction(
@@ -41,11 +42,10 @@ export const shiftNotifications = inngest.createFunction(
     await step.run("send-notifications", async () => {
       for (const [, shifts] of byEmployee) {
         const employee = shifts[0].employee!
+        const mode = notificationMode(employee.category)
+
         const shiftEntries = await Promise.all(
           shifts.map(async (s) => {
-            const acceptToken = await generateToken(employee.id, "ACCEPT_SHIFT", { shiftId: s.id }, 168)
-            const declineToken = await generateToken(employee.id, "DECLINE_SHIFT", { shiftId: s.id }, 168)
-            const swapToken = await generateToken(employee.id, "REQUEST_SWAP", { shiftId: s.id, requesterId: employee.id }, 168)
             const start = getShiftStart(new Date(schedule.weekStart), s.dayOfWeek, s.shiftTemplate.startTime)
             const end = getShiftEnd(new Date(schedule.weekStart), s.dayOfWeek, s.shiftTemplate.endTime)
             const calendarUrl = buildGoogleCalendarUrl({
@@ -55,18 +55,43 @@ export const shiftNotifications = inngest.createFunction(
               description: `Scheduled shift at ${schedule.location.name}.`,
               location: schedule.location.name,
             })
-            return {
+            const base = {
               templateName: s.shiftTemplate.name,
               date: start.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }),
               startTime: s.shiftTemplate.startTime,
               endTime: s.shiftTemplate.endTime,
+              calendarUrl,
+            }
+
+            if (mode === "INFO_CHANGE_REQUEST") {
+              // Category B can't decline — info only, plus a change request
+              // that notifies the manager and changes nothing by itself.
+              const changeToken = await generateToken(employee.id, "REQUEST_CHANGE", { shiftId: s.id }, 168)
+              return {
+                ...base,
+                changeRequestUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/token/${changeToken.id}`,
+              }
+            }
+
+            const acceptToken = await generateToken(employee.id, "ACCEPT_SHIFT", { shiftId: s.id }, 168)
+            const declineToken = await generateToken(employee.id, "DECLINE_SHIFT", { shiftId: s.id }, 168)
+            const swapToken = await generateToken(employee.id, "REQUEST_SWAP", { shiftId: s.id, requesterId: employee.id }, 168)
+            return {
+              ...base,
               acceptUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/token/${acceptToken.id}`,
               declineUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/token/${declineToken.id}`,
               swapUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/token/${swapToken.id}`,
-              calendarUrl,
             }
           })
         )
+
+        // Category-B shifts don't await acceptance — they're set once notified.
+        if (mode === "INFO_CHANGE_REQUEST") {
+          await prisma.shift.updateMany({
+            where: { id: { in: shifts.map((s) => s.id) }, status: "PENDING" },
+            data: { status: "ACCEPTED" },
+          })
+        }
 
         const weekLabel = new Date(schedule.weekStart).toLocaleDateString("en-GB", {
           day: "numeric",
@@ -81,6 +106,7 @@ export const shiftNotifications = inngest.createFunction(
             locationName: schedule.location.name,
             weekLabel: `w/c ${weekLabel}`,
             shifts: shiftEntries,
+            mode,
           }),
         })
       }

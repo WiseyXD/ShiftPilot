@@ -467,10 +467,6 @@ export type EnumActionTokenActionFieldUpdateOperationsInput = {
   set?: $Enums.ActionTokenAction
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type ActionTokenCreateWithoutUserInput = {
   id?: string
   action: $Enums.ActionTokenAction

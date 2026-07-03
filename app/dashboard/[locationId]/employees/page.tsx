@@ -77,6 +77,41 @@ function AddEmployeeForm({ locationId }: { locationId: string }) {
             <Input name="maxHours" type="number" min={0} max={80} defaultValue={40} />
           </div>
         </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-slate-700">Category</label>
+            <select
+              name="category"
+              defaultValue="MINIJOB_ZEITARBEIT"
+              className="w-full border border-slate-200 rounded-md px-3 py-2 text-sm"
+            >
+              <option value="MINIJOB_ZEITARBEIT">Minijob / Zeitarbeit — availability-based</option>
+              <option value="TEILZEIT_FEST">Teilzeit / Festangestellt — freely assignable</option>
+            </select>
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-slate-700">Birth date (for minor protection)</label>
+            <Input name="birthDate" type="date" />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-slate-700">Phone (WhatsApp)</label>
+            <Input name="phone" type="tel" placeholder="+491701234567" />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-slate-700">Hourly wage (€)</label>
+            <Input name="hourlyWage" type="number" step="0.01" min={0} placeholder="13.90" />
+          </div>
+        </div>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            name="isWerkstudent"
+            className="rounded border-slate-300 text-slate-900 focus:ring-slate-900"
+          />
+          <span className="text-sm text-slate-700">Werkstudent (20 h/week limit applies)</span>
+        </label>
         <Button type="submit" disabled={pending}>
           {pending ? "Adding…" : "Add employee"}
         </Button>
@@ -91,7 +126,16 @@ export default function EmployeesPage() {
   const locationId = params.locationId
 
   const [employees, setEmployees] = useState<
-    { id: string; name: string; email: string; roles: string[]; minHours: number; maxHours: number }[]
+    {
+      id: string
+      name: string
+      email: string
+      roles: string[]
+      minHours: number
+      maxHours: number
+      category?: "MINIJOB_ZEITARBEIT" | "TEILZEIT_FEST"
+      isWerkstudent?: boolean
+    }[]
   >([])
 
   useEffect(() => {
@@ -125,6 +169,28 @@ export default function EmployeesPage() {
                     <p className="text-xs text-slate-500 truncate">{emp.email}</p>
                     <p className="text-xs text-slate-400 mt-0.5">
                       {emp.minHours}–{emp.maxHours} hrs/wk
+                      {emp.category && (
+                        <span className="ml-2">
+                          <Badge
+                            variant="outline"
+                            className={
+                              emp.category === "TEILZEIT_FEST"
+                                ? "text-[10px] px-1.5 py-0 h-4 bg-blue-100 text-blue-700 border-blue-200"
+                                : "text-[10px] px-1.5 py-0 h-4 bg-slate-100 text-slate-600 border-slate-200"
+                            }
+                          >
+                            {emp.category === "TEILZEIT_FEST" ? "Fest/Teilzeit" : "Minijob"}
+                          </Badge>
+                          {emp.isWerkstudent && (
+                            <Badge
+                              variant="outline"
+                              className="ml-1 text-[10px] px-1.5 py-0 h-4 bg-amber-100 text-amber-700 border-amber-200"
+                            >
+                              Werkstudent
+                            </Badge>
+                          )}
+                        </span>
+                      )}
                     </p>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">

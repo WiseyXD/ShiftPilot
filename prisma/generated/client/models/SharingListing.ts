@@ -595,14 +595,6 @@ export type EnumSharingListingTypeFieldUpdateOperationsInput = {
   set?: $Enums.SharingListingType
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type EnumSharingListingStatusFieldUpdateOperationsInput = {
   set?: $Enums.SharingListingStatus
 }

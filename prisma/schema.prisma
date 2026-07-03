@@ -29,6 +29,12 @@ enum ActionTokenAction {
   APPROVE_SCHEDULE
   ACCEPT_LOAN
   DECLINE_LOAN
+  REQUEST_CHANGE
+}
+
+enum EmployeeCategory {
+  MINIJOB_ZEITARBEIT // availability-bound; can accept/decline
+  TEILZEIT_FEST // freely assignable; cannot decline, only request a change
 }
 
 enum ScheduleStatus {
@@ -122,14 +128,19 @@ model Location {
 // ─── Employees ────────────────────────────────────────────────────────────────
 
 model Employee {
-  id         String   @id @default(cuid())
-  locationId String
-  name       String
-  email      String
-  roles      String[]
-  minHours   Int      @default(0)
-  maxHours   Int      @default(40)
-  createdAt  DateTime @default(now())
+  id              String           @id @default(cuid())
+  locationId      String
+  name            String
+  email           String
+  roles           String[]
+  minHours        Int              @default(0)
+  maxHours        Int              @default(40)
+  category        EmployeeCategory @default(MINIJOB_ZEITARBEIT)
+  birthDate       DateTime? // needed for JArbSchG minor rules
+  phone           String? // digits only, for the WhatsApp channel
+  hourlyWageCents Int? // needed for the Minijob earnings cap
+  isWerkstudent   Boolean          @default(false)
+  createdAt       DateTime         @default(now())
 
   location              Location               @relation(fields: [locationId], references: [id], onDelete: Cascade)
   recurringAvailability RecurringAvailability[]

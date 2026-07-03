@@ -7,8 +7,11 @@ interface ShiftEntry {
   date: string
   startTime: string
   endTime: string
-  acceptUrl: string
-  declineUrl: string
+  /** Accept/decline pair (category A) — omit for info-mode entries. */
+  acceptUrl?: string
+  declineUrl?: string
+  /** Change-request link (category B info mode). */
+  changeRequestUrl?: string
   swapUrl?: string
   calendarUrl?: string
 }
@@ -18,6 +21,8 @@ interface ShiftAssignmentEmailProps {
   locationName: string
   weekLabel: string
   shifts: ShiftEntry[]
+  /** INFO_CHANGE_REQUEST: shifts are fixed; no accept/decline, only change requests. */
+  mode?: "ACCEPT_DECLINE" | "INFO_CHANGE_REQUEST"
 }
 
 export function ShiftAssignmentEmail({
@@ -25,13 +30,16 @@ export function ShiftAssignmentEmail({
   locationName,
   weekLabel,
   shifts,
+  mode = "ACCEPT_DECLINE",
 }: ShiftAssignmentEmailProps) {
+  const info = mode === "INFO_CHANGE_REQUEST"
   return (
     <BaseLayout preview={`Your schedule for ${locationName} — ${weekLabel}`}>
       <Heading style={h1}>Your shifts for {weekLabel}</Heading>
       <Text style={text}>
-        Hi {employeeName}, here are your assigned shifts at {locationName}. Please accept or
-        decline each one below.
+        {info
+          ? `Hi ${employeeName}, here is your schedule at ${locationName}. These shifts are set — if one really doesn't work, use "Request a change" and your manager will decide.`
+          : `Hi ${employeeName}, here are your assigned shifts at ${locationName}. Please accept or decline each one below.`}
       </Text>
 
       {shifts.map((shift, i) => (
@@ -42,14 +50,21 @@ export function ShiftAssignmentEmail({
           <Text style={shiftTime}>
             {shift.startTime} – {shift.endTime}
           </Text>
-          <div style={buttonRow}>
-            <Button style={acceptButton} href={shift.acceptUrl}>
-              Accept
-            </Button>
-            <Button style={declineButton} href={shift.declineUrl}>
-              Decline
-            </Button>
-          </div>
+          {shift.acceptUrl && shift.declineUrl && (
+            <div style={buttonRow}>
+              <Button style={acceptButton} href={shift.acceptUrl}>
+                Accept
+              </Button>
+              <Button style={declineButton} href={shift.declineUrl}>
+                Decline
+              </Button>
+            </div>
+          )}
+          {shift.changeRequestUrl && (
+            <Link style={swapLink} href={shift.changeRequestUrl}>
+              Request a change
+            </Link>
+          )}
           {shift.swapUrl && (
             <Link style={swapLink} href={shift.swapUrl}>
               Request a swap

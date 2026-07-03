@@ -1,6 +1,8 @@
 import { ChatOpenAI } from "@langchain/openai"
 import { z } from "zod"
 import type { EffectiveAvailability } from "./availability"
+import type { EmployeeCategory } from "@/prisma/generated/client/client"
+import { isAssignable, needsAvailability } from "./categories"
 
 interface Employee {
   id: string
@@ -8,6 +10,7 @@ interface Employee {
   roles: string[]
   minHours: number
   maxHours: number
+  category: EmployeeCategory
 }
 
 interface ShiftTemplate {
@@ -43,8 +46,8 @@ function shiftHours(template: ShiftTemplate): number {
   return (eh * 60 + em - (sh * 60 + sm)) / 60
 }
 
-// Deterministic fallback: role-aware round-robin
-function fallbackAssign(
+// Deterministic fallback: role-aware round-robin. Exported for tests.
+export function fallbackAssign(
   templates: ShiftTemplate[],
   employees: Employee[],
   availability: EffectiveAvailability[]
@@ -61,7 +64,8 @@ function fallbackAssign(
     const hours = shiftHours(tmpl)
     for (let day = 0; day < 7; day++) {
       const eligible = employees.filter((emp) => {
-        if (!availSet.has(`${emp.id}:${tmpl.id}:${day}`)) return false
+        // Category A only within availability; category B freely assignable
+        if (!isAssignable(emp.category, availSet.has(`${emp.id}:${tmpl.id}:${day}`))) return false
         const current = assignedHours[emp.id] ?? 0
         if (current + hours > emp.maxHours) return false
         if (tmpl.requiredRoles.length > 0 && !tmpl.requiredRoles.some((r) => emp.roles.includes(r))) return false
@@ -99,6 +103,8 @@ export async function generateSchedule(
       roles: emp.roles,
       minHours: emp.minHours,
       maxHours: emp.maxHours,
+      category: emp.category,
+      freelyAssignable: !needsAvailability(emp.category),
       availableSlots: availability
         .filter((a) => a.employeeId === emp.id && a.available)
         .map((a) => `${a.shiftTemplateId}:day${a.dayOfWeek}`),
@@ -106,7 +112,7 @@ export async function generateSchedule(
 
     const result = await structured.invoke(`
 You are a shift scheduler. Generate a weekly schedule that:
-1. Only assigns employees to shifts they are available for
+1. Assigns MINIJOB_ZEITARBEIT employees ONLY to slots listed in their availableSlots (hard rule). TEILZEIT_FEST employees (freelyAssignable: true) may be assigned to any slot regardless of availableSlots.
 2. Respects each employee's min/max weekly hours
 3. Only assigns employees who have the required role for the shift
 4. Distributes shifts fairly (balance hours across employees)
@@ -122,10 +128,19 @@ Return one assignment per (shiftTemplateId, dayOfWeek) combination (${templates.
 Set employeeId to null if no eligible employee is available.
 `)
 
-    const assignments: GeneratedAssignment[] = result.assignments.map((a) => ({
-      ...a,
-      filled: a.employeeId !== null,
-    }))
+    // Deterministic repair: the LLM proposes, code guarantees. A category-A
+    // assignment outside submitted availability is voided, not shipped.
+    const availSet = new Set(
+      availability.filter((a) => a.available).map((a) => `${a.employeeId}:${a.shiftTemplateId}:${a.dayOfWeek}`)
+    )
+    const byId = new Map(employees.map((e) => [e.id, e]))
+    const assignments: GeneratedAssignment[] = result.assignments.map((a) => {
+      const emp = a.employeeId ? byId.get(a.employeeId) : undefined
+      const legal =
+        !emp || isAssignable(emp.category, availSet.has(`${emp.id}:${a.shiftTemplateId}:${a.dayOfWeek}`))
+      const employeeId = legal ? a.employeeId : null
+      return { shiftTemplateId: a.shiftTemplateId, dayOfWeek: a.dayOfWeek, employeeId, filled: employeeId !== null }
+    })
 
     return { assignments, reasoning: result.reasoning }
   } catch {

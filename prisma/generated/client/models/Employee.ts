@@ -29,11 +29,13 @@ export type AggregateEmployee = {
 export type EmployeeAvgAggregateOutputType = {
   minHours: number | null
   maxHours: number | null
+  hourlyWageCents: number | null
 }
 
 export type EmployeeSumAggregateOutputType = {
   minHours: number | null
   maxHours: number | null
+  hourlyWageCents: number | null
 }
 
 export type EmployeeMinAggregateOutputType = {
@@ -43,6 +45,11 @@ export type EmployeeMinAggregateOutputType = {
   email: string | null
   minHours: number | null
   maxHours: number | null
+  category: $Enums.EmployeeCategory | null
+  birthDate: Date | null
+  phone: string | null
+  hourlyWageCents: number | null
+  isWerkstudent: boolean | null
   createdAt: Date | null
 }
 
@@ -53,6 +60,11 @@ export type EmployeeMaxAggregateOutputType = {
   email: string | null
   minHours: number | null
   maxHours: number | null
+  category: $Enums.EmployeeCategory | null
+  birthDate: Date | null
+  phone: string | null
+  hourlyWageCents: number | null
+  isWerkstudent: boolean | null
   createdAt: Date | null
 }
 
@@ -64,6 +76,11 @@ export type EmployeeCountAggregateOutputType = {
   roles: number
   minHours: number
   maxHours: number
+  category: number
+  birthDate: number
+  phone: number
+  hourlyWageCents: number
+  isWerkstudent: number
   createdAt: number
   _all: number
 }
@@ -72,11 +89,13 @@ export type EmployeeCountAggregateOutputType = {
 export type EmployeeAvgAggregateInputType = {
   minHours?: true
   maxHours?: true
+  hourlyWageCents?: true
 }
 
 export type EmployeeSumAggregateInputType = {
   minHours?: true
   maxHours?: true
+  hourlyWageCents?: true
 }
 
 export type EmployeeMinAggregateInputType = {
@@ -86,6 +105,11 @@ export type EmployeeMinAggregateInputType = {
   email?: true
   minHours?: true
   maxHours?: true
+  category?: true
+  birthDate?: true
+  phone?: true
+  hourlyWageCents?: true
+  isWerkstudent?: true
   createdAt?: true
 }
 
@@ -96,6 +120,11 @@ export type EmployeeMaxAggregateInputType = {
   email?: true
   minHours?: true
   maxHours?: true
+  category?: true
+  birthDate?: true
+  phone?: true
+  hourlyWageCents?: true
+  isWerkstudent?: true
   createdAt?: true
 }
 
@@ -107,6 +136,11 @@ export type EmployeeCountAggregateInputType = {
   roles?: true
   minHours?: true
   maxHours?: true
+  category?: true
+  birthDate?: true
+  phone?: true
+  hourlyWageCents?: true
+  isWerkstudent?: true
   createdAt?: true
   _all?: true
 }
@@ -205,6 +239,11 @@ export type EmployeeGroupByOutputType = {
   roles: string[]
   minHours: number
   maxHours: number
+  category: $Enums.EmployeeCategory
+  birthDate: Date | null
+  phone: string | null
+  hourlyWageCents: number | null
+  isWerkstudent: boolean
   createdAt: Date
   _count: EmployeeCountAggregateOutputType | null
   _avg: EmployeeAvgAggregateOutputType | null
@@ -239,6 +278,11 @@ export type EmployeeWhereInput = {
   roles?: Prisma.StringNullableListFilter<"Employee">
   minHours?: Prisma.IntFilter<"Employee"> | number
   maxHours?: Prisma.IntFilter<"Employee"> | number
+  category?: Prisma.EnumEmployeeCategoryFilter<"Employee"> | $Enums.EmployeeCategory
+  birthDate?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
+  phone?: Prisma.StringNullableFilter<"Employee"> | string | null
+  hourlyWageCents?: Prisma.IntNullableFilter<"Employee"> | number | null
+  isWerkstudent?: Prisma.BoolFilter<"Employee"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>
   recurringAvailability?: Prisma.RecurringAvailabilityListRelationFilter
@@ -259,6 +303,11 @@ export type EmployeeOrderByWithRelationInput = {
   roles?: Prisma.SortOrder
   minHours?: Prisma.SortOrder
   maxHours?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  birthDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  hourlyWageCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  isWerkstudent?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   location?: Prisma.LocationOrderByWithRelationInput
   recurringAvailability?: Prisma.RecurringAvailabilityOrderByRelationAggregateInput
@@ -283,6 +332,11 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   roles?: Prisma.StringNullableListFilter<"Employee">
   minHours?: Prisma.IntFilter<"Employee"> | number
   maxHours?: Prisma.IntFilter<"Employee"> | number
+  category?: Prisma.EnumEmployeeCategoryFilter<"Employee"> | $Enums.EmployeeCategory
+  birthDate?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
+  phone?: Prisma.StringNullableFilter<"Employee"> | string | null
+  hourlyWageCents?: Prisma.IntNullableFilter<"Employee"> | number | null
+  isWerkstudent?: Prisma.BoolFilter<"Employee"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>
   recurringAvailability?: Prisma.RecurringAvailabilityListRelationFilter
@@ -303,6 +357,11 @@ export type EmployeeOrderByWithAggregationInput = {
   roles?: Prisma.SortOrder
   minHours?: Prisma.SortOrder
   maxHours?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  birthDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  hourlyWageCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  isWerkstudent?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.EmployeeCountOrderByAggregateInput
   _avg?: Prisma.EmployeeAvgOrderByAggregateInput
@@ -322,6 +381,11 @@ export type EmployeeScalarWhereWithAggregatesInput = {
   roles?: Prisma.StringNullableListFilter<"Employee">
   minHours?: Prisma.IntWithAggregatesFilter<"Employee"> | number
   maxHours?: Prisma.IntWithAggregatesFilter<"Employee"> | number
+  category?: Prisma.EnumEmployeeCategoryWithAggregatesFilter<"Employee"> | $Enums.EmployeeCategory
+  birthDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
+  phone?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
+  hourlyWageCents?: Prisma.IntNullableWithAggregatesFilter<"Employee"> | number | null
+  isWerkstudent?: Prisma.BoolWithAggregatesFilter<"Employee"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
 }
 
@@ -332,6 +396,11 @@ export type EmployeeCreateInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -352,6 +421,11 @@ export type EmployeeUncheckedCreateInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -370,6 +444,11 @@ export type EmployeeUpdateInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -390,6 +469,11 @@ export type EmployeeUncheckedUpdateInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -409,6 +493,11 @@ export type EmployeeCreateManyInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
 }
 
@@ -419,6 +508,11 @@ export type EmployeeUpdateManyMutationInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -430,6 +524,11 @@ export type EmployeeUncheckedUpdateManyInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -464,12 +563,18 @@ export type EmployeeCountOrderByAggregateInput = {
   roles?: Prisma.SortOrder
   minHours?: Prisma.SortOrder
   maxHours?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  birthDate?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  hourlyWageCents?: Prisma.SortOrder
+  isWerkstudent?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type EmployeeAvgOrderByAggregateInput = {
   minHours?: Prisma.SortOrder
   maxHours?: Prisma.SortOrder
+  hourlyWageCents?: Prisma.SortOrder
 }
 
 export type EmployeeMaxOrderByAggregateInput = {
@@ -479,6 +584,11 @@ export type EmployeeMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   minHours?: Prisma.SortOrder
   maxHours?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  birthDate?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  hourlyWageCents?: Prisma.SortOrder
+  isWerkstudent?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -489,12 +599,18 @@ export type EmployeeMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   minHours?: Prisma.SortOrder
   maxHours?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  birthDate?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  hourlyWageCents?: Prisma.SortOrder
+  isWerkstudent?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type EmployeeSumOrderByAggregateInput = {
   minHours?: Prisma.SortOrder
   maxHours?: Prisma.SortOrder
+  hourlyWageCents?: Prisma.SortOrder
 }
 
 export type EmployeeScalarRelationFilter = {
@@ -556,6 +672,22 @@ export type EmployeeCreaterolesInput = {
 export type EmployeeUpdaterolesInput = {
   set?: string[]
   push?: string | string[]
+}
+
+export type EnumEmployeeCategoryFieldUpdateOperationsInput = {
+  set?: $Enums.EmployeeCategory
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type EmployeeCreateNestedOneWithoutRecurringAvailabilityInput = {
@@ -685,6 +817,11 @@ export type EmployeeCreateWithoutLocationInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutEmployeeInput
@@ -703,6 +840,11 @@ export type EmployeeUncheckedCreateWithoutLocationInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -751,6 +893,11 @@ export type EmployeeScalarWhereInput = {
   roles?: Prisma.StringNullableListFilter<"Employee">
   minHours?: Prisma.IntFilter<"Employee"> | number
   maxHours?: Prisma.IntFilter<"Employee"> | number
+  category?: Prisma.EnumEmployeeCategoryFilter<"Employee"> | $Enums.EmployeeCategory
+  birthDate?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
+  phone?: Prisma.StringNullableFilter<"Employee"> | string | null
+  hourlyWageCents?: Prisma.IntNullableFilter<"Employee"> | number | null
+  isWerkstudent?: Prisma.BoolFilter<"Employee"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
 }
 
@@ -761,6 +908,11 @@ export type EmployeeCreateWithoutRecurringAvailabilityInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutEmployeeInput
@@ -780,6 +932,11 @@ export type EmployeeUncheckedCreateWithoutRecurringAvailabilityInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
   actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
@@ -813,6 +970,11 @@ export type EmployeeUpdateWithoutRecurringAvailabilityInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutEmployeeNestedInput
@@ -832,6 +994,11 @@ export type EmployeeUncheckedUpdateWithoutRecurringAvailabilityInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
   actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -849,6 +1016,11 @@ export type EmployeeCreateWithoutAvailabilityOverridesInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -868,6 +1040,11 @@ export type EmployeeUncheckedCreateWithoutAvailabilityOverridesInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
@@ -901,6 +1078,11 @@ export type EmployeeUpdateWithoutAvailabilityOverridesInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -920,6 +1102,11 @@ export type EmployeeUncheckedUpdateWithoutAvailabilityOverridesInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -937,6 +1124,11 @@ export type EmployeeCreateWithoutShiftsInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -956,6 +1148,11 @@ export type EmployeeUncheckedCreateWithoutShiftsInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -989,6 +1186,11 @@ export type EmployeeUpdateWithoutShiftsInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1008,6 +1210,11 @@ export type EmployeeUncheckedUpdateWithoutShiftsInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1025,6 +1232,11 @@ export type EmployeeCreateWithoutSwapRequestsInitiatedInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1044,6 +1256,11 @@ export type EmployeeUncheckedCreateWithoutSwapRequestsInitiatedInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1066,6 +1283,11 @@ export type EmployeeCreateWithoutSwapRequestsProposedInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1085,6 +1307,11 @@ export type EmployeeUncheckedCreateWithoutSwapRequestsProposedInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1118,6 +1345,11 @@ export type EmployeeUpdateWithoutSwapRequestsInitiatedInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1137,6 +1369,11 @@ export type EmployeeUncheckedUpdateWithoutSwapRequestsInitiatedInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1165,6 +1402,11 @@ export type EmployeeUpdateWithoutSwapRequestsProposedInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1184,6 +1426,11 @@ export type EmployeeUncheckedUpdateWithoutSwapRequestsProposedInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1201,6 +1448,11 @@ export type EmployeeCreateWithoutSharingListingsInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1220,6 +1472,11 @@ export type EmployeeUncheckedCreateWithoutSharingListingsInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1253,6 +1510,11 @@ export type EmployeeUpdateWithoutSharingListingsInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1272,6 +1534,11 @@ export type EmployeeUncheckedUpdateWithoutSharingListingsInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1289,6 +1556,11 @@ export type EmployeeCreateWithoutSharingDealsInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1308,6 +1580,11 @@ export type EmployeeUncheckedCreateWithoutSharingDealsInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1341,6 +1618,11 @@ export type EmployeeUpdateWithoutSharingDealsInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1360,6 +1642,11 @@ export type EmployeeUncheckedUpdateWithoutSharingDealsInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1377,6 +1664,11 @@ export type EmployeeCreateWithoutActionTokensInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1396,6 +1688,11 @@ export type EmployeeUncheckedCreateWithoutActionTokensInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1429,6 +1726,11 @@ export type EmployeeUpdateWithoutActionTokensInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1448,6 +1750,11 @@ export type EmployeeUncheckedUpdateWithoutActionTokensInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1465,6 +1772,11 @@ export type EmployeeCreateManyLocationInput = {
   roles?: Prisma.EmployeeCreaterolesInput | string[]
   minHours?: number
   maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
   createdAt?: Date | string
 }
 
@@ -1475,6 +1787,11 @@ export type EmployeeUpdateWithoutLocationInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutEmployeeNestedInput
@@ -1493,6 +1810,11 @@ export type EmployeeUncheckedUpdateWithoutLocationInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1511,6 +1833,11 @@ export type EmployeeUncheckedUpdateManyWithoutLocationInput = {
   roles?: Prisma.EmployeeUpdaterolesInput | string[]
   minHours?: Prisma.IntFieldUpdateOperationsInput | number
   maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1616,6 +1943,11 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   roles?: boolean
   minHours?: boolean
   maxHours?: boolean
+  category?: boolean
+  birthDate?: boolean
+  phone?: boolean
+  hourlyWageCents?: boolean
+  isWerkstudent?: boolean
   createdAt?: boolean
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
   recurringAvailability?: boolean | Prisma.Employee$recurringAvailabilityArgs<ExtArgs>
@@ -1637,6 +1969,11 @@ export type EmployeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   roles?: boolean
   minHours?: boolean
   maxHours?: boolean
+  category?: boolean
+  birthDate?: boolean
+  phone?: boolean
+  hourlyWageCents?: boolean
+  isWerkstudent?: boolean
   createdAt?: boolean
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employee"]>
@@ -1649,6 +1986,11 @@ export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   roles?: boolean
   minHours?: boolean
   maxHours?: boolean
+  category?: boolean
+  birthDate?: boolean
+  phone?: boolean
+  hourlyWageCents?: boolean
+  isWerkstudent?: boolean
   createdAt?: boolean
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employee"]>
@@ -1661,10 +2003,15 @@ export type EmployeeSelectScalar = {
   roles?: boolean
   minHours?: boolean
   maxHours?: boolean
+  category?: boolean
+  birthDate?: boolean
+  phone?: boolean
+  hourlyWageCents?: boolean
+  isWerkstudent?: boolean
   createdAt?: boolean
 }
 
-export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "locationId" | "name" | "email" | "roles" | "minHours" | "maxHours" | "createdAt", ExtArgs["result"]["employee"]>
+export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "locationId" | "name" | "email" | "roles" | "minHours" | "maxHours" | "category" | "birthDate" | "phone" | "hourlyWageCents" | "isWerkstudent" | "createdAt", ExtArgs["result"]["employee"]>
 export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
   recurringAvailability?: boolean | Prisma.Employee$recurringAvailabilityArgs<ExtArgs>
@@ -1705,6 +2052,11 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     roles: string[]
     minHours: number
     maxHours: number
+    category: $Enums.EmployeeCategory
+    birthDate: Date | null
+    phone: string | null
+    hourlyWageCents: number | null
+    isWerkstudent: boolean
     createdAt: Date
   }, ExtArgs["result"]["employee"]>
   composites: {}
@@ -2145,6 +2497,11 @@ export interface EmployeeFieldRefs {
   readonly roles: Prisma.FieldRef<"Employee", 'String[]'>
   readonly minHours: Prisma.FieldRef<"Employee", 'Int'>
   readonly maxHours: Prisma.FieldRef<"Employee", 'Int'>
+  readonly category: Prisma.FieldRef<"Employee", 'EmployeeCategory'>
+  readonly birthDate: Prisma.FieldRef<"Employee", 'DateTime'>
+  readonly phone: Prisma.FieldRef<"Employee", 'String'>
+  readonly hourlyWageCents: Prisma.FieldRef<"Employee", 'Int'>
+  readonly isWerkstudent: Prisma.FieldRef<"Employee", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Employee", 'DateTime'>
 }
     

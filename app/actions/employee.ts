@@ -7,6 +7,30 @@ import { revalidatePath } from "next/cache"
 
 type ActionState = { error: string } | null
 
+// Shared parsing for the category/contract fields (issue #26).
+type ContractFields = {
+  category: "MINIJOB_ZEITARBEIT" | "TEILZEIT_FEST"
+  birthDate: Date | null
+  phone: string | null
+  hourlyWageCents: number | null
+  isWerkstudent: boolean
+}
+
+function parseContractFields(formData: FormData): { error: string } | ContractFields {
+  const category =
+    (formData.get("category") as string) === "TEILZEIT_FEST" ? "TEILZEIT_FEST" as const : "MINIJOB_ZEITARBEIT" as const
+  const birthRaw = ((formData.get("birthDate") as string) ?? "").trim()
+  const birthDate = birthRaw ? new Date(`${birthRaw}T00:00:00Z`) : null
+  if (birthDate && Number.isNaN(birthDate.getTime())) return { error: "Invalid birth date" as const }
+  const phone = ((formData.get("phone") as string) ?? "").replace(/[^\d+]/g, "") || null
+  const wageRaw = ((formData.get("hourlyWage") as string) ?? "").trim()
+  const wage = wageRaw ? Number(wageRaw) : null
+  if (wage !== null && (Number.isNaN(wage) || wage < 0)) return { error: "Invalid hourly wage" as const }
+  const hourlyWageCents = wage === null ? null : Math.round(wage * 100)
+  const isWerkstudent = formData.get("isWerkstudent") === "on"
+  return { category, birthDate, phone, hourlyWageCents, isWerkstudent }
+}
+
 async function assertOwnsLocation(locationId: string, ownerId: string) {
   const loc = await prisma.location.findFirst({
     where: { id: locationId, ownerId },
@@ -46,8 +70,11 @@ export async function createEmployee(
   })
   if (existing) return { error: "An employee with this email already exists at this location" }
 
+  const contract = parseContractFields(formData)
+  if ("error" in contract) return { error: contract.error }
+
   await prisma.employee.create({
-    data: { locationId, name, email, roles, minHours, maxHours },
+    data: { locationId, name, email, roles, minHours, maxHours, ...contract },
   })
 
   revalidatePath(`/dashboard/${locationId}`)
@@ -75,9 +102,12 @@ export async function updateEmployee(
   })
   if (!employee) return { error: "Employee not found" }
 
+  const contract = parseContractFields(formData)
+  if ("error" in contract) return { error: contract.error }
+
   await prisma.employee.update({
     where: { id: employeeId },
-    data: { name, roles, minHours, maxHours },
+    data: { name, roles, minHours, maxHours, ...contract },
   })
 
   revalidatePath(`/dashboard/${employee.locationId}`)

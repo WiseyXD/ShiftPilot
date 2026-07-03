@@ -123,6 +123,11 @@ export const EmployeeScalarFieldEnum = {
   roles: 'roles',
   minHours: 'minHours',
   maxHours: 'maxHours',
+  category: 'category',
+  birthDate: 'birthDate',
+  phone: 'phone',
+  hourlyWageCents: 'hourlyWageCents',
+  isWerkstudent: 'isWerkstudent',
   createdAt: 'createdAt'
 } as const
 
