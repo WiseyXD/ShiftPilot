@@ -2,6 +2,10 @@ import { prisma } from "@/prisma/client"
 import { generateToken } from "@/lib/tokens/generate"
 import { sendEmail } from "@/lib/email/send"
 import { rankReplacementCandidates } from "@/lib/scheduling/replacement"
+import { getShiftStart, getShiftEnd } from "@/lib/scheduling/shift-date"
+import { checkAssignment, type PlannedShift, type Violation } from "@/lib/compliance/arbzg"
+import { loadRules } from "@/lib/compliance/load"
+import type { ArbZGRules } from "@/lib/compliance/rules"
 import type { Prisma } from "@/prisma/generated/client/client"
 import * as React from "react"
 
@@ -173,8 +177,10 @@ interface ShiftForCandidates {
   dayOfWeek: number
   shiftTemplate: { requiredRoles: string[]; startTime: string; endTime: string }
   schedule: {
+    weekStart: Date | string
     shifts: Array<{
       employeeId: string | null
+      dayOfWeek: number
       status: string
       shiftTemplate: { startTime: string; endTime: string }
     }>
@@ -245,7 +251,50 @@ export async function buildShiftCandidates(opts: {
       fairnessScore: r.fairnessScore,
     })
   }
-  return hydrated
+
+  // Legal filter — a candidate whose acceptance would break working-time law
+  // is never contacted, and the exclusion is explained in the audit log.
+  const rules = (await step.run("load-compliance-rules", () => loadRules(new Date()))) as ArbZGRules
+  const weekStart = new Date(shift.schedule.weekStart)
+  const candidateSlot: PlannedShift = {
+    start: getShiftStart(weekStart, shift.dayOfWeek, shift.shiftTemplate.startTime),
+    end: getShiftEnd(weekStart, shift.dayOfWeek, shift.shiftTemplate.endTime),
+  }
+
+  const legal: OutreachCandidate[] = []
+  const blocked: { candidate: OutreachCandidate; violation: Violation }[] = []
+  for (const candidate of hydrated) {
+    const existing: PlannedShift[] = shift.schedule.shifts
+      .filter((s) => s.employeeId === candidate.employeeId && s.status !== "DECLINED")
+      .map((s) => ({
+        start: getShiftStart(weekStart, s.dayOfWeek, s.shiftTemplate.startTime),
+        end: getShiftEnd(weekStart, s.dayOfWeek, s.shiftTemplate.endTime),
+      }))
+    const violation = checkAssignment(candidateSlot, existing, rules)
+    if (violation) blocked.push({ candidate, violation })
+    else legal.push(candidate)
+  }
+
+  if (blocked.length > 0) {
+    await step.run("log-compliance-blocked", () =>
+      prisma.auditLog.create({
+        data: {
+          locationId,
+          action: "COMPLIANCE_BLOCKED",
+          aiReasoning: blocked
+            .map((b) => `${b.candidate.name}: ${b.violation.rule} — ${b.violation.detail}`)
+            .join("; "),
+          candidatesConsidered: blocked.map((b) => ({
+            employeeId: b.candidate.employeeId,
+            rule: b.violation.rule,
+          })),
+          outcome: `${blocked.length} candidate(s) excluded by working-time law`,
+        },
+      })
+    )
+  }
+
+  return legal
 }
 
 export function shiftDurationHours(start: string, end: string): number {

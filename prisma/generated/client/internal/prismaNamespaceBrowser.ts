@@ -63,6 +63,7 @@ export const ModelName = {
   SharingListing: 'SharingListing',
   SharingDeal: 'SharingDeal',
   ActionToken: 'ActionToken',
+  ComplianceRuleSet: 'ComplianceRuleSet',
   AuditLog: 'AuditLog'
 } as const
 
@@ -249,6 +250,17 @@ export const ActionTokenScalarFieldEnum = {
 } as const
 
 export type ActionTokenScalarFieldEnum = (typeof ActionTokenScalarFieldEnum)[keyof typeof ActionTokenScalarFieldEnum]
+
+
+export const ComplianceRuleSetScalarFieldEnum = {
+  id: 'id',
+  effectiveFrom: 'effectiveFrom',
+  rules: 'rules',
+  note: 'note',
+  createdAt: 'createdAt'
+} as const
+
+export type ComplianceRuleSetScalarFieldEnum = (typeof ComplianceRuleSetScalarFieldEnum)[keyof typeof ComplianceRuleSetScalarFieldEnum]
 
 
 export const AuditLogScalarFieldEnum = {

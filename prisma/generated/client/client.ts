@@ -102,6 +102,11 @@ export type SharingDeal = Prisma.SharingDealModel
  */
 export type ActionToken = Prisma.ActionTokenModel
 /**
+ * Model ComplianceRuleSet
+ * 
+ */
+export type ComplianceRuleSet = Prisma.ComplianceRuleSetModel
+/**
  * Model AuditLog
  * 
  */

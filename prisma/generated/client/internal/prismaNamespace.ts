@@ -396,6 +396,7 @@ export const ModelName = {
   SharingListing: 'SharingListing',
   SharingDeal: 'SharingDeal',
   ActionToken: 'ActionToken',
+  ComplianceRuleSet: 'ComplianceRuleSet',
   AuditLog: 'AuditLog'
 } as const
 
@@ -412,7 +413,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "sharingDeal" | "actionToken" | "auditLog"
+    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "sharingDeal" | "actionToken" | "complianceRuleSet" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1304,6 +1305,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ComplianceRuleSet: {
+      payload: Prisma.$ComplianceRuleSetPayload<ExtArgs>
+      fields: Prisma.ComplianceRuleSetFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ComplianceRuleSetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceRuleSetPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ComplianceRuleSetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceRuleSetPayload>
+        }
+        findFirst: {
+          args: Prisma.ComplianceRuleSetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceRuleSetPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ComplianceRuleSetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceRuleSetPayload>
+        }
+        findMany: {
+          args: Prisma.ComplianceRuleSetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceRuleSetPayload>[]
+        }
+        create: {
+          args: Prisma.ComplianceRuleSetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceRuleSetPayload>
+        }
+        createMany: {
+          args: Prisma.ComplianceRuleSetCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ComplianceRuleSetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceRuleSetPayload>[]
+        }
+        delete: {
+          args: Prisma.ComplianceRuleSetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceRuleSetPayload>
+        }
+        update: {
+          args: Prisma.ComplianceRuleSetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceRuleSetPayload>
+        }
+        deleteMany: {
+          args: Prisma.ComplianceRuleSetDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ComplianceRuleSetUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ComplianceRuleSetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceRuleSetPayload>[]
+        }
+        upsert: {
+          args: Prisma.ComplianceRuleSetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceRuleSetPayload>
+        }
+        aggregate: {
+          args: Prisma.ComplianceRuleSetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateComplianceRuleSet>
+        }
+        groupBy: {
+          args: Prisma.ComplianceRuleSetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ComplianceRuleSetGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ComplianceRuleSetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ComplianceRuleSetCountAggregateOutputType> | number
+        }
+      }
+    }
     AuditLog: {
       payload: Prisma.$AuditLogPayload<ExtArgs>
       fields: Prisma.AuditLogFieldRefs
@@ -1584,6 +1659,17 @@ export const ActionTokenScalarFieldEnum = {
 } as const
 
 export type ActionTokenScalarFieldEnum = (typeof ActionTokenScalarFieldEnum)[keyof typeof ActionTokenScalarFieldEnum]
+
+
+export const ComplianceRuleSetScalarFieldEnum = {
+  id: 'id',
+  effectiveFrom: 'effectiveFrom',
+  rules: 'rules',
+  note: 'note',
+  createdAt: 'createdAt'
+} as const
+
+export type ComplianceRuleSetScalarFieldEnum = (typeof ComplianceRuleSetScalarFieldEnum)[keyof typeof ComplianceRuleSetScalarFieldEnum]
 
 
 export const AuditLogScalarFieldEnum = {
@@ -1969,6 +2055,7 @@ export type GlobalOmitConfig = {
   sharingListing?: Prisma.SharingListingOmit
   sharingDeal?: Prisma.SharingDealOmit
   actionToken?: Prisma.ActionTokenOmit
+  complianceRuleSet?: Prisma.ComplianceRuleSetOmit
   auditLog?: Prisma.AuditLogOmit
 }
 

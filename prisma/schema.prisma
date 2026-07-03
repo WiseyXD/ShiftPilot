@@ -322,6 +322,20 @@ model ActionToken {
   @@index([expiresAt])
 }
 
+// ─── Compliance ───────────────────────────────────────────────────────────────
+
+// Effective-dated legal rule values (ArbZG etc.). Values change over time
+// (minimum-wage coupling, legal amendments) — never hardcode them in logic.
+model ComplianceRuleSet {
+  id            String   @id @default(cuid())
+  effectiveFrom DateTime
+  rules         Json // shape: ArbZGRules in lib/compliance/rules.ts
+  note          String? // e.g. "2026 statutory values"
+  createdAt     DateTime @default(now())
+
+  @@index([effectiveFrom])
+}
+
 // ─── Audit Log ────────────────────────────────────────────────────────────────
 
 model AuditLog {

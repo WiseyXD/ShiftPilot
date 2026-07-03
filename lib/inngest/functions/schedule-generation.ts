@@ -2,6 +2,7 @@ import { inngest } from "../client"
 import { prisma } from "@/prisma/client"
 import { getEffectiveAvailability } from "@/lib/scheduling/availability"
 import { generateSchedule } from "@/lib/scheduling/generate"
+import { loadRules } from "@/lib/compliance/load"
 import { generateToken } from "@/lib/tokens/generate"
 import { sendEmail } from "@/lib/email/send"
 import { ScheduleDraftEmail } from "@/lib/email/templates/schedule-draft"
@@ -34,10 +35,12 @@ export const weeklyScheduleGeneration = inngest.createFunction(
         const weekStart = nextMonday(today)
 
         const availability = await getEffectiveAvailability(location.id, weekStart)
+        const rules = await loadRules(weekStart)
         const { assignments, reasoning } = await generateSchedule(
           location.shiftTemplates,
           location.employees,
-          availability
+          availability,
+          rules
         )
 
         // Persist schedule + shifts
