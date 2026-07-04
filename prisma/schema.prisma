@@ -30,6 +30,7 @@ enum ActionTokenAction {
   ACCEPT_LOAN
   DECLINE_LOAN
   REQUEST_CHANGE
+  CONFIRM_SICK
 }
 
 enum EmployeeCategory {
@@ -124,6 +125,7 @@ model Location {
   fixedShifts     FixedShift[]
   blockedTimes    BlockedTime[]
   vacations       Vacation[]
+  sickCalls       SickCall[]
 
   @@index([ownerId])
 }
@@ -329,6 +331,23 @@ model ActionToken {
   @@index([employeeId])
   @@index([userId])
   @@index([expiresAt])
+}
+
+// ─── Sick calls ───────────────────────────────────────────────────────────────
+
+// A sick report stays "open" until the manager explicitly confirms they know
+// about it — repeated reminders + a red dashboard banner until then.
+model SickCall {
+  id          String    @id @default(cuid())
+  locationId  String
+  shiftId     String
+  employeeId  String
+  reportedAt  DateTime  @default(now())
+  confirmedAt DateTime?
+
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@index([locationId, confirmedAt])
 }
 
 // ─── Vacations ────────────────────────────────────────────────────────────────

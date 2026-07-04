@@ -156,7 +156,23 @@ async function handleAction(action: string, payload: unknown) {
         data: { status: "DECLINED" },
       })
       await inngest.send({ name: "shift/sick-call", data: { shiftId: p.shiftId } })
-      return NextResponse.json({ ok: true, message: "Feel better soon. We'll handle coverage." })
+      // The report stays open until the manager confirms they know — the nag
+      // loop (reminders + red banner) starts here.
+      if (sickShift.employeeId) {
+        const sickCall = await prisma.sickCall.create({
+          data: {
+            locationId: await getLocationIdForShift(p.shiftId),
+            shiftId: p.shiftId,
+            employeeId: sickShift.employeeId,
+          },
+        })
+        await inngest.send({ name: "sick/reported", data: { sickCallId: sickCall.id } })
+      }
+      return NextResponse.json({
+        ok: true,
+        message:
+          "Feel better soon. We'll handle coverage — please also tell your manager personally.",
+      })
     }
 
     case "REQUEST_SWAP": {
@@ -186,6 +202,34 @@ async function handleAction(action: string, payload: unknown) {
     case "REJECT_SWAP":
       await inngest.send({ name: "swap/manager-response", data: { ...p, response: action } })
       return NextResponse.json({ ok: true, message: action === "APPROVE_SWAP" ? "Swap approved." : "Swap rejected." })
+
+    case "CONFIRM_SICK": {
+      // Guarded: confirm exactly once; a second click is told so.
+      const { count } = await prisma.sickCall.updateMany({
+        where: { id: p.sickCallId, confirmedAt: null },
+        data: { confirmedAt: new Date() },
+      })
+      if (count === 0) {
+        return NextResponse.json(
+          { error: "This sick call was already confirmed." },
+          { status: 409 }
+        )
+      }
+      await inngest.send({ name: "sick/confirmed", data: { sickCallId: p.sickCallId } })
+      const confirmed = await prisma.sickCall.findUnique({ where: { id: p.sickCallId } })
+      if (confirmed) {
+        await prisma.auditLog.create({
+          data: {
+            locationId: confirmed.locationId,
+            action: "SICK_CALL_CONFIRMED",
+            aiReasoning: "",
+            candidatesConsidered: [],
+            outcome: `Sick call ${confirmed.id} confirmed by manager`,
+          },
+        })
+      }
+      return NextResponse.json({ ok: true, message: "Confirmed — thanks. Reminders stop now." })
+    }
 
     case "REQUEST_CHANGE": {
       // Category-B employees can't decline — this only informs the manager.

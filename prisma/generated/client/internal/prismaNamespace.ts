@@ -396,6 +396,7 @@ export const ModelName = {
   SharingListing: 'SharingListing',
   SharingDeal: 'SharingDeal',
   ActionToken: 'ActionToken',
+  SickCall: 'SickCall',
   Vacation: 'Vacation',
   FixedShift: 'FixedShift',
   BlockedTime: 'BlockedTime',
@@ -416,7 +417,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "sharingDeal" | "actionToken" | "vacation" | "fixedShift" | "blockedTime" | "complianceRuleSet" | "auditLog"
+    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "sharingDeal" | "actionToken" | "sickCall" | "vacation" | "fixedShift" | "blockedTime" | "complianceRuleSet" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1308,6 +1309,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SickCall: {
+      payload: Prisma.$SickCallPayload<ExtArgs>
+      fields: Prisma.SickCallFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SickCallFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SickCallPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SickCallFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SickCallPayload>
+        }
+        findFirst: {
+          args: Prisma.SickCallFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SickCallPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SickCallFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SickCallPayload>
+        }
+        findMany: {
+          args: Prisma.SickCallFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SickCallPayload>[]
+        }
+        create: {
+          args: Prisma.SickCallCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SickCallPayload>
+        }
+        createMany: {
+          args: Prisma.SickCallCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SickCallCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SickCallPayload>[]
+        }
+        delete: {
+          args: Prisma.SickCallDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SickCallPayload>
+        }
+        update: {
+          args: Prisma.SickCallUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SickCallPayload>
+        }
+        deleteMany: {
+          args: Prisma.SickCallDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SickCallUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SickCallUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SickCallPayload>[]
+        }
+        upsert: {
+          args: Prisma.SickCallUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SickCallPayload>
+        }
+        aggregate: {
+          args: Prisma.SickCallAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSickCall>
+        }
+        groupBy: {
+          args: Prisma.SickCallGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SickCallGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SickCallCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SickCallCountAggregateOutputType> | number
+        }
+      }
+    }
     Vacation: {
       payload: Prisma.$VacationPayload<ExtArgs>
       fields: Prisma.VacationFieldRefs
@@ -1887,6 +1962,18 @@ export const ActionTokenScalarFieldEnum = {
 export type ActionTokenScalarFieldEnum = (typeof ActionTokenScalarFieldEnum)[keyof typeof ActionTokenScalarFieldEnum]
 
 
+export const SickCallScalarFieldEnum = {
+  id: 'id',
+  locationId: 'locationId',
+  shiftId: 'shiftId',
+  employeeId: 'employeeId',
+  reportedAt: 'reportedAt',
+  confirmedAt: 'confirmedAt'
+} as const
+
+export type SickCallScalarFieldEnum = (typeof SickCallScalarFieldEnum)[keyof typeof SickCallScalarFieldEnum]
+
+
 export const VacationScalarFieldEnum = {
   id: 'id',
   locationId: 'locationId',
@@ -2318,6 +2405,7 @@ export type GlobalOmitConfig = {
   sharingListing?: Prisma.SharingListingOmit
   sharingDeal?: Prisma.SharingDealOmit
   actionToken?: Prisma.ActionTokenOmit
+  sickCall?: Prisma.SickCallOmit
   vacation?: Prisma.VacationOmit
   fixedShift?: Prisma.FixedShiftOmit
   blockedTime?: Prisma.BlockedTimeOmit

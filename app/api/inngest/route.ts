@@ -7,6 +7,7 @@ import { shiftNotifications, shiftReminders } from "@/lib/inngest/functions/shif
 import { replacementEngine } from "@/lib/inngest/functions/replacement-engine"
 import { swapBroker } from "@/lib/inngest/functions/swap-broker"
 import { loanConsent } from "@/lib/inngest/functions/loan-consent"
+import { sickConfirmationNag } from "@/lib/inngest/functions/sick-confirmation"
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
@@ -19,5 +20,6 @@ export const { GET, POST, PUT } = serve({
     replacementEngine,
     swapBroker,
     loanConsent,
+    sickConfirmationNag,
   ],
 })

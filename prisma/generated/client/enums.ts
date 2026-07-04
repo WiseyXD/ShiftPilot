@@ -32,7 +32,8 @@ export const ActionTokenAction = {
   APPROVE_SCHEDULE: 'APPROVE_SCHEDULE',
   ACCEPT_LOAN: 'ACCEPT_LOAN',
   DECLINE_LOAN: 'DECLINE_LOAN',
-  REQUEST_CHANGE: 'REQUEST_CHANGE'
+  REQUEST_CHANGE: 'REQUEST_CHANGE',
+  CONFIRM_SICK: 'CONFIRM_SICK'
 } as const
 
 export type ActionTokenAction = (typeof ActionTokenAction)[keyof typeof ActionTokenAction]

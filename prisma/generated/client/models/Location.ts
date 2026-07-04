@@ -311,6 +311,7 @@ export type LocationWhereInput = {
   fixedShifts?: Prisma.FixedShiftListRelationFilter
   blockedTimes?: Prisma.BlockedTimeListRelationFilter
   vacations?: Prisma.VacationListRelationFilter
+  sickCalls?: Prisma.SickCallListRelationFilter
 }
 
 export type LocationOrderByWithRelationInput = {
@@ -338,6 +339,7 @@ export type LocationOrderByWithRelationInput = {
   fixedShifts?: Prisma.FixedShiftOrderByRelationAggregateInput
   blockedTimes?: Prisma.BlockedTimeOrderByRelationAggregateInput
   vacations?: Prisma.VacationOrderByRelationAggregateInput
+  sickCalls?: Prisma.SickCallOrderByRelationAggregateInput
 }
 
 export type LocationWhereUniqueInput = Prisma.AtLeast<{
@@ -368,6 +370,7 @@ export type LocationWhereUniqueInput = Prisma.AtLeast<{
   fixedShifts?: Prisma.FixedShiftListRelationFilter
   blockedTimes?: Prisma.BlockedTimeListRelationFilter
   vacations?: Prisma.VacationListRelationFilter
+  sickCalls?: Prisma.SickCallListRelationFilter
 }, "id">
 
 export type LocationOrderByWithAggregationInput = {
@@ -434,6 +437,7 @@ export type LocationCreateInput = {
   fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateInput = {
@@ -460,6 +464,7 @@ export type LocationUncheckedCreateInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUpdateInput = {
@@ -486,6 +491,7 @@ export type LocationUpdateInput = {
   fixedShifts?: Prisma.FixedShiftUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateInput = {
@@ -512,6 +518,7 @@ export type LocationUncheckedUpdateInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUncheckedUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationCreateManyInput = {
@@ -788,6 +795,20 @@ export type LocationUpdateOneRequiredWithoutBorrowerDealsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.LocationUpdateToOneWithWhereWithoutBorrowerDealsInput, Prisma.LocationUpdateWithoutBorrowerDealsInput>, Prisma.LocationUncheckedUpdateWithoutBorrowerDealsInput>
 }
 
+export type LocationCreateNestedOneWithoutSickCallsInput = {
+  create?: Prisma.XOR<Prisma.LocationCreateWithoutSickCallsInput, Prisma.LocationUncheckedCreateWithoutSickCallsInput>
+  connectOrCreate?: Prisma.LocationCreateOrConnectWithoutSickCallsInput
+  connect?: Prisma.LocationWhereUniqueInput
+}
+
+export type LocationUpdateOneRequiredWithoutSickCallsNestedInput = {
+  create?: Prisma.XOR<Prisma.LocationCreateWithoutSickCallsInput, Prisma.LocationUncheckedCreateWithoutSickCallsInput>
+  connectOrCreate?: Prisma.LocationCreateOrConnectWithoutSickCallsInput
+  upsert?: Prisma.LocationUpsertWithoutSickCallsInput
+  connect?: Prisma.LocationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LocationUpdateToOneWithWhereWithoutSickCallsInput, Prisma.LocationUpdateWithoutSickCallsInput>, Prisma.LocationUncheckedUpdateWithoutSickCallsInput>
+}
+
 export type LocationCreateNestedOneWithoutVacationsInput = {
   create?: Prisma.XOR<Prisma.LocationCreateWithoutVacationsInput, Prisma.LocationUncheckedCreateWithoutVacationsInput>
   connectOrCreate?: Prisma.LocationCreateOrConnectWithoutVacationsInput
@@ -867,6 +888,7 @@ export type LocationCreateWithoutOwnerInput = {
   fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateWithoutOwnerInput = {
@@ -892,6 +914,7 @@ export type LocationUncheckedCreateWithoutOwnerInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationCreateOrConnectWithoutOwnerInput = {
@@ -962,6 +985,7 @@ export type LocationCreateWithoutEmployeesInput = {
   fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateWithoutEmployeesInput = {
@@ -987,6 +1011,7 @@ export type LocationUncheckedCreateWithoutEmployeesInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationCreateOrConnectWithoutEmployeesInput = {
@@ -1028,6 +1053,7 @@ export type LocationUpdateWithoutEmployeesInput = {
   fixedShifts?: Prisma.FixedShiftUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutEmployeesInput = {
@@ -1053,6 +1079,7 @@ export type LocationUncheckedUpdateWithoutEmployeesInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUncheckedUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationCreateWithoutShiftTemplatesInput = {
@@ -1078,6 +1105,7 @@ export type LocationCreateWithoutShiftTemplatesInput = {
   fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateWithoutShiftTemplatesInput = {
@@ -1103,6 +1131,7 @@ export type LocationUncheckedCreateWithoutShiftTemplatesInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationCreateOrConnectWithoutShiftTemplatesInput = {
@@ -1144,6 +1173,7 @@ export type LocationUpdateWithoutShiftTemplatesInput = {
   fixedShifts?: Prisma.FixedShiftUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutShiftTemplatesInput = {
@@ -1169,6 +1199,7 @@ export type LocationUncheckedUpdateWithoutShiftTemplatesInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUncheckedUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationCreateWithoutSchedulesInput = {
@@ -1194,6 +1225,7 @@ export type LocationCreateWithoutSchedulesInput = {
   fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateWithoutSchedulesInput = {
@@ -1219,6 +1251,7 @@ export type LocationUncheckedCreateWithoutSchedulesInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationCreateOrConnectWithoutSchedulesInput = {
@@ -1260,6 +1293,7 @@ export type LocationUpdateWithoutSchedulesInput = {
   fixedShifts?: Prisma.FixedShiftUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutSchedulesInput = {
@@ -1285,6 +1319,7 @@ export type LocationUncheckedUpdateWithoutSchedulesInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUncheckedUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationCreateWithoutSharingListingsInput = {
@@ -1310,6 +1345,7 @@ export type LocationCreateWithoutSharingListingsInput = {
   fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateWithoutSharingListingsInput = {
@@ -1335,6 +1371,7 @@ export type LocationUncheckedCreateWithoutSharingListingsInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationCreateOrConnectWithoutSharingListingsInput = {
@@ -1376,6 +1413,7 @@ export type LocationUpdateWithoutSharingListingsInput = {
   fixedShifts?: Prisma.FixedShiftUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutSharingListingsInput = {
@@ -1401,6 +1439,7 @@ export type LocationUncheckedUpdateWithoutSharingListingsInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUncheckedUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationCreateWithoutLenderDealsInput = {
@@ -1426,6 +1465,7 @@ export type LocationCreateWithoutLenderDealsInput = {
   fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateWithoutLenderDealsInput = {
@@ -1451,6 +1491,7 @@ export type LocationUncheckedCreateWithoutLenderDealsInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationCreateOrConnectWithoutLenderDealsInput = {
@@ -1481,6 +1522,7 @@ export type LocationCreateWithoutBorrowerDealsInput = {
   fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateWithoutBorrowerDealsInput = {
@@ -1506,6 +1548,7 @@ export type LocationUncheckedCreateWithoutBorrowerDealsInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationCreateOrConnectWithoutBorrowerDealsInput = {
@@ -1547,6 +1590,7 @@ export type LocationUpdateWithoutLenderDealsInput = {
   fixedShifts?: Prisma.FixedShiftUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutLenderDealsInput = {
@@ -1572,6 +1616,7 @@ export type LocationUncheckedUpdateWithoutLenderDealsInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUncheckedUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUpsertWithoutBorrowerDealsInput = {
@@ -1608,6 +1653,7 @@ export type LocationUpdateWithoutBorrowerDealsInput = {
   fixedShifts?: Prisma.FixedShiftUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutBorrowerDealsInput = {
@@ -1630,6 +1676,127 @@ export type LocationUncheckedUpdateWithoutBorrowerDealsInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutLocationNestedInput
   sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutLocationNestedInput
   lenderDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutLenderLocationNestedInput
+  fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutLocationNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutLocationNestedInput
+  vacations?: Prisma.VacationUncheckedUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUncheckedUpdateManyWithoutLocationNestedInput
+}
+
+export type LocationCreateWithoutSickCallsInput = {
+  id?: string
+  name: string
+  timezone?: string
+  generationDayOfWeek?: number
+  freezeWindowHours?: number
+  escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
+  createdAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutLocationsInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutLocationInput
+  shiftTemplates?: Prisma.ShiftTemplateCreateNestedManyWithoutLocationInput
+  schedules?: Prisma.ScheduleCreateNestedManyWithoutLocationInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealCreateNestedManyWithoutLenderLocationInput
+  borrowerDeals?: Prisma.SharingDealCreateNestedManyWithoutBorrowerLocationInput
+  fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutLocationInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutLocationInput
+  vacations?: Prisma.VacationCreateNestedManyWithoutLocationInput
+}
+
+export type LocationUncheckedCreateWithoutSickCallsInput = {
+  id?: string
+  ownerId: string
+  name: string
+  timezone?: string
+  generationDayOfWeek?: number
+  freezeWindowHours?: number
+  escalationTimeoutHours?: number
+  address?: string | null
+  lat?: number | null
+  lng?: number | null
+  isDiscoverable?: boolean
+  discoveryRadiusKm?: number
+  createdAt?: Date | string
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutLocationInput
+  shiftTemplates?: Prisma.ShiftTemplateUncheckedCreateNestedManyWithoutLocationInput
+  schedules?: Prisma.ScheduleUncheckedCreateNestedManyWithoutLocationInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutLocationInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutLocationInput
+  lenderDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutLenderLocationInput
+  borrowerDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutBorrowerLocationInput
+  fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutLocationInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutLocationInput
+  vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutLocationInput
+}
+
+export type LocationCreateOrConnectWithoutSickCallsInput = {
+  where: Prisma.LocationWhereUniqueInput
+  create: Prisma.XOR<Prisma.LocationCreateWithoutSickCallsInput, Prisma.LocationUncheckedCreateWithoutSickCallsInput>
+}
+
+export type LocationUpsertWithoutSickCallsInput = {
+  update: Prisma.XOR<Prisma.LocationUpdateWithoutSickCallsInput, Prisma.LocationUncheckedUpdateWithoutSickCallsInput>
+  create: Prisma.XOR<Prisma.LocationCreateWithoutSickCallsInput, Prisma.LocationUncheckedCreateWithoutSickCallsInput>
+  where?: Prisma.LocationWhereInput
+}
+
+export type LocationUpdateToOneWithWhereWithoutSickCallsInput = {
+  where?: Prisma.LocationWhereInput
+  data: Prisma.XOR<Prisma.LocationUpdateWithoutSickCallsInput, Prisma.LocationUncheckedUpdateWithoutSickCallsInput>
+}
+
+export type LocationUpdateWithoutSickCallsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
+  escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutLocationsNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutLocationNestedInput
+  shiftTemplates?: Prisma.ShiftTemplateUpdateManyWithoutLocationNestedInput
+  schedules?: Prisma.ScheduleUpdateManyWithoutLocationNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUpdateManyWithoutLenderLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUpdateManyWithoutBorrowerLocationNestedInput
+  fixedShifts?: Prisma.FixedShiftUpdateManyWithoutLocationNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutLocationNestedInput
+  vacations?: Prisma.VacationUpdateManyWithoutLocationNestedInput
+}
+
+export type LocationUncheckedUpdateWithoutSickCallsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
+  escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isDiscoverable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  discoveryRadiusKm?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutLocationNestedInput
+  shiftTemplates?: Prisma.ShiftTemplateUncheckedUpdateManyWithoutLocationNestedInput
+  schedules?: Prisma.ScheduleUncheckedUpdateManyWithoutLocationNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutLocationNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutLocationNestedInput
+  lenderDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutLenderLocationNestedInput
+  borrowerDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutBorrowerLocationNestedInput
   fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutLocationNestedInput
@@ -1658,6 +1825,7 @@ export type LocationCreateWithoutVacationsInput = {
   borrowerDeals?: Prisma.SharingDealCreateNestedManyWithoutBorrowerLocationInput
   fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateWithoutVacationsInput = {
@@ -1683,6 +1851,7 @@ export type LocationUncheckedCreateWithoutVacationsInput = {
   borrowerDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutBorrowerLocationInput
   fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationCreateOrConnectWithoutVacationsInput = {
@@ -1724,6 +1893,7 @@ export type LocationUpdateWithoutVacationsInput = {
   borrowerDeals?: Prisma.SharingDealUpdateManyWithoutBorrowerLocationNestedInput
   fixedShifts?: Prisma.FixedShiftUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutVacationsInput = {
@@ -1749,6 +1919,7 @@ export type LocationUncheckedUpdateWithoutVacationsInput = {
   borrowerDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutBorrowerLocationNestedInput
   fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUncheckedUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationCreateWithoutFixedShiftsInput = {
@@ -1774,6 +1945,7 @@ export type LocationCreateWithoutFixedShiftsInput = {
   borrowerDeals?: Prisma.SharingDealCreateNestedManyWithoutBorrowerLocationInput
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateWithoutFixedShiftsInput = {
@@ -1799,6 +1971,7 @@ export type LocationUncheckedCreateWithoutFixedShiftsInput = {
   borrowerDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutBorrowerLocationInput
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationCreateOrConnectWithoutFixedShiftsInput = {
@@ -1840,6 +2013,7 @@ export type LocationUpdateWithoutFixedShiftsInput = {
   borrowerDeals?: Prisma.SharingDealUpdateManyWithoutBorrowerLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutFixedShiftsInput = {
@@ -1865,6 +2039,7 @@ export type LocationUncheckedUpdateWithoutFixedShiftsInput = {
   borrowerDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutBorrowerLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUncheckedUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationCreateWithoutBlockedTimesInput = {
@@ -1890,6 +2065,7 @@ export type LocationCreateWithoutBlockedTimesInput = {
   borrowerDeals?: Prisma.SharingDealCreateNestedManyWithoutBorrowerLocationInput
   fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateWithoutBlockedTimesInput = {
@@ -1915,6 +2091,7 @@ export type LocationUncheckedCreateWithoutBlockedTimesInput = {
   borrowerDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutBorrowerLocationInput
   fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationCreateOrConnectWithoutBlockedTimesInput = {
@@ -1956,6 +2133,7 @@ export type LocationUpdateWithoutBlockedTimesInput = {
   borrowerDeals?: Prisma.SharingDealUpdateManyWithoutBorrowerLocationNestedInput
   fixedShifts?: Prisma.FixedShiftUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutBlockedTimesInput = {
@@ -1981,6 +2159,7 @@ export type LocationUncheckedUpdateWithoutBlockedTimesInput = {
   borrowerDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutBorrowerLocationNestedInput
   fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUncheckedUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationCreateWithoutAuditLogsInput = {
@@ -2006,6 +2185,7 @@ export type LocationCreateWithoutAuditLogsInput = {
   fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallCreateNestedManyWithoutLocationInput
 }
 
 export type LocationUncheckedCreateWithoutAuditLogsInput = {
@@ -2031,6 +2211,7 @@ export type LocationUncheckedCreateWithoutAuditLogsInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutLocationInput
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutLocationInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutLocationInput
+  sickCalls?: Prisma.SickCallUncheckedCreateNestedManyWithoutLocationInput
 }
 
 export type LocationCreateOrConnectWithoutAuditLogsInput = {
@@ -2072,6 +2253,7 @@ export type LocationUpdateWithoutAuditLogsInput = {
   fixedShifts?: Prisma.FixedShiftUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutAuditLogsInput = {
@@ -2097,6 +2279,7 @@ export type LocationUncheckedUpdateWithoutAuditLogsInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUncheckedUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationCreateManyOwnerInput = {
@@ -2137,6 +2320,7 @@ export type LocationUpdateWithoutOwnerInput = {
   fixedShifts?: Prisma.FixedShiftUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateWithoutOwnerInput = {
@@ -2162,6 +2346,7 @@ export type LocationUncheckedUpdateWithoutOwnerInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutLocationNestedInput
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutLocationNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutLocationNestedInput
+  sickCalls?: Prisma.SickCallUncheckedUpdateManyWithoutLocationNestedInput
 }
 
 export type LocationUncheckedUpdateManyWithoutOwnerInput = {
@@ -2195,6 +2380,7 @@ export type LocationCountOutputType = {
   fixedShifts: number
   blockedTimes: number
   vacations: number
+  sickCalls: number
 }
 
 export type LocationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2208,6 +2394,7 @@ export type LocationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   fixedShifts?: boolean | LocationCountOutputTypeCountFixedShiftsArgs
   blockedTimes?: boolean | LocationCountOutputTypeCountBlockedTimesArgs
   vacations?: boolean | LocationCountOutputTypeCountVacationsArgs
+  sickCalls?: boolean | LocationCountOutputTypeCountSickCallsArgs
 }
 
 /**
@@ -2290,6 +2477,13 @@ export type LocationCountOutputTypeCountVacationsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.VacationWhereInput
 }
 
+/**
+ * LocationCountOutputType without action
+ */
+export type LocationCountOutputTypeCountSickCallsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SickCallWhereInput
+}
+
 
 export type LocationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2316,6 +2510,7 @@ export type LocationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   fixedShifts?: boolean | Prisma.Location$fixedShiftsArgs<ExtArgs>
   blockedTimes?: boolean | Prisma.Location$blockedTimesArgs<ExtArgs>
   vacations?: boolean | Prisma.Location$vacationsArgs<ExtArgs>
+  sickCalls?: boolean | Prisma.Location$sickCallsArgs<ExtArgs>
   _count?: boolean | Prisma.LocationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["location"]>
 
@@ -2382,6 +2577,7 @@ export type LocationInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   fixedShifts?: boolean | Prisma.Location$fixedShiftsArgs<ExtArgs>
   blockedTimes?: boolean | Prisma.Location$blockedTimesArgs<ExtArgs>
   vacations?: boolean | Prisma.Location$vacationsArgs<ExtArgs>
+  sickCalls?: boolean | Prisma.Location$sickCallsArgs<ExtArgs>
   _count?: boolean | Prisma.LocationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LocationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2405,6 +2601,7 @@ export type $LocationPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     fixedShifts: Prisma.$FixedShiftPayload<ExtArgs>[]
     blockedTimes: Prisma.$BlockedTimePayload<ExtArgs>[]
     vacations: Prisma.$VacationPayload<ExtArgs>[]
+    sickCalls: Prisma.$SickCallPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2825,6 +3022,7 @@ export interface Prisma__LocationClient<T, Null = never, ExtArgs extends runtime
   fixedShifts<T extends Prisma.Location$fixedShiftsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Location$fixedShiftsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FixedShiftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   blockedTimes<T extends Prisma.Location$blockedTimesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Location$blockedTimesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BlockedTimePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vacations<T extends Prisma.Location$vacationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Location$vacationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VacationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sickCalls<T extends Prisma.Location$sickCallsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Location$sickCallsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SickCallPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3505,6 +3703,30 @@ export type Location$vacationsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.VacationScalarFieldEnum | Prisma.VacationScalarFieldEnum[]
+}
+
+/**
+ * Location.sickCalls
+ */
+export type Location$sickCallsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SickCall
+   */
+  select?: Prisma.SickCallSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SickCall
+   */
+  omit?: Prisma.SickCallOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SickCallInclude<ExtArgs> | null
+  where?: Prisma.SickCallWhereInput
+  orderBy?: Prisma.SickCallOrderByWithRelationInput | Prisma.SickCallOrderByWithRelationInput[]
+  cursor?: Prisma.SickCallWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SickCallScalarFieldEnum | Prisma.SickCallScalarFieldEnum[]
 }
 
 /**

@@ -6,7 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PageHeader } from "@/components/dashboard/page-header"
-import { Users, ClipboardList, Calendar, ChevronRight, ArrowRight } from "lucide-react"
+import { confirmSickCall } from "@/app/actions/sick"
+import { getShiftStart, formatShiftDate } from "@/lib/scheduling/shift-date"
+import { Users, ClipboardList, Calendar, ChevronRight, ArrowRight, Siren } from "lucide-react"
 
 export default async function LocationPage({
   params,
@@ -27,9 +29,59 @@ export default async function LocationPage({
   })
   if (!location) notFound()
 
+  // Unconfirmed sick calls demand a loud, persistent banner.
+  const openSickCalls = await prisma.sickCall.findMany({
+    where: { locationId, confirmedAt: null },
+    orderBy: { reportedAt: "desc" },
+  })
+  const sickDetails = await Promise.all(
+    openSickCalls.map(async (call) => {
+      const [employee, shift] = await Promise.all([
+        prisma.employee.findUnique({ where: { id: call.employeeId }, select: { name: true } }),
+        prisma.shift.findUnique({
+          where: { id: call.shiftId },
+          include: { shiftTemplate: true, schedule: { select: { weekStart: true } } },
+        }),
+      ])
+      const label = shift
+        ? `${shift.shiftTemplate.name} on ${formatShiftDate(
+            getShiftStart(new Date(shift.schedule.weekStart), shift.dayOfWeek, shift.shiftTemplate.startTime)
+          )}`
+        : "unknown shift"
+      return { id: call.id, employeeName: employee?.name ?? "Unknown", label }
+    })
+  )
+
   return (
     <div className="space-y-6">
       <PageHeader title={location.name} description={location.timezone} />
+
+      {sickDetails.length > 0 && (
+        <Card className="border-red-300 bg-red-50">
+          <CardContent className="py-4 space-y-3">
+            <div className="flex items-center gap-2 text-red-800 font-semibold">
+              <Siren className="h-4 w-4" />
+              {sickDetails.length} unconfirmed sick call{sickDetails.length > 1 ? "s" : ""} — please
+              confirm you&apos;ve seen {sickDetails.length > 1 ? "them" : "it"}
+            </div>
+            <ul className="space-y-2">
+              {sickDetails.map((call) => (
+                <li key={call.id} className="flex items-center justify-between gap-3 text-sm text-red-900">
+                  <span>
+                    <strong>{call.employeeName}</strong> — {call.label}. Replacement search is
+                    running.
+                  </span>
+                  <form action={confirmSickCall.bind(null, call.id)}>
+                    <Button type="submit" size="sm" variant="outline" className="border-red-300 text-red-700 hover:bg-red-100">
+                      Confirm
+                    </Button>
+                  </form>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Stats */}
       <div className="grid gap-3 sm:grid-cols-3">
