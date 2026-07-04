@@ -142,10 +142,11 @@ export async function getHoursDistribution(
 
 export async function getNoShowHistory(locationId: string): Promise<EmployeeNoShows[]> {
   const since = weekStart(8)
+  // Real no-show events (missed check-ins), not the old declined-shift proxy.
   const declined = await prisma.shift.findMany({
     where: {
       schedule: { locationId, weekStart: { gte: since } },
-      status: "DECLINED",
+      status: "NO_SHOW",
       employeeId: { not: null },
     },
     include: { employee: { select: { id: true, name: true } } },

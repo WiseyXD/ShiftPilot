@@ -24,6 +24,7 @@ export async function GET(
       generationDayOfWeek: location.generationDayOfWeek,
       freezeWindowHours: location.freezeWindowHours,
       escalationTimeoutHours: location.escalationTimeoutHours,
+      checkInGraceMinutes: location.checkInGraceMinutes,
       isPro: isPro(session.user.stripePlan),
     },
   })

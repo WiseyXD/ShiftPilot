@@ -203,6 +203,34 @@ async function handleAction(action: string, payload: unknown) {
       await inngest.send({ name: "swap/manager-response", data: { ...p, response: action } })
       return NextResponse.json({ ok: true, message: action === "APPROVE_SWAP" ? "Swap approved." : "Swap rejected." })
 
+    case "CHECK_IN": {
+      const shift = await prisma.shift.findUnique({ where: { id: p.shiftId } })
+      if (!shift) {
+        return NextResponse.json({ error: "Shift not found" }, { status: 404 })
+      }
+      if (shift.status === "LENT_OUT") {
+        return NextResponse.json(
+          { error: "This shift is lent out to another venue." },
+          { status: 409 }
+        )
+      }
+      if (shift.status === "NO_SHOW") {
+        return NextResponse.json(
+          { error: "The check-in window closed and this was marked a no-show — talk to your manager." },
+          { status: 409 }
+        )
+      }
+      const { count } = await prisma.shift.updateMany({
+        where: { id: p.shiftId, checkedInAt: null },
+        data: { checkedInAt: new Date() },
+      })
+      if (count === 0) {
+        return NextResponse.json({ error: "Already checked in." }, { status: 409 })
+      }
+      await inngest.send({ name: "shift/checked-in", data: { shiftId: p.shiftId } })
+      return NextResponse.json({ ok: true, message: "Checked in — have a good shift!" })
+    }
+
     case "CONFIRM_SICK": {
       // Guarded: confirm exactly once; a second click is told so.
       const { count } = await prisma.sickCall.updateMany({

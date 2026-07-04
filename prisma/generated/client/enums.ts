@@ -33,7 +33,8 @@ export const ActionTokenAction = {
   ACCEPT_LOAN: 'ACCEPT_LOAN',
   DECLINE_LOAN: 'DECLINE_LOAN',
   REQUEST_CHANGE: 'REQUEST_CHANGE',
-  CONFIRM_SICK: 'CONFIRM_SICK'
+  CONFIRM_SICK: 'CONFIRM_SICK',
+  CHECK_IN: 'CHECK_IN'
 } as const
 
 export type ActionTokenAction = (typeof ActionTokenAction)[keyof typeof ActionTokenAction]
@@ -62,7 +63,8 @@ export const ShiftStatus = {
   DECLINED: 'DECLINED',
   REASSIGNED: 'REASSIGNED',
   UNASSIGNED: 'UNASSIGNED',
-  LENT_OUT: 'LENT_OUT'
+  LENT_OUT: 'LENT_OUT',
+  NO_SHOW: 'NO_SHOW'
 } as const
 
 export type ShiftStatus = (typeof ShiftStatus)[keyof typeof ShiftStatus]

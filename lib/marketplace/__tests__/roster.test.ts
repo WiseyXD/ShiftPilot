@@ -8,13 +8,13 @@ describe("canBackfill", () => {
   })
 
   it("every other status stays backfillable — exhaustive, so a new status can't slip through silently", () => {
-    const others: ShiftStatus[] = ["PENDING", "ACCEPTED", "DECLINED", "REASSIGNED", "UNASSIGNED"]
+    const others: ShiftStatus[] = ["PENDING", "ACCEPTED", "DECLINED", "REASSIGNED", "UNASSIGNED", "NO_SHOW"]
     for (const status of others) {
       expect(canBackfill(status), status).toBe(true)
     }
     // Guard against enum drift: LENT_OUT + the list above must cover the whole enum.
     const all: ShiftStatus[] = [...others, "LENT_OUT"]
-    expect(new Set(all).size).toBe(6)
+    expect(new Set(all).size).toBe(7)
   })
 })
 

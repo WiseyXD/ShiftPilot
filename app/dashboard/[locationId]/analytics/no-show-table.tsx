@@ -17,7 +17,7 @@ export function NoShowTable({ data }: { data: EmployeeNoShows[] }) {
               className="text-right px-4 py-3 font-medium text-slate-600 cursor-pointer select-none hover:text-slate-900"
               onClick={() => setSortDesc((v) => !v)}
             >
-              Declined shifts {sortDesc ? "↓" : "↑"}
+              No-shows {sortDesc ? "↓" : "↑"}
             </th>
           </tr>
         </thead>

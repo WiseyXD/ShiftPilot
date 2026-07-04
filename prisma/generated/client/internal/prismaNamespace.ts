@@ -1814,6 +1814,7 @@ export const LocationScalarFieldEnum = {
   generationDayOfWeek: 'generationDayOfWeek',
   freezeWindowHours: 'freezeWindowHours',
   escalationTimeoutHours: 'escalationTimeoutHours',
+  checkInGraceMinutes: 'checkInGraceMinutes',
   address: 'address',
   lat: 'lat',
   lng: 'lng',
@@ -1899,7 +1900,9 @@ export const ShiftScalarFieldEnum = {
   employeeId: 'employeeId',
   dayOfWeek: 'dayOfWeek',
   status: 'status',
-  sharingDealId: 'sharingDealId'
+  sharingDealId: 'sharingDealId',
+  checkInRequestedAt: 'checkInRequestedAt',
+  checkedInAt: 'checkedInAt'
 } as const
 
 export type ShiftScalarFieldEnum = (typeof ShiftScalarFieldEnum)[keyof typeof ShiftScalarFieldEnum]

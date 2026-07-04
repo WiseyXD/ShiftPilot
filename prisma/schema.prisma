@@ -31,6 +31,7 @@ enum ActionTokenAction {
   DECLINE_LOAN
   REQUEST_CHANGE
   CONFIRM_SICK
+  CHECK_IN
 }
 
 enum EmployeeCategory {
@@ -51,6 +52,7 @@ enum ShiftStatus {
   REASSIGNED
   UNASSIGNED
   LENT_OUT // worker is lent to another venue — ALWAYS suppresses the backfill engine
+  NO_SHOW // missed check-in — real no-show event, feeds the reliability metric
 }
 
 enum SharingListingType {
@@ -106,6 +108,7 @@ model Location {
   generationDayOfWeek    Int      @default(3) // 0=Sun 1=Mon ... 6=Sat; default Wednesday
   freezeWindowHours      Int      @default(24)
   escalationTimeoutHours Int      @default(2)
+  checkInGraceMinutes    Int      @default(15) // no-show verdict X min after shift start
   // Marketplace discovery — venues are invisible to other owners unless they opt in
   address                String?
   lat                    Float?
@@ -240,6 +243,8 @@ model Shift {
   dayOfWeek       Int         @default(0) // 0=Sun 1=Mon ... 6=Sat
   status          ShiftStatus @default(PENDING)
   sharingDealId   String? // set on the borrower's shift (and the lender's LENT_OUT shift) when a deal fills
+  checkInRequestedAt DateTime? // check-in link sent (idempotency for the scheduler)
+  checkedInAt        DateTime? // employee tapped the check-in link
 
   schedule      Schedule      @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
   shiftTemplate ShiftTemplate @relation(fields: [shiftTemplateId], references: [id], onDelete: Cascade)

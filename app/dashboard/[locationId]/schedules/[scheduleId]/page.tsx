@@ -17,6 +17,7 @@ const STATUS_STYLES: Record<string, string> = {
   REASSIGNED: "bg-blue-100 text-blue-700 border-blue-200",
   UNASSIGNED: "bg-yellow-100 text-yellow-700 border-yellow-200",
   LENT_OUT: "bg-purple-100 text-purple-700 border-purple-200",
+  NO_SHOW: "bg-red-100 text-red-700 border-red-200",
 }
 
 const BORROWED_STYLE = "bg-purple-100 text-purple-700 border-purple-200"
@@ -197,7 +198,7 @@ export default async function SchedulePage({
                                   variant="outline"
                                   className={`text-[10px] px-1.5 py-0 h-4 ${STATUS_STYLES[shift.status]}`}
                                 >
-                                  {shift.status === "LENT_OUT" ? "lent out" : shift.status.toLowerCase()}
+                                  {shift.status === "LENT_OUT" ? "lent out" : shift.status === "NO_SHOW" ? "no-show" : shift.status.toLowerCase()}
                                 </Badge>
                               </>
                             )}

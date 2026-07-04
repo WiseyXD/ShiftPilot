@@ -30,6 +30,7 @@ export type LocationAvgAggregateOutputType = {
   generationDayOfWeek: number | null
   freezeWindowHours: number | null
   escalationTimeoutHours: number | null
+  checkInGraceMinutes: number | null
   lat: number | null
   lng: number | null
   discoveryRadiusKm: number | null
@@ -39,6 +40,7 @@ export type LocationSumAggregateOutputType = {
   generationDayOfWeek: number | null
   freezeWindowHours: number | null
   escalationTimeoutHours: number | null
+  checkInGraceMinutes: number | null
   lat: number | null
   lng: number | null
   discoveryRadiusKm: number | null
@@ -52,6 +54,7 @@ export type LocationMinAggregateOutputType = {
   generationDayOfWeek: number | null
   freezeWindowHours: number | null
   escalationTimeoutHours: number | null
+  checkInGraceMinutes: number | null
   address: string | null
   lat: number | null
   lng: number | null
@@ -68,6 +71,7 @@ export type LocationMaxAggregateOutputType = {
   generationDayOfWeek: number | null
   freezeWindowHours: number | null
   escalationTimeoutHours: number | null
+  checkInGraceMinutes: number | null
   address: string | null
   lat: number | null
   lng: number | null
@@ -84,6 +88,7 @@ export type LocationCountAggregateOutputType = {
   generationDayOfWeek: number
   freezeWindowHours: number
   escalationTimeoutHours: number
+  checkInGraceMinutes: number
   address: number
   lat: number
   lng: number
@@ -98,6 +103,7 @@ export type LocationAvgAggregateInputType = {
   generationDayOfWeek?: true
   freezeWindowHours?: true
   escalationTimeoutHours?: true
+  checkInGraceMinutes?: true
   lat?: true
   lng?: true
   discoveryRadiusKm?: true
@@ -107,6 +113,7 @@ export type LocationSumAggregateInputType = {
   generationDayOfWeek?: true
   freezeWindowHours?: true
   escalationTimeoutHours?: true
+  checkInGraceMinutes?: true
   lat?: true
   lng?: true
   discoveryRadiusKm?: true
@@ -120,6 +127,7 @@ export type LocationMinAggregateInputType = {
   generationDayOfWeek?: true
   freezeWindowHours?: true
   escalationTimeoutHours?: true
+  checkInGraceMinutes?: true
   address?: true
   lat?: true
   lng?: true
@@ -136,6 +144,7 @@ export type LocationMaxAggregateInputType = {
   generationDayOfWeek?: true
   freezeWindowHours?: true
   escalationTimeoutHours?: true
+  checkInGraceMinutes?: true
   address?: true
   lat?: true
   lng?: true
@@ -152,6 +161,7 @@ export type LocationCountAggregateInputType = {
   generationDayOfWeek?: true
   freezeWindowHours?: true
   escalationTimeoutHours?: true
+  checkInGraceMinutes?: true
   address?: true
   lat?: true
   lng?: true
@@ -255,6 +265,7 @@ export type LocationGroupByOutputType = {
   generationDayOfWeek: number
   freezeWindowHours: number
   escalationTimeoutHours: number
+  checkInGraceMinutes: number
   address: string | null
   lat: number | null
   lng: number | null
@@ -294,6 +305,7 @@ export type LocationWhereInput = {
   generationDayOfWeek?: Prisma.IntFilter<"Location"> | number
   freezeWindowHours?: Prisma.IntFilter<"Location"> | number
   escalationTimeoutHours?: Prisma.IntFilter<"Location"> | number
+  checkInGraceMinutes?: Prisma.IntFilter<"Location"> | number
   address?: Prisma.StringNullableFilter<"Location"> | string | null
   lat?: Prisma.FloatNullableFilter<"Location"> | number | null
   lng?: Prisma.FloatNullableFilter<"Location"> | number | null
@@ -322,6 +334,7 @@ export type LocationOrderByWithRelationInput = {
   generationDayOfWeek?: Prisma.SortOrder
   freezeWindowHours?: Prisma.SortOrder
   escalationTimeoutHours?: Prisma.SortOrder
+  checkInGraceMinutes?: Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   lat?: Prisma.SortOrderInput | Prisma.SortOrder
   lng?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -353,6 +366,7 @@ export type LocationWhereUniqueInput = Prisma.AtLeast<{
   generationDayOfWeek?: Prisma.IntFilter<"Location"> | number
   freezeWindowHours?: Prisma.IntFilter<"Location"> | number
   escalationTimeoutHours?: Prisma.IntFilter<"Location"> | number
+  checkInGraceMinutes?: Prisma.IntFilter<"Location"> | number
   address?: Prisma.StringNullableFilter<"Location"> | string | null
   lat?: Prisma.FloatNullableFilter<"Location"> | number | null
   lng?: Prisma.FloatNullableFilter<"Location"> | number | null
@@ -381,6 +395,7 @@ export type LocationOrderByWithAggregationInput = {
   generationDayOfWeek?: Prisma.SortOrder
   freezeWindowHours?: Prisma.SortOrder
   escalationTimeoutHours?: Prisma.SortOrder
+  checkInGraceMinutes?: Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   lat?: Prisma.SortOrderInput | Prisma.SortOrder
   lng?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -405,6 +420,7 @@ export type LocationScalarWhereWithAggregatesInput = {
   generationDayOfWeek?: Prisma.IntWithAggregatesFilter<"Location"> | number
   freezeWindowHours?: Prisma.IntWithAggregatesFilter<"Location"> | number
   escalationTimeoutHours?: Prisma.IntWithAggregatesFilter<"Location"> | number
+  checkInGraceMinutes?: Prisma.IntWithAggregatesFilter<"Location"> | number
   address?: Prisma.StringNullableWithAggregatesFilter<"Location"> | string | null
   lat?: Prisma.FloatNullableWithAggregatesFilter<"Location"> | number | null
   lng?: Prisma.FloatNullableWithAggregatesFilter<"Location"> | number | null
@@ -420,6 +436,7 @@ export type LocationCreateInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -448,6 +465,7 @@ export type LocationUncheckedCreateInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -474,6 +492,7 @@ export type LocationUpdateInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -502,6 +521,7 @@ export type LocationUncheckedUpdateInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -529,6 +549,7 @@ export type LocationCreateManyInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -544,6 +565,7 @@ export type LocationUpdateManyMutationInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -560,6 +582,7 @@ export type LocationUncheckedUpdateManyInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -586,6 +609,7 @@ export type LocationCountOrderByAggregateInput = {
   generationDayOfWeek?: Prisma.SortOrder
   freezeWindowHours?: Prisma.SortOrder
   escalationTimeoutHours?: Prisma.SortOrder
+  checkInGraceMinutes?: Prisma.SortOrder
   address?: Prisma.SortOrder
   lat?: Prisma.SortOrder
   lng?: Prisma.SortOrder
@@ -598,6 +622,7 @@ export type LocationAvgOrderByAggregateInput = {
   generationDayOfWeek?: Prisma.SortOrder
   freezeWindowHours?: Prisma.SortOrder
   escalationTimeoutHours?: Prisma.SortOrder
+  checkInGraceMinutes?: Prisma.SortOrder
   lat?: Prisma.SortOrder
   lng?: Prisma.SortOrder
   discoveryRadiusKm?: Prisma.SortOrder
@@ -611,6 +636,7 @@ export type LocationMaxOrderByAggregateInput = {
   generationDayOfWeek?: Prisma.SortOrder
   freezeWindowHours?: Prisma.SortOrder
   escalationTimeoutHours?: Prisma.SortOrder
+  checkInGraceMinutes?: Prisma.SortOrder
   address?: Prisma.SortOrder
   lat?: Prisma.SortOrder
   lng?: Prisma.SortOrder
@@ -627,6 +653,7 @@ export type LocationMinOrderByAggregateInput = {
   generationDayOfWeek?: Prisma.SortOrder
   freezeWindowHours?: Prisma.SortOrder
   escalationTimeoutHours?: Prisma.SortOrder
+  checkInGraceMinutes?: Prisma.SortOrder
   address?: Prisma.SortOrder
   lat?: Prisma.SortOrder
   lng?: Prisma.SortOrder
@@ -639,6 +666,7 @@ export type LocationSumOrderByAggregateInput = {
   generationDayOfWeek?: Prisma.SortOrder
   freezeWindowHours?: Prisma.SortOrder
   escalationTimeoutHours?: Prisma.SortOrder
+  checkInGraceMinutes?: Prisma.SortOrder
   lat?: Prisma.SortOrder
   lng?: Prisma.SortOrder
   discoveryRadiusKm?: Prisma.SortOrder
@@ -872,6 +900,7 @@ export type LocationCreateWithoutOwnerInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -898,6 +927,7 @@ export type LocationUncheckedCreateWithoutOwnerInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -954,6 +984,7 @@ export type LocationScalarWhereInput = {
   generationDayOfWeek?: Prisma.IntFilter<"Location"> | number
   freezeWindowHours?: Prisma.IntFilter<"Location"> | number
   escalationTimeoutHours?: Prisma.IntFilter<"Location"> | number
+  checkInGraceMinutes?: Prisma.IntFilter<"Location"> | number
   address?: Prisma.StringNullableFilter<"Location"> | string | null
   lat?: Prisma.FloatNullableFilter<"Location"> | number | null
   lng?: Prisma.FloatNullableFilter<"Location"> | number | null
@@ -969,6 +1000,7 @@ export type LocationCreateWithoutEmployeesInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -996,6 +1028,7 @@ export type LocationUncheckedCreateWithoutEmployeesInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -1037,6 +1070,7 @@ export type LocationUpdateWithoutEmployeesInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1064,6 +1098,7 @@ export type LocationUncheckedUpdateWithoutEmployeesInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1089,6 +1124,7 @@ export type LocationCreateWithoutShiftTemplatesInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -1116,6 +1152,7 @@ export type LocationUncheckedCreateWithoutShiftTemplatesInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -1157,6 +1194,7 @@ export type LocationUpdateWithoutShiftTemplatesInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1184,6 +1222,7 @@ export type LocationUncheckedUpdateWithoutShiftTemplatesInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1209,6 +1248,7 @@ export type LocationCreateWithoutSchedulesInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -1236,6 +1276,7 @@ export type LocationUncheckedCreateWithoutSchedulesInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -1277,6 +1318,7 @@ export type LocationUpdateWithoutSchedulesInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1304,6 +1346,7 @@ export type LocationUncheckedUpdateWithoutSchedulesInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1329,6 +1372,7 @@ export type LocationCreateWithoutSharingListingsInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -1356,6 +1400,7 @@ export type LocationUncheckedCreateWithoutSharingListingsInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -1397,6 +1442,7 @@ export type LocationUpdateWithoutSharingListingsInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1424,6 +1470,7 @@ export type LocationUncheckedUpdateWithoutSharingListingsInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1449,6 +1496,7 @@ export type LocationCreateWithoutLenderDealsInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -1476,6 +1524,7 @@ export type LocationUncheckedCreateWithoutLenderDealsInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -1506,6 +1555,7 @@ export type LocationCreateWithoutBorrowerDealsInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -1533,6 +1583,7 @@ export type LocationUncheckedCreateWithoutBorrowerDealsInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -1574,6 +1625,7 @@ export type LocationUpdateWithoutLenderDealsInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1601,6 +1653,7 @@ export type LocationUncheckedUpdateWithoutLenderDealsInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1637,6 +1690,7 @@ export type LocationUpdateWithoutBorrowerDealsInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1664,6 +1718,7 @@ export type LocationUncheckedUpdateWithoutBorrowerDealsInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1689,6 +1744,7 @@ export type LocationCreateWithoutSickCallsInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -1716,6 +1772,7 @@ export type LocationUncheckedCreateWithoutSickCallsInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -1757,6 +1814,7 @@ export type LocationUpdateWithoutSickCallsInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1784,6 +1842,7 @@ export type LocationUncheckedUpdateWithoutSickCallsInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1809,6 +1868,7 @@ export type LocationCreateWithoutVacationsInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -1836,6 +1896,7 @@ export type LocationUncheckedCreateWithoutVacationsInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -1877,6 +1938,7 @@ export type LocationUpdateWithoutVacationsInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1904,6 +1966,7 @@ export type LocationUncheckedUpdateWithoutVacationsInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1929,6 +1992,7 @@ export type LocationCreateWithoutFixedShiftsInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -1956,6 +2020,7 @@ export type LocationUncheckedCreateWithoutFixedShiftsInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -1997,6 +2062,7 @@ export type LocationUpdateWithoutFixedShiftsInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2024,6 +2090,7 @@ export type LocationUncheckedUpdateWithoutFixedShiftsInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2049,6 +2116,7 @@ export type LocationCreateWithoutBlockedTimesInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -2076,6 +2144,7 @@ export type LocationUncheckedCreateWithoutBlockedTimesInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -2117,6 +2186,7 @@ export type LocationUpdateWithoutBlockedTimesInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2144,6 +2214,7 @@ export type LocationUncheckedUpdateWithoutBlockedTimesInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2169,6 +2240,7 @@ export type LocationCreateWithoutAuditLogsInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -2196,6 +2268,7 @@ export type LocationUncheckedCreateWithoutAuditLogsInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -2237,6 +2310,7 @@ export type LocationUpdateWithoutAuditLogsInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2264,6 +2338,7 @@ export type LocationUncheckedUpdateWithoutAuditLogsInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2289,6 +2364,7 @@ export type LocationCreateManyOwnerInput = {
   generationDayOfWeek?: number
   freezeWindowHours?: number
   escalationTimeoutHours?: number
+  checkInGraceMinutes?: number
   address?: string | null
   lat?: number | null
   lng?: number | null
@@ -2304,6 +2380,7 @@ export type LocationUpdateWithoutOwnerInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2330,6 +2407,7 @@ export type LocationUncheckedUpdateWithoutOwnerInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2356,6 +2434,7 @@ export type LocationUncheckedUpdateManyWithoutOwnerInput = {
   generationDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   freezeWindowHours?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTimeoutHours?: Prisma.IntFieldUpdateOperationsInput | number
+  checkInGraceMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2493,6 +2572,7 @@ export type LocationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   generationDayOfWeek?: boolean
   freezeWindowHours?: boolean
   escalationTimeoutHours?: boolean
+  checkInGraceMinutes?: boolean
   address?: boolean
   lat?: boolean
   lng?: boolean
@@ -2522,6 +2602,7 @@ export type LocationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   generationDayOfWeek?: boolean
   freezeWindowHours?: boolean
   escalationTimeoutHours?: boolean
+  checkInGraceMinutes?: boolean
   address?: boolean
   lat?: boolean
   lng?: boolean
@@ -2539,6 +2620,7 @@ export type LocationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   generationDayOfWeek?: boolean
   freezeWindowHours?: boolean
   escalationTimeoutHours?: boolean
+  checkInGraceMinutes?: boolean
   address?: boolean
   lat?: boolean
   lng?: boolean
@@ -2556,6 +2638,7 @@ export type LocationSelectScalar = {
   generationDayOfWeek?: boolean
   freezeWindowHours?: boolean
   escalationTimeoutHours?: boolean
+  checkInGraceMinutes?: boolean
   address?: boolean
   lat?: boolean
   lng?: boolean
@@ -2564,7 +2647,7 @@ export type LocationSelectScalar = {
   createdAt?: boolean
 }
 
-export type LocationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "name" | "timezone" | "generationDayOfWeek" | "freezeWindowHours" | "escalationTimeoutHours" | "address" | "lat" | "lng" | "isDiscoverable" | "discoveryRadiusKm" | "createdAt", ExtArgs["result"]["location"]>
+export type LocationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "name" | "timezone" | "generationDayOfWeek" | "freezeWindowHours" | "escalationTimeoutHours" | "checkInGraceMinutes" | "address" | "lat" | "lng" | "isDiscoverable" | "discoveryRadiusKm" | "createdAt", ExtArgs["result"]["location"]>
 export type LocationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   employees?: boolean | Prisma.Location$employeesArgs<ExtArgs>
@@ -2611,6 +2694,7 @@ export type $LocationPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     generationDayOfWeek: number
     freezeWindowHours: number
     escalationTimeoutHours: number
+    checkInGraceMinutes: number
     address: string | null
     lat: number | null
     lng: number | null
@@ -3059,6 +3143,7 @@ export interface LocationFieldRefs {
   readonly generationDayOfWeek: Prisma.FieldRef<"Location", 'Int'>
   readonly freezeWindowHours: Prisma.FieldRef<"Location", 'Int'>
   readonly escalationTimeoutHours: Prisma.FieldRef<"Location", 'Int'>
+  readonly checkInGraceMinutes: Prisma.FieldRef<"Location", 'Int'>
   readonly address: Prisma.FieldRef<"Location", 'String'>
   readonly lat: Prisma.FieldRef<"Location", 'Float'>
   readonly lng: Prisma.FieldRef<"Location", 'Float'>

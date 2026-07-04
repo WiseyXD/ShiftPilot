@@ -75,8 +75,10 @@ export async function updateLocationConfig(
   // freeze window and escalation timeout are Pro-only
   if (isPro(session.user.stripePlan)) {
     const freezeWindowHours = parseInt(formData.get("freezeWindowHours") as string)
+    const checkInGraceMinutes = parseInt(formData.get("checkInGraceMinutes") as string)
     const escalationTimeoutHours = parseInt(formData.get("escalationTimeoutHours") as string)
     if (!isNaN(freezeWindowHours)) data.freezeWindowHours = freezeWindowHours
+    if (!isNaN(checkInGraceMinutes) && checkInGraceMinutes >= 1) data.checkInGraceMinutes = checkInGraceMinutes
     if (!isNaN(escalationTimeoutHours)) data.escalationTimeoutHours = escalationTimeoutHours
   }
 

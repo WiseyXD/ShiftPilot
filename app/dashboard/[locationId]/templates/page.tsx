@@ -26,6 +26,7 @@ type LocationConfig = {
   generationDayOfWeek: number
   freezeWindowHours: number
   escalationTimeoutHours: number
+  checkInGraceMinutes: number
   isPro: boolean
 }
 
@@ -128,6 +129,16 @@ function LocationConfigForm({ locationId, config }: { locationId: string; config
             min={1}
             defaultValue={config.freezeWindowHours}
             disabled={!config.isPro}
+            className="w-24"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="text-sm font-medium text-slate-700">No-show grace (minutes after start)</label>
+          <Input
+            name="checkInGraceMinutes"
+            type="number"
+            min={1}
+            defaultValue={config.checkInGraceMinutes}
             className="w-24"
           />
         </div>

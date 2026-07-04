@@ -42,6 +42,8 @@ export type ShiftMinAggregateOutputType = {
   dayOfWeek: number | null
   status: $Enums.ShiftStatus | null
   sharingDealId: string | null
+  checkInRequestedAt: Date | null
+  checkedInAt: Date | null
 }
 
 export type ShiftMaxAggregateOutputType = {
@@ -52,6 +54,8 @@ export type ShiftMaxAggregateOutputType = {
   dayOfWeek: number | null
   status: $Enums.ShiftStatus | null
   sharingDealId: string | null
+  checkInRequestedAt: Date | null
+  checkedInAt: Date | null
 }
 
 export type ShiftCountAggregateOutputType = {
@@ -62,6 +66,8 @@ export type ShiftCountAggregateOutputType = {
   dayOfWeek: number
   status: number
   sharingDealId: number
+  checkInRequestedAt: number
+  checkedInAt: number
   _all: number
 }
 
@@ -82,6 +88,8 @@ export type ShiftMinAggregateInputType = {
   dayOfWeek?: true
   status?: true
   sharingDealId?: true
+  checkInRequestedAt?: true
+  checkedInAt?: true
 }
 
 export type ShiftMaxAggregateInputType = {
@@ -92,6 +100,8 @@ export type ShiftMaxAggregateInputType = {
   dayOfWeek?: true
   status?: true
   sharingDealId?: true
+  checkInRequestedAt?: true
+  checkedInAt?: true
 }
 
 export type ShiftCountAggregateInputType = {
@@ -102,6 +112,8 @@ export type ShiftCountAggregateInputType = {
   dayOfWeek?: true
   status?: true
   sharingDealId?: true
+  checkInRequestedAt?: true
+  checkedInAt?: true
   _all?: true
 }
 
@@ -199,6 +211,8 @@ export type ShiftGroupByOutputType = {
   dayOfWeek: number
   status: $Enums.ShiftStatus
   sharingDealId: string | null
+  checkInRequestedAt: Date | null
+  checkedInAt: Date | null
   _count: ShiftCountAggregateOutputType | null
   _avg: ShiftAvgAggregateOutputType | null
   _sum: ShiftSumAggregateOutputType | null
@@ -232,6 +246,8 @@ export type ShiftWhereInput = {
   dayOfWeek?: Prisma.IntFilter<"Shift"> | number
   status?: Prisma.EnumShiftStatusFilter<"Shift"> | $Enums.ShiftStatus
   sharingDealId?: Prisma.StringNullableFilter<"Shift"> | string | null
+  checkInRequestedAt?: Prisma.DateTimeNullableFilter<"Shift"> | Date | string | null
+  checkedInAt?: Prisma.DateTimeNullableFilter<"Shift"> | Date | string | null
   schedule?: Prisma.XOR<Prisma.ScheduleScalarRelationFilter, Prisma.ScheduleWhereInput>
   shiftTemplate?: Prisma.XOR<Prisma.ShiftTemplateScalarRelationFilter, Prisma.ShiftTemplateWhereInput>
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
@@ -247,6 +263,8 @@ export type ShiftOrderByWithRelationInput = {
   dayOfWeek?: Prisma.SortOrder
   status?: Prisma.SortOrder
   sharingDealId?: Prisma.SortOrderInput | Prisma.SortOrder
+  checkInRequestedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  checkedInAt?: Prisma.SortOrderInput | Prisma.SortOrder
   schedule?: Prisma.ScheduleOrderByWithRelationInput
   shiftTemplate?: Prisma.ShiftTemplateOrderByWithRelationInput
   employee?: Prisma.EmployeeOrderByWithRelationInput
@@ -265,6 +283,8 @@ export type ShiftWhereUniqueInput = Prisma.AtLeast<{
   dayOfWeek?: Prisma.IntFilter<"Shift"> | number
   status?: Prisma.EnumShiftStatusFilter<"Shift"> | $Enums.ShiftStatus
   sharingDealId?: Prisma.StringNullableFilter<"Shift"> | string | null
+  checkInRequestedAt?: Prisma.DateTimeNullableFilter<"Shift"> | Date | string | null
+  checkedInAt?: Prisma.DateTimeNullableFilter<"Shift"> | Date | string | null
   schedule?: Prisma.XOR<Prisma.ScheduleScalarRelationFilter, Prisma.ScheduleWhereInput>
   shiftTemplate?: Prisma.XOR<Prisma.ShiftTemplateScalarRelationFilter, Prisma.ShiftTemplateWhereInput>
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
@@ -280,6 +300,8 @@ export type ShiftOrderByWithAggregationInput = {
   dayOfWeek?: Prisma.SortOrder
   status?: Prisma.SortOrder
   sharingDealId?: Prisma.SortOrderInput | Prisma.SortOrder
+  checkInRequestedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  checkedInAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ShiftCountOrderByAggregateInput
   _avg?: Prisma.ShiftAvgOrderByAggregateInput
   _max?: Prisma.ShiftMaxOrderByAggregateInput
@@ -298,12 +320,16 @@ export type ShiftScalarWhereWithAggregatesInput = {
   dayOfWeek?: Prisma.IntWithAggregatesFilter<"Shift"> | number
   status?: Prisma.EnumShiftStatusWithAggregatesFilter<"Shift"> | $Enums.ShiftStatus
   sharingDealId?: Prisma.StringNullableWithAggregatesFilter<"Shift"> | string | null
+  checkInRequestedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Shift"> | Date | string | null
+  checkedInAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Shift"> | Date | string | null
 }
 
 export type ShiftCreateInput = {
   id?: string
   dayOfWeek?: number
   status?: $Enums.ShiftStatus
+  checkInRequestedAt?: Date | string | null
+  checkedInAt?: Date | string | null
   schedule: Prisma.ScheduleCreateNestedOneWithoutShiftsInput
   shiftTemplate: Prisma.ShiftTemplateCreateNestedOneWithoutShiftsInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutShiftsInput
@@ -319,6 +345,8 @@ export type ShiftUncheckedCreateInput = {
   dayOfWeek?: number
   status?: $Enums.ShiftStatus
   sharingDealId?: string | null
+  checkInRequestedAt?: Date | string | null
+  checkedInAt?: Date | string | null
   swapRequests?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutShiftInput
 }
 
@@ -326,6 +354,8 @@ export type ShiftUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   schedule?: Prisma.ScheduleUpdateOneRequiredWithoutShiftsNestedInput
   shiftTemplate?: Prisma.ShiftTemplateUpdateOneRequiredWithoutShiftsNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutShiftsNestedInput
@@ -341,6 +371,8 @@ export type ShiftUncheckedUpdateInput = {
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
   sharingDealId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   swapRequests?: Prisma.SwapRequestUncheckedUpdateManyWithoutShiftNestedInput
 }
 
@@ -352,12 +384,16 @@ export type ShiftCreateManyInput = {
   dayOfWeek?: number
   status?: $Enums.ShiftStatus
   sharingDealId?: string | null
+  checkInRequestedAt?: Date | string | null
+  checkedInAt?: Date | string | null
 }
 
 export type ShiftUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ShiftUncheckedUpdateManyInput = {
@@ -368,6 +404,8 @@ export type ShiftUncheckedUpdateManyInput = {
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
   sharingDealId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ShiftListRelationFilter = {
@@ -388,6 +426,8 @@ export type ShiftCountOrderByAggregateInput = {
   dayOfWeek?: Prisma.SortOrder
   status?: Prisma.SortOrder
   sharingDealId?: Prisma.SortOrder
+  checkInRequestedAt?: Prisma.SortOrder
+  checkedInAt?: Prisma.SortOrder
 }
 
 export type ShiftAvgOrderByAggregateInput = {
@@ -402,6 +442,8 @@ export type ShiftMaxOrderByAggregateInput = {
   dayOfWeek?: Prisma.SortOrder
   status?: Prisma.SortOrder
   sharingDealId?: Prisma.SortOrder
+  checkInRequestedAt?: Prisma.SortOrder
+  checkedInAt?: Prisma.SortOrder
 }
 
 export type ShiftMinOrderByAggregateInput = {
@@ -412,6 +454,8 @@ export type ShiftMinOrderByAggregateInput = {
   dayOfWeek?: Prisma.SortOrder
   status?: Prisma.SortOrder
   sharingDealId?: Prisma.SortOrder
+  checkInRequestedAt?: Prisma.SortOrder
+  checkedInAt?: Prisma.SortOrder
 }
 
 export type ShiftSumOrderByAggregateInput = {
@@ -613,6 +657,8 @@ export type ShiftCreateWithoutEmployeeInput = {
   id?: string
   dayOfWeek?: number
   status?: $Enums.ShiftStatus
+  checkInRequestedAt?: Date | string | null
+  checkedInAt?: Date | string | null
   schedule: Prisma.ScheduleCreateNestedOneWithoutShiftsInput
   shiftTemplate: Prisma.ShiftTemplateCreateNestedOneWithoutShiftsInput
   sharingDeal?: Prisma.SharingDealCreateNestedOneWithoutShiftsInput
@@ -626,6 +672,8 @@ export type ShiftUncheckedCreateWithoutEmployeeInput = {
   dayOfWeek?: number
   status?: $Enums.ShiftStatus
   sharingDealId?: string | null
+  checkInRequestedAt?: Date | string | null
+  checkedInAt?: Date | string | null
   swapRequests?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutShiftInput
 }
 
@@ -666,12 +714,16 @@ export type ShiftScalarWhereInput = {
   dayOfWeek?: Prisma.IntFilter<"Shift"> | number
   status?: Prisma.EnumShiftStatusFilter<"Shift"> | $Enums.ShiftStatus
   sharingDealId?: Prisma.StringNullableFilter<"Shift"> | string | null
+  checkInRequestedAt?: Prisma.DateTimeNullableFilter<"Shift"> | Date | string | null
+  checkedInAt?: Prisma.DateTimeNullableFilter<"Shift"> | Date | string | null
 }
 
 export type ShiftCreateWithoutShiftTemplateInput = {
   id?: string
   dayOfWeek?: number
   status?: $Enums.ShiftStatus
+  checkInRequestedAt?: Date | string | null
+  checkedInAt?: Date | string | null
   schedule: Prisma.ScheduleCreateNestedOneWithoutShiftsInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutShiftsInput
   sharingDeal?: Prisma.SharingDealCreateNestedOneWithoutShiftsInput
@@ -685,6 +737,8 @@ export type ShiftUncheckedCreateWithoutShiftTemplateInput = {
   dayOfWeek?: number
   status?: $Enums.ShiftStatus
   sharingDealId?: string | null
+  checkInRequestedAt?: Date | string | null
+  checkedInAt?: Date | string | null
   swapRequests?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutShiftInput
 }
 
@@ -718,6 +772,8 @@ export type ShiftCreateWithoutScheduleInput = {
   id?: string
   dayOfWeek?: number
   status?: $Enums.ShiftStatus
+  checkInRequestedAt?: Date | string | null
+  checkedInAt?: Date | string | null
   shiftTemplate: Prisma.ShiftTemplateCreateNestedOneWithoutShiftsInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutShiftsInput
   sharingDeal?: Prisma.SharingDealCreateNestedOneWithoutShiftsInput
@@ -731,6 +787,8 @@ export type ShiftUncheckedCreateWithoutScheduleInput = {
   dayOfWeek?: number
   status?: $Enums.ShiftStatus
   sharingDealId?: string | null
+  checkInRequestedAt?: Date | string | null
+  checkedInAt?: Date | string | null
   swapRequests?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutShiftInput
 }
 
@@ -764,6 +822,8 @@ export type ShiftCreateWithoutSwapRequestsInput = {
   id?: string
   dayOfWeek?: number
   status?: $Enums.ShiftStatus
+  checkInRequestedAt?: Date | string | null
+  checkedInAt?: Date | string | null
   schedule: Prisma.ScheduleCreateNestedOneWithoutShiftsInput
   shiftTemplate: Prisma.ShiftTemplateCreateNestedOneWithoutShiftsInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutShiftsInput
@@ -778,6 +838,8 @@ export type ShiftUncheckedCreateWithoutSwapRequestsInput = {
   dayOfWeek?: number
   status?: $Enums.ShiftStatus
   sharingDealId?: string | null
+  checkInRequestedAt?: Date | string | null
+  checkedInAt?: Date | string | null
 }
 
 export type ShiftCreateOrConnectWithoutSwapRequestsInput = {
@@ -800,6 +862,8 @@ export type ShiftUpdateWithoutSwapRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   schedule?: Prisma.ScheduleUpdateOneRequiredWithoutShiftsNestedInput
   shiftTemplate?: Prisma.ShiftTemplateUpdateOneRequiredWithoutShiftsNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutShiftsNestedInput
@@ -814,12 +878,16 @@ export type ShiftUncheckedUpdateWithoutSwapRequestsInput = {
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
   sharingDealId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ShiftCreateWithoutSharingDealInput = {
   id?: string
   dayOfWeek?: number
   status?: $Enums.ShiftStatus
+  checkInRequestedAt?: Date | string | null
+  checkedInAt?: Date | string | null
   schedule: Prisma.ScheduleCreateNestedOneWithoutShiftsInput
   shiftTemplate: Prisma.ShiftTemplateCreateNestedOneWithoutShiftsInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutShiftsInput
@@ -833,6 +901,8 @@ export type ShiftUncheckedCreateWithoutSharingDealInput = {
   employeeId?: string | null
   dayOfWeek?: number
   status?: $Enums.ShiftStatus
+  checkInRequestedAt?: Date | string | null
+  checkedInAt?: Date | string | null
   swapRequests?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutShiftInput
 }
 
@@ -869,12 +939,16 @@ export type ShiftCreateManyEmployeeInput = {
   dayOfWeek?: number
   status?: $Enums.ShiftStatus
   sharingDealId?: string | null
+  checkInRequestedAt?: Date | string | null
+  checkedInAt?: Date | string | null
 }
 
 export type ShiftUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   schedule?: Prisma.ScheduleUpdateOneRequiredWithoutShiftsNestedInput
   shiftTemplate?: Prisma.ShiftTemplateUpdateOneRequiredWithoutShiftsNestedInput
   sharingDeal?: Prisma.SharingDealUpdateOneWithoutShiftsNestedInput
@@ -888,6 +962,8 @@ export type ShiftUncheckedUpdateWithoutEmployeeInput = {
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
   sharingDealId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   swapRequests?: Prisma.SwapRequestUncheckedUpdateManyWithoutShiftNestedInput
 }
 
@@ -898,6 +974,8 @@ export type ShiftUncheckedUpdateManyWithoutEmployeeInput = {
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
   sharingDealId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ShiftCreateManyShiftTemplateInput = {
@@ -907,12 +985,16 @@ export type ShiftCreateManyShiftTemplateInput = {
   dayOfWeek?: number
   status?: $Enums.ShiftStatus
   sharingDealId?: string | null
+  checkInRequestedAt?: Date | string | null
+  checkedInAt?: Date | string | null
 }
 
 export type ShiftUpdateWithoutShiftTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   schedule?: Prisma.ScheduleUpdateOneRequiredWithoutShiftsNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutShiftsNestedInput
   sharingDeal?: Prisma.SharingDealUpdateOneWithoutShiftsNestedInput
@@ -926,6 +1008,8 @@ export type ShiftUncheckedUpdateWithoutShiftTemplateInput = {
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
   sharingDealId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   swapRequests?: Prisma.SwapRequestUncheckedUpdateManyWithoutShiftNestedInput
 }
 
@@ -936,6 +1020,8 @@ export type ShiftUncheckedUpdateManyWithoutShiftTemplateInput = {
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
   sharingDealId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ShiftCreateManyScheduleInput = {
@@ -945,12 +1031,16 @@ export type ShiftCreateManyScheduleInput = {
   dayOfWeek?: number
   status?: $Enums.ShiftStatus
   sharingDealId?: string | null
+  checkInRequestedAt?: Date | string | null
+  checkedInAt?: Date | string | null
 }
 
 export type ShiftUpdateWithoutScheduleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   shiftTemplate?: Prisma.ShiftTemplateUpdateOneRequiredWithoutShiftsNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutShiftsNestedInput
   sharingDeal?: Prisma.SharingDealUpdateOneWithoutShiftsNestedInput
@@ -964,6 +1054,8 @@ export type ShiftUncheckedUpdateWithoutScheduleInput = {
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
   sharingDealId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   swapRequests?: Prisma.SwapRequestUncheckedUpdateManyWithoutShiftNestedInput
 }
 
@@ -974,6 +1066,8 @@ export type ShiftUncheckedUpdateManyWithoutScheduleInput = {
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
   sharingDealId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ShiftCreateManySharingDealInput = {
@@ -983,12 +1077,16 @@ export type ShiftCreateManySharingDealInput = {
   employeeId?: string | null
   dayOfWeek?: number
   status?: $Enums.ShiftStatus
+  checkInRequestedAt?: Date | string | null
+  checkedInAt?: Date | string | null
 }
 
 export type ShiftUpdateWithoutSharingDealInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   schedule?: Prisma.ScheduleUpdateOneRequiredWithoutShiftsNestedInput
   shiftTemplate?: Prisma.ShiftTemplateUpdateOneRequiredWithoutShiftsNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutShiftsNestedInput
@@ -1002,6 +1100,8 @@ export type ShiftUncheckedUpdateWithoutSharingDealInput = {
   employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   swapRequests?: Prisma.SwapRequestUncheckedUpdateManyWithoutShiftNestedInput
 }
 
@@ -1012,6 +1112,8 @@ export type ShiftUncheckedUpdateManyWithoutSharingDealInput = {
   employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumShiftStatusFieldUpdateOperationsInput | $Enums.ShiftStatus
+  checkInRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -1053,6 +1155,8 @@ export type ShiftSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   dayOfWeek?: boolean
   status?: boolean
   sharingDealId?: boolean
+  checkInRequestedAt?: boolean
+  checkedInAt?: boolean
   schedule?: boolean | Prisma.ScheduleDefaultArgs<ExtArgs>
   shiftTemplate?: boolean | Prisma.ShiftTemplateDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.Shift$employeeArgs<ExtArgs>
@@ -1069,6 +1173,8 @@ export type ShiftSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   dayOfWeek?: boolean
   status?: boolean
   sharingDealId?: boolean
+  checkInRequestedAt?: boolean
+  checkedInAt?: boolean
   schedule?: boolean | Prisma.ScheduleDefaultArgs<ExtArgs>
   shiftTemplate?: boolean | Prisma.ShiftTemplateDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.Shift$employeeArgs<ExtArgs>
@@ -1083,6 +1189,8 @@ export type ShiftSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   dayOfWeek?: boolean
   status?: boolean
   sharingDealId?: boolean
+  checkInRequestedAt?: boolean
+  checkedInAt?: boolean
   schedule?: boolean | Prisma.ScheduleDefaultArgs<ExtArgs>
   shiftTemplate?: boolean | Prisma.ShiftTemplateDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.Shift$employeeArgs<ExtArgs>
@@ -1097,9 +1205,11 @@ export type ShiftSelectScalar = {
   dayOfWeek?: boolean
   status?: boolean
   sharingDealId?: boolean
+  checkInRequestedAt?: boolean
+  checkedInAt?: boolean
 }
 
-export type ShiftOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "scheduleId" | "shiftTemplateId" | "employeeId" | "dayOfWeek" | "status" | "sharingDealId", ExtArgs["result"]["shift"]>
+export type ShiftOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "scheduleId" | "shiftTemplateId" | "employeeId" | "dayOfWeek" | "status" | "sharingDealId" | "checkInRequestedAt" | "checkedInAt", ExtArgs["result"]["shift"]>
 export type ShiftInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   schedule?: boolean | Prisma.ScheduleDefaultArgs<ExtArgs>
   shiftTemplate?: boolean | Prisma.ShiftTemplateDefaultArgs<ExtArgs>
@@ -1138,6 +1248,8 @@ export type $ShiftPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     dayOfWeek: number
     status: $Enums.ShiftStatus
     sharingDealId: string | null
+    checkInRequestedAt: Date | null
+    checkedInAt: Date | null
   }, ExtArgs["result"]["shift"]>
   composites: {}
 }
@@ -1573,6 +1685,8 @@ export interface ShiftFieldRefs {
   readonly dayOfWeek: Prisma.FieldRef<"Shift", 'Int'>
   readonly status: Prisma.FieldRef<"Shift", 'ShiftStatus'>
   readonly sharingDealId: Prisma.FieldRef<"Shift", 'String'>
+  readonly checkInRequestedAt: Prisma.FieldRef<"Shift", 'DateTime'>
+  readonly checkedInAt: Prisma.FieldRef<"Shift", 'DateTime'>
 }
     
 
