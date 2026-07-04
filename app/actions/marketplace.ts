@@ -6,6 +6,7 @@ import { geocodeAddress } from "@/lib/marketplace/geocode"
 import { validateListingInput, formatRate, type ListingType } from "@/lib/marketplace/listings"
 import { buildDealFromListing, applyDealAction, type DealAction } from "@/lib/marketplace/deals"
 import { filterNearbyVenues } from "@/lib/marketplace/discovery"
+import { isOnVacation } from "@/lib/scheduling/vacation"
 import { sendEmail } from "@/lib/email/send"
 import { NotificationEmail } from "@/lib/email/templates/notification"
 import { inngest } from "@/lib/inngest/client"
@@ -97,8 +98,12 @@ export async function createListing(
   if (listing.employeeId) {
     const employee = await prisma.employee.findFirst({
       where: { id: listing.employeeId, locationId: location.id },
+      include: { vacations: true },
     })
     if (!employee) return { error: "That employee doesn't belong to this location" }
+    if (isOnVacation(employee.vacations, employee.id, new Date(listing.date))) {
+      return { error: `${employee.name} is on vacation on that date` }
+    }
   }
 
   await prisma.sharingListing.create({
@@ -182,8 +187,12 @@ export async function respondToListing(
   if (listing.type === "REQUEST") {
     const employee = await prisma.employee.findFirst({
       where: { id: draft.value.employeeId, locationId: respondingLocation.id },
+      include: { vacations: true },
     })
     if (!employee) return { error: "That employee doesn't belong to this location" }
+    if (isOnVacation(employee.vacations, employee.id, new Date(listing.date))) {
+      return { error: `${employee.name} is on vacation on that date` }
+    }
   }
 
   await prisma.sharingDeal.create({ data: { listingId: listing.id, ...draft.value } })

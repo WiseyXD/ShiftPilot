@@ -123,6 +123,7 @@ model Location {
   borrowerDeals   SharingDeal[]    @relation("BorrowerDeals")
   fixedShifts     FixedShift[]
   blockedTimes    BlockedTime[]
+  vacations       Vacation[]
 
   @@index([ownerId])
 }
@@ -156,6 +157,7 @@ model Employee {
   sharingDeals          SharingDeal[]
   fixedShifts           FixedShift[]
   blockedTimes          BlockedTime[]
+  vacations             Vacation[]
 
   @@unique([locationId, email])
   @@index([locationId])
@@ -327,6 +329,25 @@ model ActionToken {
   @@index([employeeId])
   @@index([userId])
   @@index([expiresAt])
+}
+
+// ─── Vacations ────────────────────────────────────────────────────────────────
+
+// An absence period: the employee is excluded from generation, outreach, and
+// marketplace loans for every date in [startDate, endDate] (inclusive).
+model Vacation {
+  id         String   @id @default(cuid())
+  locationId String
+  employeeId String
+  startDate  DateTime
+  endDate    DateTime
+  createdAt  DateTime @default(now())
+
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([locationId])
+  @@index([employeeId])
 }
 
 // ─── Manager rule engine: pins + Sperrzeiten ──────────────────────────────────

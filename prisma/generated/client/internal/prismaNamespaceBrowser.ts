@@ -63,6 +63,7 @@ export const ModelName = {
   SharingListing: 'SharingListing',
   SharingDeal: 'SharingDeal',
   ActionToken: 'ActionToken',
+  Vacation: 'Vacation',
   FixedShift: 'FixedShift',
   BlockedTime: 'BlockedTime',
   ComplianceRuleSet: 'ComplianceRuleSet',
@@ -253,6 +254,18 @@ export const ActionTokenScalarFieldEnum = {
 } as const
 
 export type ActionTokenScalarFieldEnum = (typeof ActionTokenScalarFieldEnum)[keyof typeof ActionTokenScalarFieldEnum]
+
+
+export const VacationScalarFieldEnum = {
+  id: 'id',
+  locationId: 'locationId',
+  employeeId: 'employeeId',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  createdAt: 'createdAt'
+} as const
+
+export type VacationScalarFieldEnum = (typeof VacationScalarFieldEnum)[keyof typeof VacationScalarFieldEnum]
 
 
 export const FixedShiftScalarFieldEnum = {

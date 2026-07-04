@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { useParams } from "next/navigation"
 import { PageHeader } from "@/components/dashboard/page-header"
 import { ageOn } from "@/lib/compliance/check"
+import { VacationsCard } from "@/components/dashboard/vacations-card"
 import { Trash2, Users, UserPlus } from "lucide-react"
 
 const COMMON_ROLES = ["Barista", "Chef", "Server", "Cashier", "Manager", "Kitchen", "Host"]
@@ -160,6 +161,7 @@ export default function EmployeesPage() {
     <div className="space-y-6">
       <PageHeader title="Employees" description="Manage your team and their working hours" />
       <AddEmployeeForm locationId={locationId} />
+      <VacationsCard locationId={locationId} />
 
       <Card>
         <CardHeader>

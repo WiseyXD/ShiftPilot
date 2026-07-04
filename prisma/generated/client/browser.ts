@@ -78,6 +78,11 @@ export type SharingDeal = Prisma.SharingDealModel
  */
 export type ActionToken = Prisma.ActionTokenModel
 /**
+ * Model Vacation
+ * 
+ */
+export type Vacation = Prisma.VacationModel
+/**
  * Model FixedShift
  * 
  */

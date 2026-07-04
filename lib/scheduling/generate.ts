@@ -4,6 +4,7 @@ import type { EffectiveAvailability } from "./availability"
 import type { EmployeeCategory } from "@/prisma/generated/client/client"
 import { isAssignable, needsAvailability } from "./categories"
 import { isBlocked, slotKey, type Pin, type Block } from "./pins"
+import { isOnVacation, type VacationRange } from "./vacation"
 import { checkEmployeeAssignment, type PlannedShift } from "@/lib/compliance/check"
 import { DEFAULT_COMPLIANCE_RULES, type ComplianceRules } from "@/lib/compliance/rules"
 import { getShiftStart, getShiftEnd } from "./shift-date"
@@ -40,6 +41,29 @@ export interface GenerateOptions {
   pins?: Pin[]
   /** Sperrzeiten — hard exclusions. */
   blocks?: Block[]
+  /** Absence ranges; needs weekStart to resolve real shift dates. */
+  vacations?: VacationRange[]
+  /** Real Monday of the target week — enables date-based checks (vacations). */
+  weekStart?: Date
+}
+
+// Real calendar date of a slot when the caller supplied weekStart; null in
+// nominal-week mode (tests, previews) where date-based checks are inert.
+const realShiftDate = (
+  weekStart: Date | undefined,
+  dayOfWeek: number,
+  tmpl: { startTime: string }
+): Date | null => (weekStart ? getShiftStart(new Date(weekStart), dayOfWeek, tmpl.startTime) : null)
+
+const onVacationForSlot = (
+  options: GenerateOptions,
+  employeeId: string,
+  dayOfWeek: number,
+  tmpl: { startTime: string }
+): boolean => {
+  if (!options.vacations || options.vacations.length === 0) return false
+  const date = realShiftDate(options.weekStart, dayOfWeek, tmpl)
+  return date !== null && isOnVacation(options.vacations, employeeId, date)
 }
 
 // Pin seeding shared by both paths: validate each pin against blocks and the
@@ -47,7 +71,8 @@ export interface GenerateOptions {
 function seedPins(
   templates: ShiftTemplate[],
   employees: Employee[],
-  opts: Required<Pick<GenerateOptions, "rules" | "monthHours" | "pins" | "blocks">>
+  opts: Required<Pick<GenerateOptions, "rules" | "monthHours" | "pins" | "blocks">> &
+    Pick<GenerateOptions, "vacations" | "weekStart">
 ): {
   pinnedBySlot: Map<string, string> // slotKey → employeeId
   assignedShifts: Record<string, PlannedShift[]>
@@ -76,6 +101,10 @@ function seedPins(
     }
     if (isBlocked(blocks, emp.id, pin.shiftTemplateId, pin.dayOfWeek)) {
       conflicts.push(`${emp.name}: pin on day ${pin.dayOfWeek} collides with a Sperrzeit`)
+      continue
+    }
+    if (onVacationForSlot(opts, emp.id, pin.dayOfWeek, tmpl)) {
+      conflicts.push(`${emp.name}: pin on day ${pin.dayOfWeek} collides with a vacation`)
       continue
     }
     const slot = slotShift(pin.dayOfWeek, tmpl)
@@ -147,6 +176,8 @@ export function fallbackAssign(
     monthHours,
     pins: options.pins ?? [],
     blocks,
+    vacations: options.vacations,
+    weekStart: options.weekStart,
   })
   const results: GeneratedAssignment[] = []
 
@@ -164,6 +195,8 @@ export function fallbackAssign(
       const eligible = employees.filter((emp) => {
         // Sperrzeiten are hard exclusions.
         if (isBlocked(blocks, emp.id, tmpl.id, day)) return false
+        // Vacations too — real dates only (needs weekStart).
+        if (onVacationForSlot(options, emp.id, day, tmpl)) return false
         // Category A only within availability; category B freely assignable
         if (!isAssignable(emp.category, availSet.has(`${emp.id}:${tmpl.id}:${day}`))) return false
         const current = assignedHours[emp.id] ?? 0
@@ -257,6 +290,8 @@ Set employeeId to null if no eligible employee is available.
       monthHours,
       pins,
       blocks,
+      vacations: options.vacations,
+      weekStart: options.weekStart,
     })
     const voided: string[] = [...conflicts]
 
@@ -275,6 +310,9 @@ Set employeeId to null if no eligible employee is available.
       if (emp && tmpl) {
         if (isBlocked(blocks, emp.id, a.shiftTemplateId, a.dayOfWeek)) {
           voided.push(`${emp.name}: Sperrzeit (day ${a.dayOfWeek})`)
+          employeeId = null
+        } else if (onVacationForSlot(options, emp.id, a.dayOfWeek, tmpl)) {
+          voided.push(`${emp.name}: on vacation (day ${a.dayOfWeek})`)
           employeeId = null
         } else if (!isAssignable(emp.category, availSet.has(`${emp.id}:${a.shiftTemplateId}:${a.dayOfWeek}`))) {
           voided.push(`${emp.name}: outside availability (day ${a.dayOfWeek})`)

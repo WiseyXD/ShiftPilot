@@ -396,6 +396,7 @@ export const ModelName = {
   SharingListing: 'SharingListing',
   SharingDeal: 'SharingDeal',
   ActionToken: 'ActionToken',
+  Vacation: 'Vacation',
   FixedShift: 'FixedShift',
   BlockedTime: 'BlockedTime',
   ComplianceRuleSet: 'ComplianceRuleSet',
@@ -415,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "sharingDeal" | "actionToken" | "fixedShift" | "blockedTime" | "complianceRuleSet" | "auditLog"
+    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "sharingDeal" | "actionToken" | "vacation" | "fixedShift" | "blockedTime" | "complianceRuleSet" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1307,6 +1308,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Vacation: {
+      payload: Prisma.$VacationPayload<ExtArgs>
+      fields: Prisma.VacationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VacationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VacationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VacationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VacationPayload>
+        }
+        findFirst: {
+          args: Prisma.VacationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VacationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VacationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VacationPayload>
+        }
+        findMany: {
+          args: Prisma.VacationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VacationPayload>[]
+        }
+        create: {
+          args: Prisma.VacationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VacationPayload>
+        }
+        createMany: {
+          args: Prisma.VacationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VacationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VacationPayload>[]
+        }
+        delete: {
+          args: Prisma.VacationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VacationPayload>
+        }
+        update: {
+          args: Prisma.VacationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VacationPayload>
+        }
+        deleteMany: {
+          args: Prisma.VacationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VacationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VacationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VacationPayload>[]
+        }
+        upsert: {
+          args: Prisma.VacationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VacationPayload>
+        }
+        aggregate: {
+          args: Prisma.VacationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVacation>
+        }
+        groupBy: {
+          args: Prisma.VacationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VacationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VacationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VacationCountAggregateOutputType> | number
+        }
+      }
+    }
     FixedShift: {
       payload: Prisma.$FixedShiftPayload<ExtArgs>
       fields: Prisma.FixedShiftFieldRefs
@@ -1812,6 +1887,18 @@ export const ActionTokenScalarFieldEnum = {
 export type ActionTokenScalarFieldEnum = (typeof ActionTokenScalarFieldEnum)[keyof typeof ActionTokenScalarFieldEnum]
 
 
+export const VacationScalarFieldEnum = {
+  id: 'id',
+  locationId: 'locationId',
+  employeeId: 'employeeId',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  createdAt: 'createdAt'
+} as const
+
+export type VacationScalarFieldEnum = (typeof VacationScalarFieldEnum)[keyof typeof VacationScalarFieldEnum]
+
+
 export const FixedShiftScalarFieldEnum = {
   id: 'id',
   locationId: 'locationId',
@@ -2231,6 +2318,7 @@ export type GlobalOmitConfig = {
   sharingListing?: Prisma.SharingListingOmit
   sharingDeal?: Prisma.SharingDealOmit
   actionToken?: Prisma.ActionTokenOmit
+  vacation?: Prisma.VacationOmit
   fixedShift?: Prisma.FixedShiftOmit
   blockedTime?: Prisma.BlockedTimeOmit
   complianceRuleSet?: Prisma.ComplianceRuleSetOmit
