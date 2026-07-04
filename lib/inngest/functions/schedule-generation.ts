@@ -6,6 +6,7 @@ import { loadRules } from "@/lib/compliance/load"
 import { loadMonthNetHoursBeforeWeek } from "@/lib/compliance/hours"
 import { minijobCapWarning } from "@/lib/compliance/caps"
 import { netWorkHours } from "@/lib/compliance/arbzg"
+import { pinsForWeek } from "@/lib/scheduling/pins"
 import { generateToken } from "@/lib/tokens/generate"
 import { sendEmail } from "@/lib/email/send"
 import { ScheduleDraftEmail } from "@/lib/email/templates/schedule-draft"
@@ -44,12 +45,15 @@ export const weeklyScheduleGeneration = inngest.createFunction(
           weekStart,
           rules.arbzg
         )
+        const [allPins, blocks] = await Promise.all([
+          prisma.fixedShift.findMany({ where: { locationId: location.id } }),
+          prisma.blockedTime.findMany({ where: { locationId: location.id } }),
+        ])
         const { assignments, reasoning } = await generateSchedule(
           location.shiftTemplates,
           location.employees,
           availability,
-          rules,
-          monthHours
+          { rules, monthHours, pins: pinsForWeek(allPins, weekStart), blocks }
         )
 
         // Early warning: minijobbers approaching the earnings cap after this

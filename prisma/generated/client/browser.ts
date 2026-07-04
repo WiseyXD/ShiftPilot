@@ -78,6 +78,16 @@ export type SharingDeal = Prisma.SharingDealModel
  */
 export type ActionToken = Prisma.ActionTokenModel
 /**
+ * Model FixedShift
+ * 
+ */
+export type FixedShift = Prisma.FixedShiftModel
+/**
+ * Model BlockedTime
+ * 
+ */
+export type BlockedTime = Prisma.BlockedTimeModel
+/**
  * Model ComplianceRuleSet
  * 
  */

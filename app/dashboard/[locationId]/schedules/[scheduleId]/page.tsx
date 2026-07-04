@@ -58,6 +58,13 @@ export default async function SchedulePage({
   })
   if (!schedule) notFound()
 
+  // Pins for this week — marked on the grid so the manager sees what's fixed.
+  const pins = await prisma.fixedShift.findMany({
+    where: { locationId, OR: [{ weekStart: null }, { weekStart: schedule.weekStart }] },
+    select: { employeeId: true, shiftTemplateId: true, dayOfWeek: true },
+  })
+  const pinnedKeys = new Set(pins.map((p) => `${p.shiftTemplateId}:${p.dayOfWeek}:${p.employeeId}`))
+
   const templates = [...new Map(schedule.shifts.map((s) => [s.shiftTemplateId, s.shiftTemplate])).values()]
   const weekStart = schedule.weekStart
   const weekLabel = new Date(weekStart).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
@@ -174,6 +181,14 @@ export default async function SchedulePage({
                             ) : (
                               <>
                                 <p className="text-xs font-medium text-slate-900">
+                                  {shift.employeeId &&
+                                    pinnedKeys.has(
+                                      `${shift.shiftTemplateId}:${shift.dayOfWeek}:${shift.employeeId}`
+                                    ) && (
+                                      <span title="Pinned by manager" className="mr-0.5">
+                                        📌
+                                      </span>
+                                    )}
                                   {shift.employee?.name ?? (
                                     <span className="text-yellow-600">Unfilled</span>
                                   )}

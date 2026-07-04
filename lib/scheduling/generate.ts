@@ -3,6 +3,7 @@ import { z } from "zod"
 import type { EffectiveAvailability } from "./availability"
 import type { EmployeeCategory } from "@/prisma/generated/client/client"
 import { isAssignable, needsAvailability } from "./categories"
+import { isBlocked, slotKey, type Pin, type Block } from "./pins"
 import { checkEmployeeAssignment, type PlannedShift } from "@/lib/compliance/check"
 import { DEFAULT_COMPLIANCE_RULES, type ComplianceRules } from "@/lib/compliance/rules"
 import { getShiftStart, getShiftEnd } from "./shift-date"
@@ -31,6 +32,67 @@ interface Employee {
 
 // Net hours already worked earlier this month, per employee — for the Minijob cap.
 export type MonthHours = Record<string, number>
+
+export interface GenerateOptions {
+  rules?: ComplianceRules
+  monthHours?: MonthHours
+  /** Pre-filtered for the target week (see pinsForWeek). Priority 2. */
+  pins?: Pin[]
+  /** Sperrzeiten — hard exclusions. */
+  blocks?: Block[]
+}
+
+// Pin seeding shared by both paths: validate each pin against blocks and the
+// law; a valid pin owns its slot, an invalid one becomes a conflict message.
+function seedPins(
+  templates: ShiftTemplate[],
+  employees: Employee[],
+  opts: Required<Pick<GenerateOptions, "rules" | "monthHours" | "pins" | "blocks">>
+): {
+  pinnedBySlot: Map<string, string> // slotKey → employeeId
+  assignedShifts: Record<string, PlannedShift[]>
+  assignedHours: Record<string, number>
+  conflicts: string[]
+} {
+  const { rules, monthHours, pins, blocks } = opts
+  const byId = new Map(employees.map((e) => [e.id, e]))
+  const tmplById = new Map(templates.map((t) => [t.id, t]))
+  const pinnedBySlot = new Map<string, string>()
+  const assignedShifts: Record<string, PlannedShift[]> = {}
+  const assignedHours: Record<string, number> = {}
+  const conflicts: string[] = []
+
+  for (const pin of pins) {
+    const emp = byId.get(pin.employeeId)
+    const tmpl = tmplById.get(pin.shiftTemplateId)
+    if (!emp || !tmpl) {
+      conflicts.push(`pin ${pin.employeeId}@${pin.shiftTemplateId}: employee or template no longer exists`)
+      continue
+    }
+    const key = slotKey(pin.shiftTemplateId, pin.dayOfWeek)
+    if (pinnedBySlot.has(key)) {
+      conflicts.push(`${emp.name}: slot already pinned to someone else (day ${pin.dayOfWeek})`)
+      continue
+    }
+    if (isBlocked(blocks, emp.id, pin.shiftTemplateId, pin.dayOfWeek)) {
+      conflicts.push(`${emp.name}: pin on day ${pin.dayOfWeek} collides with a Sperrzeit`)
+      continue
+    }
+    const slot = slotShift(pin.dayOfWeek, tmpl)
+    const violation = checkEmployeeAssignment(emp, slot, assignedShifts[emp.id] ?? [], rules, {
+      monthNetHoursBeforeWeek: monthHours[emp.id] ?? 0,
+    })
+    if (violation) {
+      conflicts.push(`${emp.name}: pin on day ${pin.dayOfWeek} rejected — ${violation.rule}: ${violation.detail}`)
+      continue
+    }
+    pinnedBySlot.set(key, emp.id)
+    ;(assignedShifts[emp.id] ??= []).push(slot)
+    assignedHours[emp.id] = (assignedHours[emp.id] ?? 0) + shiftHours(tmpl)
+  }
+
+  return { pinnedBySlot, assignedShifts, assignedHours, conflicts }
+}
 
 interface ShiftTemplate {
   id: string
@@ -70,23 +132,38 @@ export function fallbackAssign(
   templates: ShiftTemplate[],
   employees: Employee[],
   availability: EffectiveAvailability[],
-  rules: ComplianceRules = DEFAULT_COMPLIANCE_RULES,
-  monthHours: MonthHours = {}
-): GeneratedAssignment[] {
+  options: GenerateOptions = {}
+): { assignments: GeneratedAssignment[]; conflicts: string[] } {
+  const rules = options.rules ?? DEFAULT_COMPLIANCE_RULES
+  const monthHours = options.monthHours ?? {}
+  const blocks = options.blocks ?? []
   const availSet = new Set(
     availability.filter((a) => a.available).map((a) => `${a.employeeId}:${a.shiftTemplateId}:${a.dayOfWeek}`)
   )
 
-  const assignedHours: Record<string, number> = {}
-  const assignedShifts: Record<string, PlannedShift[]> = {}
+  // Pins claim their slots first — priority 2, only legal limits override.
+  const { pinnedBySlot, assignedShifts, assignedHours, conflicts } = seedPins(templates, employees, {
+    rules,
+    monthHours,
+    pins: options.pins ?? [],
+    blocks,
+  })
   const results: GeneratedAssignment[] = []
 
   // Each template × each day of week
   for (const tmpl of templates) {
     const hours = shiftHours(tmpl)
     for (let day = 0; day < 7; day++) {
+      const pinned = pinnedBySlot.get(slotKey(tmpl.id, day))
+      if (pinned) {
+        results.push({ shiftTemplateId: tmpl.id, dayOfWeek: day, employeeId: pinned, filled: true })
+        continue
+      }
+
       const slot = slotShift(day, tmpl)
       const eligible = employees.filter((emp) => {
+        // Sperrzeiten are hard exclusions.
+        if (isBlocked(blocks, emp.id, tmpl.id, day)) return false
         // Category A only within availability; category B freely assignable
         if (!isAssignable(emp.category, availSet.has(`${emp.id}:${tmpl.id}:${day}`))) return false
         const current = assignedHours[emp.id] ?? 0
@@ -116,16 +193,19 @@ export function fallbackAssign(
     }
   }
 
-  return results
+  return { assignments: results, conflicts }
 }
 
 export async function generateSchedule(
   templates: ShiftTemplate[],
   employees: Employee[],
   availability: EffectiveAvailability[],
-  rules: ComplianceRules = DEFAULT_COMPLIANCE_RULES,
-  monthHours: MonthHours = {}
+  options: GenerateOptions = {}
 ): Promise<{ assignments: GeneratedAssignment[]; reasoning: string }> {
+  const rules = options.rules ?? DEFAULT_COMPLIANCE_RULES
+  const monthHours = options.monthHours ?? {}
+  const pins = options.pins ?? []
+  const blocks = options.blocks ?? []
   try {
     const model = new ChatOpenAI({ model: "gpt-4o", temperature: 0 })
     const structured = model.withStructuredOutput(assignmentSchema)
@@ -151,6 +231,8 @@ You are a shift scheduler. Generate a weekly schedule that:
 4. Distributes shifts fairly (balance hours across employees)
 5. Fills every shift template for every day of the week (days 0-6, 0=Sunday)
 6. German working-time law applies: at most ${rules.arbzg.maxDailyHours}h net per day and ${rules.arbzg.maxWeeklyHours}h net per week per employee (minors 15-17: ${rules.jarbschg.maxDailyHours}h/${rules.jarbschg.maxWeeklyHours}h, no Sundays, done by ${rules.jarbschg.nightEndGastro16Plus}), and at least ${rules.arbzg.minRestHours}h rest between shifts on consecutive days. Violations will be voided by the system.
+7. PINNED slots (templateId:dayN → employeeId) MUST be assigned exactly as given: ${JSON.stringify(pins.map((p) => `${p.shiftTemplateId}:day${p.dayOfWeek}→${p.employeeId}`))}
+8. BLOCKED (employee never works these): ${JSON.stringify(blocks.map((b) => `${b.employeeId}@${b.shiftTemplateId ?? "any"}:day${b.dayOfWeek}`))}
 
 Shift templates:
 ${JSON.stringify(templates, null, 2)}
@@ -162,24 +244,39 @@ Return one assignment per (shiftTemplateId, dayOfWeek) combination (${templates.
 Set employeeId to null if no eligible employee is available.
 `)
 
-    // Deterministic repair: the LLM proposes, code guarantees. Voided (not
-    // shipped): category-A assignments outside availability, and anything
-    // violating working-time law.
+    // Deterministic repair: the LLM proposes, code guarantees. Pins are forced
+    // onto their slots; voided (not shipped): blocked assignments, category-A
+    // outside availability, and anything violating working-time law.
     const availSet = new Set(
       availability.filter((a) => a.available).map((a) => `${a.employeeId}:${a.shiftTemplateId}:${a.dayOfWeek}`)
     )
     const byId = new Map(employees.map((e) => [e.id, e]))
     const tmplById = new Map(templates.map((t) => [t.id, t]))
-    const acceptedShifts: Record<string, PlannedShift[]> = {}
-    const voided: string[] = []
+    const { pinnedBySlot, assignedShifts: acceptedShifts, conflicts } = seedPins(templates, employees, {
+      rules,
+      monthHours,
+      pins,
+      blocks,
+    })
+    const voided: string[] = [...conflicts]
 
     const assignments: GeneratedAssignment[] = result.assignments.map((a) => {
-      const emp = a.employeeId ? byId.get(a.employeeId) : undefined
       const tmpl = tmplById.get(a.shiftTemplateId)
+
+      // A pinned slot belongs to the pinned employee, whatever the LLM said.
+      const pinned = pinnedBySlot.get(slotKey(a.shiftTemplateId, a.dayOfWeek))
+      if (pinned) {
+        return { shiftTemplateId: a.shiftTemplateId, dayOfWeek: a.dayOfWeek, employeeId: pinned, filled: true }
+      }
+
+      const emp = a.employeeId ? byId.get(a.employeeId) : undefined
       let employeeId = a.employeeId
 
       if (emp && tmpl) {
-        if (!isAssignable(emp.category, availSet.has(`${emp.id}:${a.shiftTemplateId}:${a.dayOfWeek}`))) {
+        if (isBlocked(blocks, emp.id, a.shiftTemplateId, a.dayOfWeek)) {
+          voided.push(`${emp.name}: Sperrzeit (day ${a.dayOfWeek})`)
+          employeeId = null
+        } else if (!isAssignable(emp.category, availSet.has(`${emp.id}:${a.shiftTemplateId}:${a.dayOfWeek}`))) {
           voided.push(`${emp.name}: outside availability (day ${a.dayOfWeek})`)
           employeeId = null
         } else {
@@ -203,13 +300,19 @@ Set employeeId to null if no eligible employee is available.
 
     const reasoning =
       voided.length > 0
-        ? `${result.reasoning}\n[compliance] voided ${voided.length} assignment(s): ${voided.join("; ")}`
+        ? `${result.reasoning}\n[compliance] ${voided.length} note(s): ${voided.join("; ")}`
         : result.reasoning
 
     return { assignments, reasoning }
   } catch {
     // Fallback to deterministic algorithm if LLM fails
-    const assignments = fallbackAssign(templates, employees, availability, rules, monthHours)
-    return { assignments, reasoning: "Deterministic fallback (LLM unavailable)" }
+    const { assignments, conflicts } = fallbackAssign(templates, employees, availability, options)
+    return {
+      assignments,
+      reasoning:
+        conflicts.length > 0
+          ? `Deterministic fallback (LLM unavailable)\n[compliance] ${conflicts.join("; ")}`
+          : "Deterministic fallback (LLM unavailable)",
+    }
   }
 }

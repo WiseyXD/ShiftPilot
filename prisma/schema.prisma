@@ -121,6 +121,8 @@ model Location {
   sharingListings SharingListing[]
   lenderDeals     SharingDeal[]    @relation("LenderDeals")
   borrowerDeals   SharingDeal[]    @relation("BorrowerDeals")
+  fixedShifts     FixedShift[]
+  blockedTimes    BlockedTime[]
 
   @@index([ownerId])
 }
@@ -152,6 +154,8 @@ model Employee {
   swapRequestsProposed  SwapRequest[]          @relation("SwapProposed")
   sharingListings       SharingListing[]
   sharingDeals          SharingDeal[]
+  fixedShifts           FixedShift[]
+  blockedTimes          BlockedTime[]
 
   @@unique([locationId, email])
   @@index([locationId])
@@ -173,6 +177,8 @@ model ShiftTemplate {
   recurringAvailability RecurringAvailability[]
   availabilityOverrides AvailabilityOverride[]
   shifts                Shift[]
+  fixedShifts           FixedShift[]
+  blockedTimes          BlockedTime[]
 
   @@index([locationId])
 }
@@ -321,6 +327,45 @@ model ActionToken {
   @@index([employeeId])
   @@index([userId])
   @@index([expiresAt])
+}
+
+// ─── Manager rule engine: pins + Sperrzeiten ──────────────────────────────────
+
+// A pinned assignment: this employee works this template on this weekday —
+// permanently (weekStart null) or for one specific week. Priority 2: only
+// legal limits can override a pin.
+model FixedShift {
+  id              String    @id @default(cuid())
+  locationId      String
+  employeeId      String
+  shiftTemplateId String
+  dayOfWeek       Int // 0=Sun 1=Mon ... 6=Sat
+  weekStart       DateTime? // null = every week
+  createdAt       DateTime  @default(now())
+
+  location      Location      @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  employee      Employee      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  shiftTemplate ShiftTemplate @relation(fields: [shiftTemplateId], references: [id], onDelete: Cascade)
+
+  @@index([locationId])
+}
+
+// A Sperrzeit: never schedule this employee for this weekday (optionally only
+// for one template). Hard exclusion in generation AND outreach.
+model BlockedTime {
+  id              String   @id @default(cuid())
+  locationId      String
+  employeeId      String
+  shiftTemplateId String? // null = the whole day
+  dayOfWeek       Int
+  createdAt       DateTime @default(now())
+
+  location      Location       @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  employee      Employee       @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  shiftTemplate ShiftTemplate? @relation(fields: [shiftTemplateId], references: [id], onDelete: Cascade)
+
+  @@index([locationId])
+  @@index([employeeId])
 }
 
 // ─── Compliance ───────────────────────────────────────────────────────────────

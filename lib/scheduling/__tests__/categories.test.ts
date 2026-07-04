@@ -47,17 +47,17 @@ describe("fallbackAssign with categories", () => {
     const minijobber = { id: "mini", name: "Mini", category: "MINIJOB_ZEITARBEIT" as const, ...base }
 
     // No availability submitted by anyone.
-    const withFest = fallbackAssign([template], [festWorker], [])
+    const withFest = fallbackAssign([template], [festWorker], []).assignments
     expect(withFest.every((a) => a.employeeId === "fest" && a.filled)).toBe(true)
 
-    const withMini = fallbackAssign([template], [minijobber], [])
+    const withMini = fallbackAssign([template], [minijobber], []).assignments
     expect(withMini.every((a) => a.employeeId === null && !a.filled)).toBe(true)
   })
 
   it("category A still assignable inside submitted availability", () => {
     const minijobber = { id: "mini", name: "Mini", category: "MINIJOB_ZEITARBEIT" as const, ...base }
     const avail = [{ employeeId: "mini", shiftTemplateId: "t1", dayOfWeek: 3, available: true }]
-    const result = fallbackAssign([template], [minijobber], avail)
+    const result = fallbackAssign([template], [minijobber], avail).assignments
     const day3 = result.find((a) => a.dayOfWeek === 3)
     expect(day3?.employeeId).toBe("mini")
     expect(result.filter((a) => a.employeeId === "mini")).toHaveLength(1)

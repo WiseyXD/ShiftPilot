@@ -10,6 +10,7 @@ import {
 } from "@/lib/compliance/check"
 import { loadRules } from "@/lib/compliance/load"
 import { loadMonthNetHoursBeforeWeek } from "@/lib/compliance/hours"
+import { isBlocked, type Block } from "@/lib/scheduling/pins"
 import type { ComplianceRules } from "@/lib/compliance/rules"
 import type { Prisma } from "@/prisma/generated/client/client"
 import * as React from "react"
@@ -180,6 +181,7 @@ export async function runOutreachLoop(config: OutreachConfig): Promise<OutreachR
 
 interface ShiftForCandidates {
   dayOfWeek: number
+  shiftTemplateId: string
   shiftTemplate: { requiredRoles: string[]; startTime: string; endTime: string }
   schedule: {
     weekStart: Date | string
@@ -269,6 +271,9 @@ export async function buildShiftCandidates(opts: {
       rules.arbzg
     )
   )) as Record<string, number>
+  const blocks = (await step.run("load-blocked-times", () =>
+    prisma.blockedTime.findMany({ where: { locationId } })
+  )) as Block[]
   const candidateSlot: PlannedShift = {
     start: getShiftStart(weekStart, shift.dayOfWeek, shift.shiftTemplate.startTime),
     end: getShiftEnd(weekStart, shift.dayOfWeek, shift.shiftTemplate.endTime),
@@ -277,6 +282,8 @@ export async function buildShiftCandidates(opts: {
   const legal: OutreachCandidate[] = []
   const blocked: { candidate: OutreachCandidate; violation: ComplianceViolation }[] = []
   for (const candidate of hydrated) {
+    // Sperrzeit: this employee never works this slot — hard exclusion.
+    if (isBlocked(blocks, candidate.employeeId, shift.shiftTemplateId, shift.dayOfWeek)) continue
     const emp = employees.find((e) => e.id === candidate.employeeId)
     const existing: PlannedShift[] = shift.schedule.shifts
       .filter((s) => s.employeeId === candidate.employeeId && s.status !== "DECLINED")

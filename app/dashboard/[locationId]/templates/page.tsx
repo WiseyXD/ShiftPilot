@@ -8,6 +8,8 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useParams } from "next/navigation"
 
+import { PinsCard } from "@/components/dashboard/pins-card"
+
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 const COMMON_ROLES = ["Barista", "Chef", "Server", "Cashier", "Manager", "Kitchen", "Host"]
 
@@ -171,6 +173,7 @@ export default function TemplatesPage() {
       <h1 className="text-2xl font-bold text-slate-900">Shift templates</h1>
       <AddTemplateForm locationId={locationId} />
       {config && <LocationConfigForm locationId={locationId} config={config} />}
+      <PinsCard locationId={locationId} />
       <div className="space-y-2">
         {templates.map((t) => (
           <Card key={t.id} className="px-4 py-3 flex items-center justify-between">

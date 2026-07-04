@@ -240,6 +240,8 @@ export type ShiftTemplateWhereInput = {
   recurringAvailability?: Prisma.RecurringAvailabilityListRelationFilter
   availabilityOverrides?: Prisma.AvailabilityOverrideListRelationFilter
   shifts?: Prisma.ShiftListRelationFilter
+  fixedShifts?: Prisma.FixedShiftListRelationFilter
+  blockedTimes?: Prisma.BlockedTimeListRelationFilter
 }
 
 export type ShiftTemplateOrderByWithRelationInput = {
@@ -255,6 +257,8 @@ export type ShiftTemplateOrderByWithRelationInput = {
   recurringAvailability?: Prisma.RecurringAvailabilityOrderByRelationAggregateInput
   availabilityOverrides?: Prisma.AvailabilityOverrideOrderByRelationAggregateInput
   shifts?: Prisma.ShiftOrderByRelationAggregateInput
+  fixedShifts?: Prisma.FixedShiftOrderByRelationAggregateInput
+  blockedTimes?: Prisma.BlockedTimeOrderByRelationAggregateInput
 }
 
 export type ShiftTemplateWhereUniqueInput = Prisma.AtLeast<{
@@ -273,6 +277,8 @@ export type ShiftTemplateWhereUniqueInput = Prisma.AtLeast<{
   recurringAvailability?: Prisma.RecurringAvailabilityListRelationFilter
   availabilityOverrides?: Prisma.AvailabilityOverrideListRelationFilter
   shifts?: Prisma.ShiftListRelationFilter
+  fixedShifts?: Prisma.FixedShiftListRelationFilter
+  blockedTimes?: Prisma.BlockedTimeListRelationFilter
 }, "id">
 
 export type ShiftTemplateOrderByWithAggregationInput = {
@@ -317,6 +323,8 @@ export type ShiftTemplateCreateInput = {
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutShiftTemplateInput
   availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutShiftTemplateInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutShiftTemplateInput
+  fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutShiftTemplateInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutShiftTemplateInput
 }
 
 export type ShiftTemplateUncheckedCreateInput = {
@@ -331,6 +339,8 @@ export type ShiftTemplateUncheckedCreateInput = {
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutShiftTemplateInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutShiftTemplateInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutShiftTemplateInput
+  fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutShiftTemplateInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutShiftTemplateInput
 }
 
 export type ShiftTemplateUpdateInput = {
@@ -345,6 +355,8 @@ export type ShiftTemplateUpdateInput = {
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutShiftTemplateNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutShiftTemplateNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutShiftTemplateNestedInput
+  fixedShifts?: Prisma.FixedShiftUpdateManyWithoutShiftTemplateNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutShiftTemplateNestedInput
 }
 
 export type ShiftTemplateUncheckedUpdateInput = {
@@ -359,6 +371,8 @@ export type ShiftTemplateUncheckedUpdateInput = {
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutShiftTemplateNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutShiftTemplateNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutShiftTemplateNestedInput
+  fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutShiftTemplateNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutShiftTemplateNestedInput
 }
 
 export type ShiftTemplateCreateManyInput = {
@@ -445,6 +459,11 @@ export type ShiftTemplateSumOrderByAggregateInput = {
 export type ShiftTemplateScalarRelationFilter = {
   is?: Prisma.ShiftTemplateWhereInput
   isNot?: Prisma.ShiftTemplateWhereInput
+}
+
+export type ShiftTemplateNullableScalarRelationFilter = {
+  is?: Prisma.ShiftTemplateWhereInput | null
+  isNot?: Prisma.ShiftTemplateWhereInput | null
 }
 
 export type ShiftTemplateCreateNestedManyWithoutLocationInput = {
@@ -540,6 +559,36 @@ export type ShiftTemplateUpdateOneRequiredWithoutShiftsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ShiftTemplateUpdateToOneWithWhereWithoutShiftsInput, Prisma.ShiftTemplateUpdateWithoutShiftsInput>, Prisma.ShiftTemplateUncheckedUpdateWithoutShiftsInput>
 }
 
+export type ShiftTemplateCreateNestedOneWithoutFixedShiftsInput = {
+  create?: Prisma.XOR<Prisma.ShiftTemplateCreateWithoutFixedShiftsInput, Prisma.ShiftTemplateUncheckedCreateWithoutFixedShiftsInput>
+  connectOrCreate?: Prisma.ShiftTemplateCreateOrConnectWithoutFixedShiftsInput
+  connect?: Prisma.ShiftTemplateWhereUniqueInput
+}
+
+export type ShiftTemplateUpdateOneRequiredWithoutFixedShiftsNestedInput = {
+  create?: Prisma.XOR<Prisma.ShiftTemplateCreateWithoutFixedShiftsInput, Prisma.ShiftTemplateUncheckedCreateWithoutFixedShiftsInput>
+  connectOrCreate?: Prisma.ShiftTemplateCreateOrConnectWithoutFixedShiftsInput
+  upsert?: Prisma.ShiftTemplateUpsertWithoutFixedShiftsInput
+  connect?: Prisma.ShiftTemplateWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ShiftTemplateUpdateToOneWithWhereWithoutFixedShiftsInput, Prisma.ShiftTemplateUpdateWithoutFixedShiftsInput>, Prisma.ShiftTemplateUncheckedUpdateWithoutFixedShiftsInput>
+}
+
+export type ShiftTemplateCreateNestedOneWithoutBlockedTimesInput = {
+  create?: Prisma.XOR<Prisma.ShiftTemplateCreateWithoutBlockedTimesInput, Prisma.ShiftTemplateUncheckedCreateWithoutBlockedTimesInput>
+  connectOrCreate?: Prisma.ShiftTemplateCreateOrConnectWithoutBlockedTimesInput
+  connect?: Prisma.ShiftTemplateWhereUniqueInput
+}
+
+export type ShiftTemplateUpdateOneWithoutBlockedTimesNestedInput = {
+  create?: Prisma.XOR<Prisma.ShiftTemplateCreateWithoutBlockedTimesInput, Prisma.ShiftTemplateUncheckedCreateWithoutBlockedTimesInput>
+  connectOrCreate?: Prisma.ShiftTemplateCreateOrConnectWithoutBlockedTimesInput
+  upsert?: Prisma.ShiftTemplateUpsertWithoutBlockedTimesInput
+  disconnect?: Prisma.ShiftTemplateWhereInput | boolean
+  delete?: Prisma.ShiftTemplateWhereInput | boolean
+  connect?: Prisma.ShiftTemplateWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ShiftTemplateUpdateToOneWithWhereWithoutBlockedTimesInput, Prisma.ShiftTemplateUpdateWithoutBlockedTimesInput>, Prisma.ShiftTemplateUncheckedUpdateWithoutBlockedTimesInput>
+}
+
 export type ShiftTemplateCreateWithoutLocationInput = {
   id?: string
   name: string
@@ -551,6 +600,8 @@ export type ShiftTemplateCreateWithoutLocationInput = {
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutShiftTemplateInput
   availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutShiftTemplateInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutShiftTemplateInput
+  fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutShiftTemplateInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutShiftTemplateInput
 }
 
 export type ShiftTemplateUncheckedCreateWithoutLocationInput = {
@@ -564,6 +615,8 @@ export type ShiftTemplateUncheckedCreateWithoutLocationInput = {
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutShiftTemplateInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutShiftTemplateInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutShiftTemplateInput
+  fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutShiftTemplateInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutShiftTemplateInput
 }
 
 export type ShiftTemplateCreateOrConnectWithoutLocationInput = {
@@ -617,6 +670,8 @@ export type ShiftTemplateCreateWithoutRecurringAvailabilityInput = {
   location: Prisma.LocationCreateNestedOneWithoutShiftTemplatesInput
   availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutShiftTemplateInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutShiftTemplateInput
+  fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutShiftTemplateInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutShiftTemplateInput
 }
 
 export type ShiftTemplateUncheckedCreateWithoutRecurringAvailabilityInput = {
@@ -630,6 +685,8 @@ export type ShiftTemplateUncheckedCreateWithoutRecurringAvailabilityInput = {
   createdAt?: Date | string
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutShiftTemplateInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutShiftTemplateInput
+  fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutShiftTemplateInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutShiftTemplateInput
 }
 
 export type ShiftTemplateCreateOrConnectWithoutRecurringAvailabilityInput = {
@@ -659,6 +716,8 @@ export type ShiftTemplateUpdateWithoutRecurringAvailabilityInput = {
   location?: Prisma.LocationUpdateOneRequiredWithoutShiftTemplatesNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutShiftTemplateNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutShiftTemplateNestedInput
+  fixedShifts?: Prisma.FixedShiftUpdateManyWithoutShiftTemplateNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutShiftTemplateNestedInput
 }
 
 export type ShiftTemplateUncheckedUpdateWithoutRecurringAvailabilityInput = {
@@ -672,6 +731,8 @@ export type ShiftTemplateUncheckedUpdateWithoutRecurringAvailabilityInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutShiftTemplateNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutShiftTemplateNestedInput
+  fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutShiftTemplateNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutShiftTemplateNestedInput
 }
 
 export type ShiftTemplateCreateWithoutAvailabilityOverridesInput = {
@@ -685,6 +746,8 @@ export type ShiftTemplateCreateWithoutAvailabilityOverridesInput = {
   location: Prisma.LocationCreateNestedOneWithoutShiftTemplatesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutShiftTemplateInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutShiftTemplateInput
+  fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutShiftTemplateInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutShiftTemplateInput
 }
 
 export type ShiftTemplateUncheckedCreateWithoutAvailabilityOverridesInput = {
@@ -698,6 +761,8 @@ export type ShiftTemplateUncheckedCreateWithoutAvailabilityOverridesInput = {
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutShiftTemplateInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutShiftTemplateInput
+  fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutShiftTemplateInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutShiftTemplateInput
 }
 
 export type ShiftTemplateCreateOrConnectWithoutAvailabilityOverridesInput = {
@@ -727,6 +792,8 @@ export type ShiftTemplateUpdateWithoutAvailabilityOverridesInput = {
   location?: Prisma.LocationUpdateOneRequiredWithoutShiftTemplatesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutShiftTemplateNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutShiftTemplateNestedInput
+  fixedShifts?: Prisma.FixedShiftUpdateManyWithoutShiftTemplateNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutShiftTemplateNestedInput
 }
 
 export type ShiftTemplateUncheckedUpdateWithoutAvailabilityOverridesInput = {
@@ -740,6 +807,8 @@ export type ShiftTemplateUncheckedUpdateWithoutAvailabilityOverridesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutShiftTemplateNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutShiftTemplateNestedInput
+  fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutShiftTemplateNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutShiftTemplateNestedInput
 }
 
 export type ShiftTemplateCreateWithoutShiftsInput = {
@@ -753,6 +822,8 @@ export type ShiftTemplateCreateWithoutShiftsInput = {
   location: Prisma.LocationCreateNestedOneWithoutShiftTemplatesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutShiftTemplateInput
   availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutShiftTemplateInput
+  fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutShiftTemplateInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutShiftTemplateInput
 }
 
 export type ShiftTemplateUncheckedCreateWithoutShiftsInput = {
@@ -766,6 +837,8 @@ export type ShiftTemplateUncheckedCreateWithoutShiftsInput = {
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutShiftTemplateInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutShiftTemplateInput
+  fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutShiftTemplateInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutShiftTemplateInput
 }
 
 export type ShiftTemplateCreateOrConnectWithoutShiftsInput = {
@@ -795,6 +868,8 @@ export type ShiftTemplateUpdateWithoutShiftsInput = {
   location?: Prisma.LocationUpdateOneRequiredWithoutShiftTemplatesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutShiftTemplateNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutShiftTemplateNestedInput
+  fixedShifts?: Prisma.FixedShiftUpdateManyWithoutShiftTemplateNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutShiftTemplateNestedInput
 }
 
 export type ShiftTemplateUncheckedUpdateWithoutShiftsInput = {
@@ -808,6 +883,160 @@ export type ShiftTemplateUncheckedUpdateWithoutShiftsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutShiftTemplateNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutShiftTemplateNestedInput
+  fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutShiftTemplateNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutShiftTemplateNestedInput
+}
+
+export type ShiftTemplateCreateWithoutFixedShiftsInput = {
+  id?: string
+  name: string
+  startTime: string
+  endTime: string
+  minHeadcount?: number
+  requiredRoles?: Prisma.ShiftTemplateCreaterequiredRolesInput | string[]
+  createdAt?: Date | string
+  location: Prisma.LocationCreateNestedOneWithoutShiftTemplatesInput
+  recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutShiftTemplateInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutShiftTemplateInput
+  shifts?: Prisma.ShiftCreateNestedManyWithoutShiftTemplateInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutShiftTemplateInput
+}
+
+export type ShiftTemplateUncheckedCreateWithoutFixedShiftsInput = {
+  id?: string
+  locationId: string
+  name: string
+  startTime: string
+  endTime: string
+  minHeadcount?: number
+  requiredRoles?: Prisma.ShiftTemplateCreaterequiredRolesInput | string[]
+  createdAt?: Date | string
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutShiftTemplateInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutShiftTemplateInput
+  shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutShiftTemplateInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutShiftTemplateInput
+}
+
+export type ShiftTemplateCreateOrConnectWithoutFixedShiftsInput = {
+  where: Prisma.ShiftTemplateWhereUniqueInput
+  create: Prisma.XOR<Prisma.ShiftTemplateCreateWithoutFixedShiftsInput, Prisma.ShiftTemplateUncheckedCreateWithoutFixedShiftsInput>
+}
+
+export type ShiftTemplateUpsertWithoutFixedShiftsInput = {
+  update: Prisma.XOR<Prisma.ShiftTemplateUpdateWithoutFixedShiftsInput, Prisma.ShiftTemplateUncheckedUpdateWithoutFixedShiftsInput>
+  create: Prisma.XOR<Prisma.ShiftTemplateCreateWithoutFixedShiftsInput, Prisma.ShiftTemplateUncheckedCreateWithoutFixedShiftsInput>
+  where?: Prisma.ShiftTemplateWhereInput
+}
+
+export type ShiftTemplateUpdateToOneWithWhereWithoutFixedShiftsInput = {
+  where?: Prisma.ShiftTemplateWhereInput
+  data: Prisma.XOR<Prisma.ShiftTemplateUpdateWithoutFixedShiftsInput, Prisma.ShiftTemplateUncheckedUpdateWithoutFixedShiftsInput>
+}
+
+export type ShiftTemplateUpdateWithoutFixedShiftsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  minHeadcount?: Prisma.IntFieldUpdateOperationsInput | number
+  requiredRoles?: Prisma.ShiftTemplateUpdaterequiredRolesInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  location?: Prisma.LocationUpdateOneRequiredWithoutShiftTemplatesNestedInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutShiftTemplateNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutShiftTemplateNestedInput
+  shifts?: Prisma.ShiftUpdateManyWithoutShiftTemplateNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutShiftTemplateNestedInput
+}
+
+export type ShiftTemplateUncheckedUpdateWithoutFixedShiftsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  locationId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  minHeadcount?: Prisma.IntFieldUpdateOperationsInput | number
+  requiredRoles?: Prisma.ShiftTemplateUpdaterequiredRolesInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutShiftTemplateNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutShiftTemplateNestedInput
+  shifts?: Prisma.ShiftUncheckedUpdateManyWithoutShiftTemplateNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutShiftTemplateNestedInput
+}
+
+export type ShiftTemplateCreateWithoutBlockedTimesInput = {
+  id?: string
+  name: string
+  startTime: string
+  endTime: string
+  minHeadcount?: number
+  requiredRoles?: Prisma.ShiftTemplateCreaterequiredRolesInput | string[]
+  createdAt?: Date | string
+  location: Prisma.LocationCreateNestedOneWithoutShiftTemplatesInput
+  recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutShiftTemplateInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutShiftTemplateInput
+  shifts?: Prisma.ShiftCreateNestedManyWithoutShiftTemplateInput
+  fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutShiftTemplateInput
+}
+
+export type ShiftTemplateUncheckedCreateWithoutBlockedTimesInput = {
+  id?: string
+  locationId: string
+  name: string
+  startTime: string
+  endTime: string
+  minHeadcount?: number
+  requiredRoles?: Prisma.ShiftTemplateCreaterequiredRolesInput | string[]
+  createdAt?: Date | string
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutShiftTemplateInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutShiftTemplateInput
+  shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutShiftTemplateInput
+  fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutShiftTemplateInput
+}
+
+export type ShiftTemplateCreateOrConnectWithoutBlockedTimesInput = {
+  where: Prisma.ShiftTemplateWhereUniqueInput
+  create: Prisma.XOR<Prisma.ShiftTemplateCreateWithoutBlockedTimesInput, Prisma.ShiftTemplateUncheckedCreateWithoutBlockedTimesInput>
+}
+
+export type ShiftTemplateUpsertWithoutBlockedTimesInput = {
+  update: Prisma.XOR<Prisma.ShiftTemplateUpdateWithoutBlockedTimesInput, Prisma.ShiftTemplateUncheckedUpdateWithoutBlockedTimesInput>
+  create: Prisma.XOR<Prisma.ShiftTemplateCreateWithoutBlockedTimesInput, Prisma.ShiftTemplateUncheckedCreateWithoutBlockedTimesInput>
+  where?: Prisma.ShiftTemplateWhereInput
+}
+
+export type ShiftTemplateUpdateToOneWithWhereWithoutBlockedTimesInput = {
+  where?: Prisma.ShiftTemplateWhereInput
+  data: Prisma.XOR<Prisma.ShiftTemplateUpdateWithoutBlockedTimesInput, Prisma.ShiftTemplateUncheckedUpdateWithoutBlockedTimesInput>
+}
+
+export type ShiftTemplateUpdateWithoutBlockedTimesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  minHeadcount?: Prisma.IntFieldUpdateOperationsInput | number
+  requiredRoles?: Prisma.ShiftTemplateUpdaterequiredRolesInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  location?: Prisma.LocationUpdateOneRequiredWithoutShiftTemplatesNestedInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutShiftTemplateNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutShiftTemplateNestedInput
+  shifts?: Prisma.ShiftUpdateManyWithoutShiftTemplateNestedInput
+  fixedShifts?: Prisma.FixedShiftUpdateManyWithoutShiftTemplateNestedInput
+}
+
+export type ShiftTemplateUncheckedUpdateWithoutBlockedTimesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  locationId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  minHeadcount?: Prisma.IntFieldUpdateOperationsInput | number
+  requiredRoles?: Prisma.ShiftTemplateUpdaterequiredRolesInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutShiftTemplateNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutShiftTemplateNestedInput
+  shifts?: Prisma.ShiftUncheckedUpdateManyWithoutShiftTemplateNestedInput
+  fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutShiftTemplateNestedInput
 }
 
 export type ShiftTemplateCreateManyLocationInput = {
@@ -831,6 +1060,8 @@ export type ShiftTemplateUpdateWithoutLocationInput = {
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutShiftTemplateNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutShiftTemplateNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutShiftTemplateNestedInput
+  fixedShifts?: Prisma.FixedShiftUpdateManyWithoutShiftTemplateNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutShiftTemplateNestedInput
 }
 
 export type ShiftTemplateUncheckedUpdateWithoutLocationInput = {
@@ -844,6 +1075,8 @@ export type ShiftTemplateUncheckedUpdateWithoutLocationInput = {
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutShiftTemplateNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutShiftTemplateNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutShiftTemplateNestedInput
+  fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutShiftTemplateNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutShiftTemplateNestedInput
 }
 
 export type ShiftTemplateUncheckedUpdateManyWithoutLocationInput = {
@@ -865,12 +1098,16 @@ export type ShiftTemplateCountOutputType = {
   recurringAvailability: number
   availabilityOverrides: number
   shifts: number
+  fixedShifts: number
+  blockedTimes: number
 }
 
 export type ShiftTemplateCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   recurringAvailability?: boolean | ShiftTemplateCountOutputTypeCountRecurringAvailabilityArgs
   availabilityOverrides?: boolean | ShiftTemplateCountOutputTypeCountAvailabilityOverridesArgs
   shifts?: boolean | ShiftTemplateCountOutputTypeCountShiftsArgs
+  fixedShifts?: boolean | ShiftTemplateCountOutputTypeCountFixedShiftsArgs
+  blockedTimes?: boolean | ShiftTemplateCountOutputTypeCountBlockedTimesArgs
 }
 
 /**
@@ -904,6 +1141,20 @@ export type ShiftTemplateCountOutputTypeCountShiftsArgs<ExtArgs extends runtime.
   where?: Prisma.ShiftWhereInput
 }
 
+/**
+ * ShiftTemplateCountOutputType without action
+ */
+export type ShiftTemplateCountOutputTypeCountFixedShiftsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FixedShiftWhereInput
+}
+
+/**
+ * ShiftTemplateCountOutputType without action
+ */
+export type ShiftTemplateCountOutputTypeCountBlockedTimesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BlockedTimeWhereInput
+}
+
 
 export type ShiftTemplateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -918,6 +1169,8 @@ export type ShiftTemplateSelect<ExtArgs extends runtime.Types.Extensions.Interna
   recurringAvailability?: boolean | Prisma.ShiftTemplate$recurringAvailabilityArgs<ExtArgs>
   availabilityOverrides?: boolean | Prisma.ShiftTemplate$availabilityOverridesArgs<ExtArgs>
   shifts?: boolean | Prisma.ShiftTemplate$shiftsArgs<ExtArgs>
+  fixedShifts?: boolean | Prisma.ShiftTemplate$fixedShiftsArgs<ExtArgs>
+  blockedTimes?: boolean | Prisma.ShiftTemplate$blockedTimesArgs<ExtArgs>
   _count?: boolean | Prisma.ShiftTemplateCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["shiftTemplate"]>
 
@@ -962,6 +1215,8 @@ export type ShiftTemplateInclude<ExtArgs extends runtime.Types.Extensions.Intern
   recurringAvailability?: boolean | Prisma.ShiftTemplate$recurringAvailabilityArgs<ExtArgs>
   availabilityOverrides?: boolean | Prisma.ShiftTemplate$availabilityOverridesArgs<ExtArgs>
   shifts?: boolean | Prisma.ShiftTemplate$shiftsArgs<ExtArgs>
+  fixedShifts?: boolean | Prisma.ShiftTemplate$fixedShiftsArgs<ExtArgs>
+  blockedTimes?: boolean | Prisma.ShiftTemplate$blockedTimesArgs<ExtArgs>
   _count?: boolean | Prisma.ShiftTemplateCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ShiftTemplateIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -978,6 +1233,8 @@ export type $ShiftTemplatePayload<ExtArgs extends runtime.Types.Extensions.Inter
     recurringAvailability: Prisma.$RecurringAvailabilityPayload<ExtArgs>[]
     availabilityOverrides: Prisma.$AvailabilityOverridePayload<ExtArgs>[]
     shifts: Prisma.$ShiftPayload<ExtArgs>[]
+    fixedShifts: Prisma.$FixedShiftPayload<ExtArgs>[]
+    blockedTimes: Prisma.$BlockedTimePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1386,6 +1643,8 @@ export interface Prisma__ShiftTemplateClient<T, Null = never, ExtArgs extends ru
   recurringAvailability<T extends Prisma.ShiftTemplate$recurringAvailabilityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ShiftTemplate$recurringAvailabilityArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RecurringAvailabilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   availabilityOverrides<T extends Prisma.ShiftTemplate$availabilityOverridesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ShiftTemplate$availabilityOverridesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AvailabilityOverridePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   shifts<T extends Prisma.ShiftTemplate$shiftsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ShiftTemplate$shiftsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShiftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  fixedShifts<T extends Prisma.ShiftTemplate$fixedShiftsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ShiftTemplate$fixedShiftsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FixedShiftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  blockedTimes<T extends Prisma.ShiftTemplate$blockedTimesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ShiftTemplate$blockedTimesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BlockedTimePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1893,6 +2152,54 @@ export type ShiftTemplate$shiftsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.ShiftScalarFieldEnum | Prisma.ShiftScalarFieldEnum[]
+}
+
+/**
+ * ShiftTemplate.fixedShifts
+ */
+export type ShiftTemplate$fixedShiftsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FixedShift
+   */
+  select?: Prisma.FixedShiftSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FixedShift
+   */
+  omit?: Prisma.FixedShiftOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FixedShiftInclude<ExtArgs> | null
+  where?: Prisma.FixedShiftWhereInput
+  orderBy?: Prisma.FixedShiftOrderByWithRelationInput | Prisma.FixedShiftOrderByWithRelationInput[]
+  cursor?: Prisma.FixedShiftWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FixedShiftScalarFieldEnum | Prisma.FixedShiftScalarFieldEnum[]
+}
+
+/**
+ * ShiftTemplate.blockedTimes
+ */
+export type ShiftTemplate$blockedTimesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BlockedTime
+   */
+  select?: Prisma.BlockedTimeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BlockedTime
+   */
+  omit?: Prisma.BlockedTimeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BlockedTimeInclude<ExtArgs> | null
+  where?: Prisma.BlockedTimeWhereInput
+  orderBy?: Prisma.BlockedTimeOrderByWithRelationInput | Prisma.BlockedTimeOrderByWithRelationInput[]
+  cursor?: Prisma.BlockedTimeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BlockedTimeScalarFieldEnum | Prisma.BlockedTimeScalarFieldEnum[]
 }
 
 /**

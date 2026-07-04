@@ -19,7 +19,7 @@ describe("fallbackAssign respects working-time law", () => {
     const late = { id: "late", name: "Late", startTime: "19:00", endTime: "23:00", minHeadcount: 1, requiredRoles: [] }
     const early = { id: "early", name: "Early", startTime: "07:00", endTime: "11:00", minHeadcount: 1, requiredRoles: [] }
 
-    const result = fallbackAssign([late, early], [worker], [], DEFAULT_COMPLIANCE_RULES)
+    const result = fallbackAssign([late, early], [worker], [], { rules: DEFAULT_COMPLIANCE_RULES }).assignments
 
     const lateDays = result.filter((a) => a.shiftTemplateId === "late" && a.filled)
     expect(lateDays).toHaveLength(7) // 4h/day, 28h/week — all fine
@@ -33,7 +33,7 @@ describe("fallbackAssign respects working-time law", () => {
   it("stops at the weekly net-hours cap", () => {
     // 8.5h span = 8h net per day; 7 days would be 56h > 48h — only 6 fit.
     const day = { id: "day", name: "Day", startTime: "09:00", endTime: "17:30", minHeadcount: 1, requiredRoles: [] }
-    const result = fallbackAssign([day], [worker], [], DEFAULT_COMPLIANCE_RULES)
+    const result = fallbackAssign([day], [worker], [], { rules: DEFAULT_COMPLIANCE_RULES }).assignments
     expect(result.filter((a) => a.filled)).toHaveLength(6)
     expect(result.filter((a) => !a.filled)).toHaveLength(1)
   })

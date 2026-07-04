@@ -396,6 +396,8 @@ export const ModelName = {
   SharingListing: 'SharingListing',
   SharingDeal: 'SharingDeal',
   ActionToken: 'ActionToken',
+  FixedShift: 'FixedShift',
+  BlockedTime: 'BlockedTime',
   ComplianceRuleSet: 'ComplianceRuleSet',
   AuditLog: 'AuditLog'
 } as const
@@ -413,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "sharingDeal" | "actionToken" | "complianceRuleSet" | "auditLog"
+    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "sharingDeal" | "actionToken" | "fixedShift" | "blockedTime" | "complianceRuleSet" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1305,6 +1307,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    FixedShift: {
+      payload: Prisma.$FixedShiftPayload<ExtArgs>
+      fields: Prisma.FixedShiftFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FixedShiftFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FixedShiftPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FixedShiftFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FixedShiftPayload>
+        }
+        findFirst: {
+          args: Prisma.FixedShiftFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FixedShiftPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FixedShiftFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FixedShiftPayload>
+        }
+        findMany: {
+          args: Prisma.FixedShiftFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FixedShiftPayload>[]
+        }
+        create: {
+          args: Prisma.FixedShiftCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FixedShiftPayload>
+        }
+        createMany: {
+          args: Prisma.FixedShiftCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FixedShiftCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FixedShiftPayload>[]
+        }
+        delete: {
+          args: Prisma.FixedShiftDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FixedShiftPayload>
+        }
+        update: {
+          args: Prisma.FixedShiftUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FixedShiftPayload>
+        }
+        deleteMany: {
+          args: Prisma.FixedShiftDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FixedShiftUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FixedShiftUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FixedShiftPayload>[]
+        }
+        upsert: {
+          args: Prisma.FixedShiftUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FixedShiftPayload>
+        }
+        aggregate: {
+          args: Prisma.FixedShiftAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFixedShift>
+        }
+        groupBy: {
+          args: Prisma.FixedShiftGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FixedShiftGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FixedShiftCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FixedShiftCountAggregateOutputType> | number
+        }
+      }
+    }
+    BlockedTime: {
+      payload: Prisma.$BlockedTimePayload<ExtArgs>
+      fields: Prisma.BlockedTimeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BlockedTimeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockedTimePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BlockedTimeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockedTimePayload>
+        }
+        findFirst: {
+          args: Prisma.BlockedTimeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockedTimePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BlockedTimeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockedTimePayload>
+        }
+        findMany: {
+          args: Prisma.BlockedTimeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockedTimePayload>[]
+        }
+        create: {
+          args: Prisma.BlockedTimeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockedTimePayload>
+        }
+        createMany: {
+          args: Prisma.BlockedTimeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BlockedTimeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockedTimePayload>[]
+        }
+        delete: {
+          args: Prisma.BlockedTimeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockedTimePayload>
+        }
+        update: {
+          args: Prisma.BlockedTimeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockedTimePayload>
+        }
+        deleteMany: {
+          args: Prisma.BlockedTimeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BlockedTimeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BlockedTimeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockedTimePayload>[]
+        }
+        upsert: {
+          args: Prisma.BlockedTimeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockedTimePayload>
+        }
+        aggregate: {
+          args: Prisma.BlockedTimeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBlockedTime>
+        }
+        groupBy: {
+          args: Prisma.BlockedTimeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BlockedTimeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BlockedTimeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BlockedTimeCountAggregateOutputType> | number
+        }
+      }
+    }
     ComplianceRuleSet: {
       payload: Prisma.$ComplianceRuleSetPayload<ExtArgs>
       fields: Prisma.ComplianceRuleSetFieldRefs
@@ -1660,6 +1810,31 @@ export const ActionTokenScalarFieldEnum = {
 } as const
 
 export type ActionTokenScalarFieldEnum = (typeof ActionTokenScalarFieldEnum)[keyof typeof ActionTokenScalarFieldEnum]
+
+
+export const FixedShiftScalarFieldEnum = {
+  id: 'id',
+  locationId: 'locationId',
+  employeeId: 'employeeId',
+  shiftTemplateId: 'shiftTemplateId',
+  dayOfWeek: 'dayOfWeek',
+  weekStart: 'weekStart',
+  createdAt: 'createdAt'
+} as const
+
+export type FixedShiftScalarFieldEnum = (typeof FixedShiftScalarFieldEnum)[keyof typeof FixedShiftScalarFieldEnum]
+
+
+export const BlockedTimeScalarFieldEnum = {
+  id: 'id',
+  locationId: 'locationId',
+  employeeId: 'employeeId',
+  shiftTemplateId: 'shiftTemplateId',
+  dayOfWeek: 'dayOfWeek',
+  createdAt: 'createdAt'
+} as const
+
+export type BlockedTimeScalarFieldEnum = (typeof BlockedTimeScalarFieldEnum)[keyof typeof BlockedTimeScalarFieldEnum]
 
 
 export const ComplianceRuleSetScalarFieldEnum = {
@@ -2056,6 +2231,8 @@ export type GlobalOmitConfig = {
   sharingListing?: Prisma.SharingListingOmit
   sharingDeal?: Prisma.SharingDealOmit
   actionToken?: Prisma.ActionTokenOmit
+  fixedShift?: Prisma.FixedShiftOmit
+  blockedTime?: Prisma.BlockedTimeOmit
   complianceRuleSet?: Prisma.ComplianceRuleSetOmit
   auditLog?: Prisma.AuditLogOmit
 }
