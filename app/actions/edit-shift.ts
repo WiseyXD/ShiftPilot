@@ -162,6 +162,52 @@ export async function reassignShift(_prev: EditState, formData: FormData): Promi
   return null
 }
 
+// Create a shift in an empty template×day slot (edit mode's dash cells).
+// With an employee chosen it runs the exact same validation as a reassign —
+// on a hard block or a soft warning the just-created row is rolled back, so
+// nothing half-made survives.
+export async function addShift(_prev: EditState, formData: FormData): Promise<EditState> {
+  const session = await auth()
+  if (!session) return { error: "Not authenticated" }
+
+  const scheduleId = formData.get("scheduleId") as string
+  const shiftTemplateId = formData.get("shiftTemplateId") as string
+  const dayOfWeek = parseInt(formData.get("dayOfWeek") as string)
+  const employeeId = ((formData.get("employeeId") as string) ?? "").trim()
+
+  const schedule = await prisma.schedule.findFirst({
+    where: { id: scheduleId, location: { ownerId: session.user.id } },
+    select: { id: true, locationId: true },
+  })
+  if (!schedule) return { error: "Schedule not found" }
+  const template = await prisma.shiftTemplate.findFirst({
+    where: { id: shiftTemplateId, locationId: schedule.locationId },
+  })
+  if (!template || isNaN(dayOfWeek)) return { error: "Invalid slot" }
+
+  const created = await prisma.shift.create({
+    data: { scheduleId, shiftTemplateId, dayOfWeek, status: "UNASSIGNED" },
+  })
+
+  if (!employeeId) {
+    await afterEdit(schedule.locationId, created.id, "created (unassigned)")
+    revalidatePath(`/dashboard/${schedule.locationId}/schedules/${scheduleId}`)
+    return null
+  }
+
+  const fd = new FormData()
+  fd.set("shiftId", created.id)
+  fd.set("employeeId", employeeId)
+  if (formData.get("override") === "1") fd.set("override", "1")
+  const result = await reassignShift(null, fd)
+  if (result) {
+    // Blocked or warned — roll the empty row back; a retry re-creates it.
+    await prisma.shift.delete({ where: { id: created.id } })
+    return result
+  }
+  return null
+}
+
 async function afterEdit(locationId: string, shiftId: string, outcome: string) {
   await prisma.auditLog.create({
     data: {

@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { PageHeader } from "@/components/dashboard/page-header"
 import { EditableCell } from "@/components/dashboard/editable-cell"
+import { AddShiftCell } from "@/components/dashboard/add-shift-cell"
 import Link from "next/link"
 import { Sparkles, CheckCircle2, Pencil, Eye } from "lucide-react"
 
@@ -206,7 +207,16 @@ export default async function SchedulePage({
                     return (
                       <td key={dow} className="px-2 py-2 text-center align-middle">
                         {cellShifts.length === 0 ? (
-                          <span className="text-slate-300">—</span>
+                          editMode ? (
+                            <AddShiftCell
+                              scheduleId={scheduleId}
+                              shiftTemplateId={tmpl.id}
+                              dayOfWeek={dow}
+                              employees={editableEmployees}
+                            />
+                          ) : (
+                            <span className="text-slate-300">—</span>
+                          )
                         ) : (
                           <div className="flex flex-col items-center gap-1.5">
                             {cellShifts.map((shift) =>
