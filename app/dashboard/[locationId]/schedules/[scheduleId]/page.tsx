@@ -199,60 +199,71 @@ export default async function SchedulePage({
                     </p>
                   </td>
                   {Array.from({ length: 7 }, (_, dow) => {
-                    const shift = schedule.shifts.find(
+                    // A slot can hold several people (minHeadcount > 1) — show them all.
+                    const cellShifts = schedule.shifts.filter(
                       (s) => s.shiftTemplateId === tmpl.id && s.dayOfWeek === dow
                     )
                     return (
                       <td key={dow} className="px-2 py-2 text-center align-middle">
-                        {shift && editMode && shift.status !== "LENT_OUT" && !shift.sharingDealId ? (
-                          <EditableCell
-                            shiftId={shift.id}
-                            currentEmployeeId={shift.employeeId}
-                            employees={editableEmployees}
-                          />
-                        ) : shift ? (
-                          <div className="space-y-1 inline-flex flex-col items-center px-2 py-1 rounded-md hover:bg-slate-50 transition-colors">
-                            {shift.sharingDeal && !shift.employee ? (
-                              // Borrowed cover: worker name is safe to show here —
-                              // roster effects only run once the deal is FILLED.
-                              <>
-                                <p className="text-xs font-medium text-slate-900">
-                                  {shift.sharingDeal.employee.name}
-                                </p>
-                                <Badge
-                                  variant="outline"
-                                  className={`text-[10px] px-1.5 py-0 h-4 ${BORROWED_STYLE}`}
+                        {cellShifts.length === 0 ? (
+                          <span className="text-slate-300">—</span>
+                        ) : (
+                          <div className="flex flex-col items-center gap-1.5">
+                            {cellShifts.map((shift) =>
+                              editMode && shift.status !== "LENT_OUT" && !shift.sharingDealId ? (
+                                <EditableCell
+                                  key={shift.id}
+                                  shiftId={shift.id}
+                                  currentEmployeeId={shift.employeeId}
+                                  employees={editableEmployees}
+                                />
+                              ) : (
+                                <div
+                                  key={shift.id}
+                                  className="space-y-1 inline-flex flex-col items-center px-2 py-1 rounded-md hover:bg-slate-50 transition-colors"
                                 >
-                                  Borrowed: {shift.sharingDeal.listing.role} —{" "}
-                                  {shift.sharingDeal.lenderLocation.name}
-                                </Badge>
-                              </>
-                            ) : (
-                              <>
-                                <p className="text-xs font-medium text-slate-900">
-                                  {shift.employeeId &&
-                                    pinnedKeys.has(
-                                      `${shift.shiftTemplateId}:${shift.dayOfWeek}:${shift.employeeId}`
-                                    ) && (
-                                      <span title="Pinned by manager" className="mr-0.5">
-                                        📌
-                                      </span>
-                                    )}
-                                  {shift.employee?.name ?? (
-                                    <span className="text-yellow-600">Unfilled</span>
+                                  {shift.sharingDeal && !shift.employee ? (
+                                    // Borrowed cover: worker name is safe to show here —
+                                    // roster effects only run once the deal is FILLED.
+                                    <>
+                                      <p className="text-xs font-medium text-slate-900">
+                                        {shift.sharingDeal.employee.name}
+                                      </p>
+                                      <Badge
+                                        variant="outline"
+                                        className={`text-[10px] px-1.5 py-0 h-4 ${BORROWED_STYLE}`}
+                                      >
+                                        Borrowed: {shift.sharingDeal.listing.role} —{" "}
+                                        {shift.sharingDeal.lenderLocation.name}
+                                      </Badge>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <p className="text-xs font-medium text-slate-900">
+                                        {shift.employeeId &&
+                                          pinnedKeys.has(
+                                            `${shift.shiftTemplateId}:${shift.dayOfWeek}:${shift.employeeId}`
+                                          ) && (
+                                            <span title="Pinned by manager" className="mr-0.5">
+                                              📌
+                                            </span>
+                                          )}
+                                        {shift.employee?.name ?? (
+                                          <span className="text-yellow-600">Unfilled</span>
+                                        )}
+                                      </p>
+                                      <Badge
+                                        variant="outline"
+                                        className={`text-[10px] px-1.5 py-0 h-4 ${STATUS_STYLES[shift.status]}`}
+                                      >
+                                        {shift.status === "LENT_OUT" ? "lent out" : shift.status === "NO_SHOW" ? "no-show" : shift.status.toLowerCase()}
+                                      </Badge>
+                                    </>
                                   )}
-                                </p>
-                                <Badge
-                                  variant="outline"
-                                  className={`text-[10px] px-1.5 py-0 h-4 ${STATUS_STYLES[shift.status]}`}
-                                >
-                                  {shift.status === "LENT_OUT" ? "lent out" : shift.status === "NO_SHOW" ? "no-show" : shift.status.toLowerCase()}
-                                </Badge>
-                              </>
+                                </div>
+                              )
                             )}
                           </div>
-                        ) : (
-                          <span className="text-slate-300">—</span>
                         )}
                       </td>
                     )
