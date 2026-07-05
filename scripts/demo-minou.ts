@@ -2,6 +2,7 @@
 // child data and rebuilds a rich demo state. Run: bun scripts/demo-minou.ts
 
 import { prisma } from "../prisma/client"
+import { hash } from "bcryptjs"
 
 const OWNER_EMAIL = "julia@shiftt.com"
 const PARTNER_EMAIL = "anker@shift.demo"
@@ -193,8 +194,13 @@ async function main() {
   await shift(draft.id, abend.id, null, 0, "UNASSIGNED")
 
   // ── Partner venue for the marketplace story ───────────────────────────────
+  // Log-in-able: the marketplace demo needs the Anker manager in a second browser.
   const anker = await prisma.user.create({
-    data: { email: PARTNER_EMAIL, passwordHash: "demo", trialEndsAt: new Date(Date.now() + 90 * 86400000) },
+    data: {
+      email: PARTNER_EMAIL,
+      passwordHash: await hash("demo1234", 12),
+      trialEndsAt: new Date(Date.now() + 90 * 86400000),
+    },
   })
   const ankerLoc = await prisma.location.create({
     data: {
@@ -215,7 +221,7 @@ async function main() {
   console.log("Minou demo seeded ✅")
   console.log(`  location: ${minou.id}`)
   console.log(`  employees: 7 · templates: 3 · schedules: current (PUBLISHED) + next (DRAFT)`)
-  console.log(`  partner venue: Café Anker (${PARTNER_EMAIL}) with 1 open listing`)
+  console.log(`  partner venue: Café Anker (${PARTNER_EMAIL} / demo1234) with 1 open listing`)
 }
 
 main()
