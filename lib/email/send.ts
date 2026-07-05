@@ -2,7 +2,11 @@ import { Resend } from "resend";
 import { render } from "@react-email/render";
 import * as React from "react";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy: Resend's constructor throws without a key, and Next imports this
+// module at BUILD time while collecting page data — the client must only be
+// created when an email is actually sent.
+let _resend: Resend | null = null;
+const resendClient = () => (_resend ??= new Resend(process.env.RESEND_API_KEY));
 
 const FROM = process.env.EMAIL_FROM ?? "ShiftPilot <onboarding@resend.dev>";
 
@@ -19,7 +23,7 @@ export async function sendEmail({ to, subject, react }: SendEmailOptions) {
   const override = process.env.DEV_EMAIL_OVERRIDE;
   const resolvedTo = override ? [override] : Array.isArray(to) ? to : [to];
 
-  const { data, error } = await resend.emails.send({
+  const { data, error } = await resendClient().emails.send({
     from: FROM,
     to: resolvedTo,
     subject,
