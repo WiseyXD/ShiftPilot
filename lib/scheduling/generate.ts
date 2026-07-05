@@ -5,6 +5,12 @@ import type { EmployeeCategory } from "@/prisma/generated/client/client"
 import { isAssignable, needsAvailability } from "./categories"
 import { isBlocked, slotKey, type Pin, type Block } from "./pins"
 import { isOnVacation, type VacationRange } from "./vacation"
+import {
+  neverTogetherViolated,
+  maxShiftsReached,
+  dayPreference,
+  type StructuredRule,
+} from "./manager-rules"
 import { checkEmployeeAssignment, type PlannedShift } from "@/lib/compliance/check"
 import { DEFAULT_COMPLIANCE_RULES, type ComplianceRules } from "@/lib/compliance/rules"
 import { getShiftStart, getShiftEnd } from "./shift-date"
@@ -46,6 +52,8 @@ export interface GenerateOptions {
   blocks?: Block[]
   /** Absence ranges; needs weekStart to resolve real shift dates. */
   vacations?: VacationRange[]
+  /** Structured manager rules (hierarchy level 5). */
+  managerRules?: StructuredRule[]
   /** Real Monday of the target week — enables date-based checks (vacations). */
   weekStart?: Date
 }
@@ -169,6 +177,8 @@ export function fallbackAssign(
   const rules = options.rules ?? DEFAULT_COMPLIANCE_RULES
   const monthHours = options.monthHours ?? {}
   const blocks = options.blocks ?? []
+  const managerRules = options.managerRules ?? []
+  const assignmentCounts: Record<string, number> = {}
   const availSet = new Set(
     availability.filter((a) => a.available).map((a) => `${a.employeeId}:${a.shiftTemplateId}:${a.dayOfWeek}`)
   )
@@ -206,6 +216,11 @@ export function fallbackAssign(
         if (current + hours > emp.maxHours) return "max contract hours"
         if (tmpl.requiredRoles.length > 0 && !tmpl.requiredRoles.some((r) => emp.roles.includes(r)))
           return "missing role"
+        // Manager rules — hierarchy level 5.
+        if (neverTogetherViolated(managerRules, emp.id, slot, assignedShifts))
+          return "manager rule (never together)"
+        if (maxShiftsReached(managerRules, emp.id, assignmentCounts))
+          return "manager rule (max shifts)"
         // Legal limits are priority 1 — never violable.
         const violation = checkEmployeeAssignment(emp, slot, assignedShifts[emp.id] ?? [], rules, {
           monthNetHoursBeforeWeek: monthHours[emp.id] ?? 0,
@@ -238,6 +253,10 @@ export function fallbackAssign(
         const deficitA = Math.max(0, a.minHours - (assignedHours[a.id] ?? 0))
         const deficitB = Math.max(0, b.minHours - (assignedHours[b.id] ?? 0))
         if (deficitB !== deficitA) return deficitB - deficitA
+        // Level 5: manager day preferences outrank wishes.
+        const prefA = dayPreference(managerRules, a.id, day)
+        const prefB = dayPreference(managerRules, b.id, day)
+        if (prefB !== prefA) return prefB - prefA
         const wishA = availSet.has(`${a.id}:${tmpl.id}:${day}`) ? WISH_SCORE[a.wishWeight ?? "MEDIUM"] : -1
         const wishB = availSet.has(`${b.id}:${tmpl.id}:${day}`) ? WISH_SCORE[b.wishWeight ?? "MEDIUM"] : -1
         if (wishB !== wishA) return wishB - wishA
@@ -245,6 +264,7 @@ export function fallbackAssign(
       })
       const chosen = eligible[0]
       assignedHours[chosen.id] = (assignedHours[chosen.id] ?? 0) + hours
+      assignmentCounts[chosen.id] = (assignmentCounts[chosen.id] ?? 0) + 1
       ;(assignedShifts[chosen.id] ??= []).push(slot)
       results.push({ shiftTemplateId: tmpl.id, dayOfWeek: day, employeeId: chosen.id, filled: true })
     }
@@ -327,6 +347,8 @@ Set employeeId to null if no eligible employee is available.
       weekStart: options.weekStart,
     })
     const voided: string[] = [...conflicts]
+    const managerRules = options.managerRules ?? []
+    const repairCounts: Record<string, number> = {}
 
     const assignments: GeneratedAssignment[] = result.assignments.map((a) => {
       const tmpl = tmplById.get(a.shiftTemplateId)
@@ -358,8 +380,15 @@ Set employeeId to null if no eligible employee is available.
           if (violation) {
             voided.push(`${emp.name}: ${violation.rule} — ${violation.detail}`)
             employeeId = null
+          } else if (neverTogetherViolated(managerRules, emp.id, slot, acceptedShifts)) {
+            voided.push(`${emp.name}: manager rule (never together, day ${a.dayOfWeek})`)
+            employeeId = null
+          } else if (maxShiftsReached(managerRules, emp.id, repairCounts)) {
+            voided.push(`${emp.name}: manager rule (max shifts/week)`)
+            employeeId = null
           } else {
             ;(acceptedShifts[emp.id] ??= []).push(slot)
+            repairCounts[emp.id] = (repairCounts[emp.id] ?? 0) + 1
           }
         }
       } else if (!tmpl) {

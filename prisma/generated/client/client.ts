@@ -107,6 +107,11 @@ export type SharingDeal = Prisma.SharingDealModel
  */
 export type ActionToken = Prisma.ActionTokenModel
 /**
+ * Model ManagerRule
+ * 
+ */
+export type ManagerRule = Prisma.ManagerRuleModel
+/**
  * Model SickCall
  * 
  */

@@ -68,16 +68,21 @@ export const weeklyScheduleGeneration = inngest.createFunction(
           weekStart,
           rules.arbzg
         )
-        const [allPins, blocks, vacations] = await Promise.all([
+        const [allPins, blocks, vacations, ruleRows] = await Promise.all([
           prisma.fixedShift.findMany({ where: { locationId: location.id } }),
           prisma.blockedTime.findMany({ where: { locationId: location.id } }),
           prisma.vacation.findMany({ where: { locationId: location.id } }),
+          prisma.managerRule.findMany({ where: { locationId: location.id } }),
         ])
+        const managerRules = ruleRows.map((r) => {
+          const p = r.params as { employeeIds: string[]; dayOfWeek: number | null; maxPerWeek: number | null }
+          return { kind: r.kind, employeeIds: p.employeeIds, dayOfWeek: p.dayOfWeek, maxPerWeek: p.maxPerWeek }
+        })
         const { assignments, reasoning } = await generateSchedule(
           location.shiftTemplates,
           schedulable,
           availability,
-          { rules, monthHours, pins: pinsForWeek(allPins, weekStart), blocks, vacations, weekStart }
+          { rules, monthHours, pins: pinsForWeek(allPins, weekStart), blocks, vacations, weekStart, managerRules }
         )
 
         // Early warning: minijobbers approaching the earnings cap after this

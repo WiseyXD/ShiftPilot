@@ -41,6 +41,16 @@ export const ActionTokenAction = {
 export type ActionTokenAction = (typeof ActionTokenAction)[keyof typeof ActionTokenAction]
 
 
+export const ManagerRuleKind = {
+  NEVER_TOGETHER: 'NEVER_TOGETHER',
+  PREFER_DAY: 'PREFER_DAY',
+  AVOID_DAY: 'AVOID_DAY',
+  MAX_SHIFTS_PER_WEEK: 'MAX_SHIFTS_PER_WEEK'
+} as const
+
+export type ManagerRuleKind = (typeof ManagerRuleKind)[keyof typeof ManagerRuleKind]
+
+
 export const WishWeight = {
   LOW: 'LOW',
   MEDIUM: 'MEDIUM',

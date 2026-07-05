@@ -35,6 +35,13 @@ enum ActionTokenAction {
   CONFIRM_AVAILABILITY
 }
 
+enum ManagerRuleKind {
+  NEVER_TOGETHER
+  PREFER_DAY
+  AVOID_DAY
+  MAX_SHIFTS_PER_WEEK
+}
+
 enum WishWeight {
   LOW // typical for Teilzeit/Fest — the venue comes first
   MEDIUM
@@ -136,6 +143,7 @@ model Location {
   blockedTimes    BlockedTime[]
   vacations       Vacation[]
   sickCalls       SickCall[]
+  managerRules    ManagerRule[]
 
   @@index([ownerId])
 }
@@ -361,6 +369,25 @@ model ActionToken {
   @@index([employeeId])
   @@index([userId])
   @@index([expiresAt])
+}
+
+// ─── Manager rules (natural language → structured constraints) ────────────────
+
+// The LLM only TRANSLATES manager text into one of these closed kinds; the
+// deterministic solver enforces them at hierarchy level 5.
+model ManagerRule {
+  id         String          @id @default(cuid())
+  locationId String
+  kind       ManagerRuleKind
+  // employeeIds, dayOfWeek?, maxPerWeek? — shape per kind, validated on save
+  params     Json
+  sourceText String // what the manager originally typed
+  plain      String // confirmed plain-language rendering
+  createdAt  DateTime        @default(now())
+
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@index([locationId])
 }
 
 // ─── Sick calls ───────────────────────────────────────────────────────────────

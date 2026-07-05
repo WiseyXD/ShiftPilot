@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/dashboard/page-header"
 import { confirmSickCall } from "@/app/actions/sick"
 import { getShiftStart, formatShiftDate } from "@/lib/scheduling/shift-date"
 import { getHoursDistribution } from "@/lib/analytics/kpis"
+import { RulesCard } from "@/components/dashboard/rules-card"
 import { Users, ClipboardList, Calendar, ChevronRight, ArrowRight, Siren, TriangleAlert } from "lucide-react"
 
 const currentMonday = () => {
@@ -59,6 +60,12 @@ export default async function LocationPage({
       return { id: call.id, employeeName: employee?.name ?? "Unknown", label }
     })
   )
+
+  const managerRules = await prisma.managerRule.findMany({
+    where: { locationId },
+    orderBy: { createdAt: "desc" },
+    select: { id: true, kind: true, plain: true, sourceText: true },
+  })
 
   // Hours warnings for the current week — early, before anything is blocked.
   const hoursReport = await getHoursDistribution(locationId, currentMonday())
@@ -126,6 +133,8 @@ export default async function LocationPage({
         <StatCard label="Shift templates" value={location.shiftTemplates.length} icon={ClipboardList} href={`/dashboard/${locationId}/templates`} />
         <StatCard label="Schedules" value={location.schedules.length} icon={Calendar} href={`/dashboard/${locationId}/schedules`} />
       </div>
+
+      <RulesCard locationId={locationId} rules={managerRules} />
 
       {/* Recent schedules */}
       <Card>

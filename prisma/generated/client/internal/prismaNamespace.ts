@@ -397,6 +397,7 @@ export const ModelName = {
   SharingListing: 'SharingListing',
   SharingDeal: 'SharingDeal',
   ActionToken: 'ActionToken',
+  ManagerRule: 'ManagerRule',
   SickCall: 'SickCall',
   Vacation: 'Vacation',
   FixedShift: 'FixedShift',
@@ -418,7 +419,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityConfirmation" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "sharingDeal" | "actionToken" | "sickCall" | "vacation" | "fixedShift" | "blockedTime" | "complianceRuleSet" | "auditLog"
+    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityConfirmation" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "sharingDeal" | "actionToken" | "managerRule" | "sickCall" | "vacation" | "fixedShift" | "blockedTime" | "complianceRuleSet" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1384,6 +1385,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ManagerRule: {
+      payload: Prisma.$ManagerRulePayload<ExtArgs>
+      fields: Prisma.ManagerRuleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ManagerRuleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManagerRulePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ManagerRuleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManagerRulePayload>
+        }
+        findFirst: {
+          args: Prisma.ManagerRuleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManagerRulePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ManagerRuleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManagerRulePayload>
+        }
+        findMany: {
+          args: Prisma.ManagerRuleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManagerRulePayload>[]
+        }
+        create: {
+          args: Prisma.ManagerRuleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManagerRulePayload>
+        }
+        createMany: {
+          args: Prisma.ManagerRuleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ManagerRuleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManagerRulePayload>[]
+        }
+        delete: {
+          args: Prisma.ManagerRuleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManagerRulePayload>
+        }
+        update: {
+          args: Prisma.ManagerRuleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManagerRulePayload>
+        }
+        deleteMany: {
+          args: Prisma.ManagerRuleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ManagerRuleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ManagerRuleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManagerRulePayload>[]
+        }
+        upsert: {
+          args: Prisma.ManagerRuleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ManagerRulePayload>
+        }
+        aggregate: {
+          args: Prisma.ManagerRuleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateManagerRule>
+        }
+        groupBy: {
+          args: Prisma.ManagerRuleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ManagerRuleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ManagerRuleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ManagerRuleCountAggregateOutputType> | number
+        }
+      }
+    }
     SickCall: {
       payload: Prisma.$SickCallPayload<ExtArgs>
       fields: Prisma.SickCallFieldRefs
@@ -2052,6 +2127,19 @@ export const ActionTokenScalarFieldEnum = {
 export type ActionTokenScalarFieldEnum = (typeof ActionTokenScalarFieldEnum)[keyof typeof ActionTokenScalarFieldEnum]
 
 
+export const ManagerRuleScalarFieldEnum = {
+  id: 'id',
+  locationId: 'locationId',
+  kind: 'kind',
+  params: 'params',
+  sourceText: 'sourceText',
+  plain: 'plain',
+  createdAt: 'createdAt'
+} as const
+
+export type ManagerRuleScalarFieldEnum = (typeof ManagerRuleScalarFieldEnum)[keyof typeof ManagerRuleScalarFieldEnum]
+
+
 export const SickCallScalarFieldEnum = {
   id: 'id',
   locationId: 'locationId',
@@ -2395,6 +2483,20 @@ export type EnumActionTokenActionFieldRefInput<$PrismaModel> = FieldRefInputType
 export type ListEnumActionTokenActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ActionTokenAction[]'>
     
 
+
+/**
+ * Reference to a field of type 'ManagerRuleKind'
+ */
+export type EnumManagerRuleKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ManagerRuleKind'>
+    
+
+
+/**
+ * Reference to a field of type 'ManagerRuleKind[]'
+ */
+export type ListEnumManagerRuleKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ManagerRuleKind[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -2518,6 +2620,7 @@ export type GlobalOmitConfig = {
   sharingListing?: Prisma.SharingListingOmit
   sharingDeal?: Prisma.SharingDealOmit
   actionToken?: Prisma.ActionTokenOmit
+  managerRule?: Prisma.ManagerRuleOmit
   sickCall?: Prisma.SickCallOmit
   vacation?: Prisma.VacationOmit
   fixedShift?: Prisma.FixedShiftOmit

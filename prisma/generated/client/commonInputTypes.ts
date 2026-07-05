@@ -501,6 +501,23 @@ export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
   _max?: Prisma.NestedJsonFilter<$PrismaModel>
 }
 
+export type EnumManagerRuleKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.ManagerRuleKind | Prisma.EnumManagerRuleKindFieldRefInput<$PrismaModel>
+  in?: $Enums.ManagerRuleKind[] | Prisma.ListEnumManagerRuleKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ManagerRuleKind[] | Prisma.ListEnumManagerRuleKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumManagerRuleKindFilter<$PrismaModel> | $Enums.ManagerRuleKind
+}
+
+export type EnumManagerRuleKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ManagerRuleKind | Prisma.EnumManagerRuleKindFieldRefInput<$PrismaModel>
+  in?: $Enums.ManagerRuleKind[] | Prisma.ListEnumManagerRuleKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ManagerRuleKind[] | Prisma.ListEnumManagerRuleKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumManagerRuleKindWithAggregatesFilter<$PrismaModel> | $Enums.ManagerRuleKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumManagerRuleKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumManagerRuleKindFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -934,6 +951,23 @@ export type NestedJsonFilterBase<$PrismaModel = never> = {
   gt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   gte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+}
+
+export type NestedEnumManagerRuleKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.ManagerRuleKind | Prisma.EnumManagerRuleKindFieldRefInput<$PrismaModel>
+  in?: $Enums.ManagerRuleKind[] | Prisma.ListEnumManagerRuleKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ManagerRuleKind[] | Prisma.ListEnumManagerRuleKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumManagerRuleKindFilter<$PrismaModel> | $Enums.ManagerRuleKind
+}
+
+export type NestedEnumManagerRuleKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ManagerRuleKind | Prisma.EnumManagerRuleKindFieldRefInput<$PrismaModel>
+  in?: $Enums.ManagerRuleKind[] | Prisma.ListEnumManagerRuleKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ManagerRuleKind[] | Prisma.ListEnumManagerRuleKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumManagerRuleKindWithAggregatesFilter<$PrismaModel> | $Enums.ManagerRuleKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumManagerRuleKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumManagerRuleKindFilter<$PrismaModel>
 }
 
 

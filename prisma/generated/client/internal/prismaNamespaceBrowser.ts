@@ -64,6 +64,7 @@ export const ModelName = {
   SharingListing: 'SharingListing',
   SharingDeal: 'SharingDeal',
   ActionToken: 'ActionToken',
+  ManagerRule: 'ManagerRule',
   SickCall: 'SickCall',
   Vacation: 'Vacation',
   FixedShift: 'FixedShift',
@@ -271,6 +272,19 @@ export const ActionTokenScalarFieldEnum = {
 } as const
 
 export type ActionTokenScalarFieldEnum = (typeof ActionTokenScalarFieldEnum)[keyof typeof ActionTokenScalarFieldEnum]
+
+
+export const ManagerRuleScalarFieldEnum = {
+  id: 'id',
+  locationId: 'locationId',
+  kind: 'kind',
+  params: 'params',
+  sourceText: 'sourceText',
+  plain: 'plain',
+  createdAt: 'createdAt'
+} as const
+
+export type ManagerRuleScalarFieldEnum = (typeof ManagerRuleScalarFieldEnum)[keyof typeof ManagerRuleScalarFieldEnum]
 
 
 export const SickCallScalarFieldEnum = {
