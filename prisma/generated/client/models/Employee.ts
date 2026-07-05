@@ -51,6 +51,7 @@ export type EmployeeMinAggregateOutputType = {
   hourlyWageCents: number | null
   isWerkstudent: boolean | null
   lectureFree: boolean | null
+  wishWeight: $Enums.WishWeight | null
   createdAt: Date | null
 }
 
@@ -67,6 +68,7 @@ export type EmployeeMaxAggregateOutputType = {
   hourlyWageCents: number | null
   isWerkstudent: boolean | null
   lectureFree: boolean | null
+  wishWeight: $Enums.WishWeight | null
   createdAt: Date | null
 }
 
@@ -84,6 +86,7 @@ export type EmployeeCountAggregateOutputType = {
   hourlyWageCents: number
   isWerkstudent: number
   lectureFree: number
+  wishWeight: number
   createdAt: number
   _all: number
 }
@@ -114,6 +117,7 @@ export type EmployeeMinAggregateInputType = {
   hourlyWageCents?: true
   isWerkstudent?: true
   lectureFree?: true
+  wishWeight?: true
   createdAt?: true
 }
 
@@ -130,6 +134,7 @@ export type EmployeeMaxAggregateInputType = {
   hourlyWageCents?: true
   isWerkstudent?: true
   lectureFree?: true
+  wishWeight?: true
   createdAt?: true
 }
 
@@ -147,6 +152,7 @@ export type EmployeeCountAggregateInputType = {
   hourlyWageCents?: true
   isWerkstudent?: true
   lectureFree?: true
+  wishWeight?: true
   createdAt?: true
   _all?: true
 }
@@ -251,6 +257,7 @@ export type EmployeeGroupByOutputType = {
   hourlyWageCents: number | null
   isWerkstudent: boolean
   lectureFree: boolean
+  wishWeight: $Enums.WishWeight
   createdAt: Date
   _count: EmployeeCountAggregateOutputType | null
   _avg: EmployeeAvgAggregateOutputType | null
@@ -291,6 +298,7 @@ export type EmployeeWhereInput = {
   hourlyWageCents?: Prisma.IntNullableFilter<"Employee"> | number | null
   isWerkstudent?: Prisma.BoolFilter<"Employee"> | boolean
   lectureFree?: Prisma.BoolFilter<"Employee"> | boolean
+  wishWeight?: Prisma.EnumWishWeightFilter<"Employee"> | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>
   recurringAvailability?: Prisma.RecurringAvailabilityListRelationFilter
@@ -321,6 +329,7 @@ export type EmployeeOrderByWithRelationInput = {
   hourlyWageCents?: Prisma.SortOrderInput | Prisma.SortOrder
   isWerkstudent?: Prisma.SortOrder
   lectureFree?: Prisma.SortOrder
+  wishWeight?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   location?: Prisma.LocationOrderByWithRelationInput
   recurringAvailability?: Prisma.RecurringAvailabilityOrderByRelationAggregateInput
@@ -355,6 +364,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   hourlyWageCents?: Prisma.IntNullableFilter<"Employee"> | number | null
   isWerkstudent?: Prisma.BoolFilter<"Employee"> | boolean
   lectureFree?: Prisma.BoolFilter<"Employee"> | boolean
+  wishWeight?: Prisma.EnumWishWeightFilter<"Employee"> | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>
   recurringAvailability?: Prisma.RecurringAvailabilityListRelationFilter
@@ -385,6 +395,7 @@ export type EmployeeOrderByWithAggregationInput = {
   hourlyWageCents?: Prisma.SortOrderInput | Prisma.SortOrder
   isWerkstudent?: Prisma.SortOrder
   lectureFree?: Prisma.SortOrder
+  wishWeight?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.EmployeeCountOrderByAggregateInput
   _avg?: Prisma.EmployeeAvgOrderByAggregateInput
@@ -410,6 +421,7 @@ export type EmployeeScalarWhereWithAggregatesInput = {
   hourlyWageCents?: Prisma.IntNullableWithAggregatesFilter<"Employee"> | number | null
   isWerkstudent?: Prisma.BoolWithAggregatesFilter<"Employee"> | boolean
   lectureFree?: Prisma.BoolWithAggregatesFilter<"Employee"> | boolean
+  wishWeight?: Prisma.EnumWishWeightWithAggregatesFilter<"Employee"> | $Enums.WishWeight
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
 }
 
@@ -426,6 +438,7 @@ export type EmployeeCreateInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -456,6 +469,7 @@ export type EmployeeUncheckedCreateInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -484,6 +498,7 @@ export type EmployeeUpdateInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -514,6 +529,7 @@ export type EmployeeUncheckedUpdateInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -543,6 +559,7 @@ export type EmployeeCreateManyInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
 }
 
@@ -559,6 +576,7 @@ export type EmployeeUpdateManyMutationInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -576,6 +594,7 @@ export type EmployeeUncheckedUpdateManyInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -616,6 +635,7 @@ export type EmployeeCountOrderByAggregateInput = {
   hourlyWageCents?: Prisma.SortOrder
   isWerkstudent?: Prisma.SortOrder
   lectureFree?: Prisma.SortOrder
+  wishWeight?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -638,6 +658,7 @@ export type EmployeeMaxOrderByAggregateInput = {
   hourlyWageCents?: Prisma.SortOrder
   isWerkstudent?: Prisma.SortOrder
   lectureFree?: Prisma.SortOrder
+  wishWeight?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -654,6 +675,7 @@ export type EmployeeMinOrderByAggregateInput = {
   hourlyWageCents?: Prisma.SortOrder
   isWerkstudent?: Prisma.SortOrder
   lectureFree?: Prisma.SortOrder
+  wishWeight?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -738,6 +760,10 @@ export type NullableIntFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type EnumWishWeightFieldUpdateOperationsInput = {
+  set?: $Enums.WishWeight
 }
 
 export type EmployeeCreateNestedOneWithoutRecurringAvailabilityInput = {
@@ -929,6 +955,7 @@ export type EmployeeCreateWithoutLocationInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutEmployeeInput
@@ -957,6 +984,7 @@ export type EmployeeUncheckedCreateWithoutLocationInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1015,6 +1043,7 @@ export type EmployeeScalarWhereInput = {
   hourlyWageCents?: Prisma.IntNullableFilter<"Employee"> | number | null
   isWerkstudent?: Prisma.BoolFilter<"Employee"> | boolean
   lectureFree?: Prisma.BoolFilter<"Employee"> | boolean
+  wishWeight?: Prisma.EnumWishWeightFilter<"Employee"> | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
 }
 
@@ -1031,6 +1060,7 @@ export type EmployeeCreateWithoutRecurringAvailabilityInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutEmployeeInput
@@ -1060,6 +1090,7 @@ export type EmployeeUncheckedCreateWithoutRecurringAvailabilityInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
   actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1103,6 +1134,7 @@ export type EmployeeUpdateWithoutRecurringAvailabilityInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutEmployeeNestedInput
@@ -1132,6 +1164,7 @@ export type EmployeeUncheckedUpdateWithoutRecurringAvailabilityInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
   actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1159,6 +1192,7 @@ export type EmployeeCreateWithoutAvailabilityConfirmationsInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1188,6 +1222,7 @@ export type EmployeeUncheckedCreateWithoutAvailabilityConfirmationsInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1231,6 +1266,7 @@ export type EmployeeUpdateWithoutAvailabilityConfirmationsInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1260,6 +1296,7 @@ export type EmployeeUncheckedUpdateWithoutAvailabilityConfirmationsInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1287,6 +1324,7 @@ export type EmployeeCreateWithoutAvailabilityOverridesInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1316,6 +1354,7 @@ export type EmployeeUncheckedCreateWithoutAvailabilityOverridesInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1359,6 +1398,7 @@ export type EmployeeUpdateWithoutAvailabilityOverridesInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1388,6 +1428,7 @@ export type EmployeeUncheckedUpdateWithoutAvailabilityOverridesInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1415,6 +1456,7 @@ export type EmployeeCreateWithoutShiftsInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1444,6 +1486,7 @@ export type EmployeeUncheckedCreateWithoutShiftsInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1487,6 +1530,7 @@ export type EmployeeUpdateWithoutShiftsInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1516,6 +1560,7 @@ export type EmployeeUncheckedUpdateWithoutShiftsInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1543,6 +1588,7 @@ export type EmployeeCreateWithoutSwapRequestsInitiatedInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1572,6 +1618,7 @@ export type EmployeeUncheckedCreateWithoutSwapRequestsInitiatedInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1604,6 +1651,7 @@ export type EmployeeCreateWithoutSwapRequestsProposedInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1633,6 +1681,7 @@ export type EmployeeUncheckedCreateWithoutSwapRequestsProposedInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1676,6 +1725,7 @@ export type EmployeeUpdateWithoutSwapRequestsInitiatedInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1705,6 +1755,7 @@ export type EmployeeUncheckedUpdateWithoutSwapRequestsInitiatedInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1743,6 +1794,7 @@ export type EmployeeUpdateWithoutSwapRequestsProposedInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1772,6 +1824,7 @@ export type EmployeeUncheckedUpdateWithoutSwapRequestsProposedInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1799,6 +1852,7 @@ export type EmployeeCreateWithoutSharingListingsInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1828,6 +1882,7 @@ export type EmployeeUncheckedCreateWithoutSharingListingsInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1871,6 +1926,7 @@ export type EmployeeUpdateWithoutSharingListingsInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -1900,6 +1956,7 @@ export type EmployeeUncheckedUpdateWithoutSharingListingsInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1927,6 +1984,7 @@ export type EmployeeCreateWithoutSharingDealsInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -1956,6 +2014,7 @@ export type EmployeeUncheckedCreateWithoutSharingDealsInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1999,6 +2058,7 @@ export type EmployeeUpdateWithoutSharingDealsInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -2028,6 +2088,7 @@ export type EmployeeUncheckedUpdateWithoutSharingDealsInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2055,6 +2116,7 @@ export type EmployeeCreateWithoutActionTokensInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -2084,6 +2146,7 @@ export type EmployeeUncheckedCreateWithoutActionTokensInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2127,6 +2190,7 @@ export type EmployeeUpdateWithoutActionTokensInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -2156,6 +2220,7 @@ export type EmployeeUncheckedUpdateWithoutActionTokensInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2183,6 +2248,7 @@ export type EmployeeCreateWithoutVacationsInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -2212,6 +2278,7 @@ export type EmployeeUncheckedCreateWithoutVacationsInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2255,6 +2322,7 @@ export type EmployeeUpdateWithoutVacationsInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -2284,6 +2352,7 @@ export type EmployeeUncheckedUpdateWithoutVacationsInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2311,6 +2380,7 @@ export type EmployeeCreateWithoutFixedShiftsInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -2340,6 +2410,7 @@ export type EmployeeUncheckedCreateWithoutFixedShiftsInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2383,6 +2454,7 @@ export type EmployeeUpdateWithoutFixedShiftsInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -2412,6 +2484,7 @@ export type EmployeeUncheckedUpdateWithoutFixedShiftsInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2439,6 +2512,7 @@ export type EmployeeCreateWithoutBlockedTimesInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
   recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
@@ -2468,6 +2542,7 @@ export type EmployeeUncheckedCreateWithoutBlockedTimesInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2511,6 +2586,7 @@ export type EmployeeUpdateWithoutBlockedTimesInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
@@ -2540,6 +2616,7 @@ export type EmployeeUncheckedUpdateWithoutBlockedTimesInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2567,6 +2644,7 @@ export type EmployeeCreateManyLocationInput = {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
   createdAt?: Date | string
 }
 
@@ -2583,6 +2661,7 @@ export type EmployeeUpdateWithoutLocationInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutEmployeeNestedInput
@@ -2611,6 +2690,7 @@ export type EmployeeUncheckedUpdateWithoutLocationInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2639,6 +2719,7 @@ export type EmployeeUncheckedUpdateManyWithoutLocationInput = {
   hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -2786,6 +2867,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   hourlyWageCents?: boolean
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: boolean
   createdAt?: boolean
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
   recurringAvailability?: boolean | Prisma.Employee$recurringAvailabilityArgs<ExtArgs>
@@ -2817,6 +2899,7 @@ export type EmployeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   hourlyWageCents?: boolean
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: boolean
   createdAt?: boolean
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employee"]>
@@ -2835,6 +2918,7 @@ export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   hourlyWageCents?: boolean
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: boolean
   createdAt?: boolean
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employee"]>
@@ -2853,10 +2937,11 @@ export type EmployeeSelectScalar = {
   hourlyWageCents?: boolean
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: boolean
   createdAt?: boolean
 }
 
-export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "locationId" | "name" | "email" | "roles" | "minHours" | "maxHours" | "category" | "birthDate" | "phone" | "hourlyWageCents" | "isWerkstudent" | "lectureFree" | "createdAt", ExtArgs["result"]["employee"]>
+export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "locationId" | "name" | "email" | "roles" | "minHours" | "maxHours" | "category" | "birthDate" | "phone" | "hourlyWageCents" | "isWerkstudent" | "lectureFree" | "wishWeight" | "createdAt", ExtArgs["result"]["employee"]>
 export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
   recurringAvailability?: boolean | Prisma.Employee$recurringAvailabilityArgs<ExtArgs>
@@ -2911,6 +2996,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     hourlyWageCents: number | null
     isWerkstudent: boolean
     lectureFree: boolean
+    wishWeight: $Enums.WishWeight
     createdAt: Date
   }, ExtArgs["result"]["employee"]>
   composites: {}
@@ -3361,6 +3447,7 @@ export interface EmployeeFieldRefs {
   readonly hourlyWageCents: Prisma.FieldRef<"Employee", 'Int'>
   readonly isWerkstudent: Prisma.FieldRef<"Employee", 'Boolean'>
   readonly lectureFree: Prisma.FieldRef<"Employee", 'Boolean'>
+  readonly wishWeight: Prisma.FieldRef<"Employee", 'WishWeight'>
   readonly createdAt: Prisma.FieldRef<"Employee", 'DateTime'>
 }
     

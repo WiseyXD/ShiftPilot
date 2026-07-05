@@ -41,6 +41,15 @@ export const ActionTokenAction = {
 export type ActionTokenAction = (typeof ActionTokenAction)[keyof typeof ActionTokenAction]
 
 
+export const WishWeight = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH'
+} as const
+
+export type WishWeight = (typeof WishWeight)[keyof typeof WishWeight]
+
+
 export const EmployeeCategory = {
   MINIJOB_ZEITARBEIT: 'MINIJOB_ZEITARBEIT',
   TEILZEIT_FEST: 'TEILZEIT_FEST'

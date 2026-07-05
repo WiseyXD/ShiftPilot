@@ -1915,6 +1915,7 @@ export const EmployeeScalarFieldEnum = {
   hourlyWageCents: 'hourlyWageCents',
   isWerkstudent: 'isWerkstudent',
   lectureFree: 'lectureFree',
+  wishWeight: 'wishWeight',
   createdAt: 'createdAt'
 } as const
 
@@ -2266,6 +2267,20 @@ export type EnumEmployeeCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'EmployeeCategory[]'
  */
 export type ListEnumEmployeeCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeCategory[]'>
+    
+
+
+/**
+ * Reference to a field of type 'WishWeight'
+ */
+export type EnumWishWeightFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WishWeight'>
+    
+
+
+/**
+ * Reference to a field of type 'WishWeight[]'
+ */
+export type ListEnumWishWeightFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WishWeight[]'>
     
 
 

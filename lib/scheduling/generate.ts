@@ -29,7 +29,10 @@ interface Employee {
   hourlyWageCents?: number | null
   isWerkstudent?: boolean
   lectureFree?: boolean
+  wishWeight?: "LOW" | "MEDIUM" | "HIGH"
 }
+
+const WISH_SCORE = { LOW: 0, MEDIUM: 1, HIGH: 2 } as const
 
 // Net hours already worked earlier this month, per employee — for the Minijob cap.
 export type MonthHours = Record<string, number>
@@ -192,37 +195,66 @@ export function fallbackAssign(
       }
 
       const slot = slotShift(day, tmpl)
-      const eligible = employees.filter((emp) => {
-        // Sperrzeiten are hard exclusions.
-        if (isBlocked(blocks, emp.id, tmpl.id, day)) return false
-        // Vacations too — real dates only (needs weekStart).
-        if (onVacationForSlot(options, emp.id, day, tmpl)) return false
-        // Category A only within availability; category B freely assignable
-        if (!isAssignable(emp.category, availSet.has(`${emp.id}:${tmpl.id}:${day}`))) return false
+      // First blocking level per employee — doubles as the unfilled-slot
+      // explanation (hierarchy levels, doc §3).
+      const blockingReason = (emp: Employee): string | null => {
+        if (isBlocked(blocks, emp.id, tmpl.id, day)) return "Sperrzeit"
+        if (onVacationForSlot(options, emp.id, day, tmpl)) return "vacation"
+        if (!isAssignable(emp.category, availSet.has(`${emp.id}:${tmpl.id}:${day}`)))
+          return "availability (category A)"
         const current = assignedHours[emp.id] ?? 0
-        if (current + hours > emp.maxHours) return false
-        if (tmpl.requiredRoles.length > 0 && !tmpl.requiredRoles.some((r) => emp.roles.includes(r))) return false
+        if (current + hours > emp.maxHours) return "max contract hours"
+        if (tmpl.requiredRoles.length > 0 && !tmpl.requiredRoles.some((r) => emp.roles.includes(r)))
+          return "missing role"
         // Legal limits are priority 1 — never violable.
-        if (
-          checkEmployeeAssignment(emp, slot, assignedShifts[emp.id] ?? [], rules, {
-            monthNetHoursBeforeWeek: monthHours[emp.id] ?? 0,
-          }) !== null
-        )
-          return false
-        return true
+        const violation = checkEmployeeAssignment(emp, slot, assignedShifts[emp.id] ?? [], rules, {
+          monthNetHoursBeforeWeek: monthHours[emp.id] ?? 0,
+        })
+        if (violation) return violation.rule
+        return null
+      }
+
+      const reasons = new Map<string, string>()
+      const eligible = employees.filter((emp) => {
+        const reason = blockingReason(emp)
+        if (reason) reasons.set(emp.id, reason)
+        return reason === null
       })
 
       if (eligible.length === 0) {
+        if (employees.length > 0) {
+          const counts = new Map<string, number>()
+          for (const r of reasons.values()) counts.set(r, (counts.get(r) ?? 0) + 1)
+          const summary = [...counts.entries()].map(([r, n]) => `${r}×${n}`).join(", ")
+          conflicts.push(`${tmpl.name} day ${day} unfilled — blocked by: ${summary}`)
+        }
         results.push({ shiftTemplateId: tmpl.id, dayOfWeek: day, employeeId: null, filled: false })
         continue
       }
 
-      // Pick the employee with fewest assigned hours
-      eligible.sort((a, b) => (assignedHours[a.id] ?? 0) - (assignedHours[b.id] ?? 0))
+      // Selection order (levels 4 → 6 → fairness): furthest below contract
+      // minimum first, then strongest wish for this slot, then fewest hours.
+      eligible.sort((a, b) => {
+        const deficitA = Math.max(0, a.minHours - (assignedHours[a.id] ?? 0))
+        const deficitB = Math.max(0, b.minHours - (assignedHours[b.id] ?? 0))
+        if (deficitB !== deficitA) return deficitB - deficitA
+        const wishA = availSet.has(`${a.id}:${tmpl.id}:${day}`) ? WISH_SCORE[a.wishWeight ?? "MEDIUM"] : -1
+        const wishB = availSet.has(`${b.id}:${tmpl.id}:${day}`) ? WISH_SCORE[b.wishWeight ?? "MEDIUM"] : -1
+        if (wishB !== wishA) return wishB - wishA
+        return (assignedHours[a.id] ?? 0) - (assignedHours[b.id] ?? 0)
+      })
       const chosen = eligible[0]
       assignedHours[chosen.id] = (assignedHours[chosen.id] ?? 0) + hours
       ;(assignedShifts[chosen.id] ??= []).push(slot)
       results.push({ shiftTemplateId: tmpl.id, dayOfWeek: day, employeeId: chosen.id, filled: true })
+    }
+  }
+
+  // Contract-hour deviation report (feeds the hours dashboard slice).
+  for (const emp of employees) {
+    const got = assignedHours[emp.id] ?? 0
+    if (emp.minHours > 0 && got < emp.minHours) {
+      conflicts.push(`${emp.name} below contract minimum: ${got}h of ${emp.minHours}h`)
     }
   }
 
@@ -250,6 +282,7 @@ export async function generateSchedule(
       minHours: emp.minHours,
       maxHours: emp.maxHours,
       category: emp.category,
+      wishWeight: emp.wishWeight ?? "MEDIUM",
       freelyAssignable: !needsAvailability(emp.category),
       availableSlots: availability
         .filter((a) => a.employeeId === emp.id && a.available)
@@ -261,7 +294,7 @@ You are a shift scheduler. Generate a weekly schedule that:
 1. Assigns MINIJOB_ZEITARBEIT employees ONLY to slots listed in their availableSlots (hard rule). TEILZEIT_FEST employees (freelyAssignable: true) may be assigned to any slot regardless of availableSlots.
 2. Respects each employee's min/max weekly hours
 3. Only assigns employees who have the required role for the shift
-4. Distributes shifts fairly (balance hours across employees)
+4. Aims each employee at their minHours contract target; break ties by preferring slots the employee listed in availableSlots, weighted by wishWeight (HIGH > MEDIUM > LOW), then balance hours fairly
 5. Fills every shift template for every day of the week (days 0-6, 0=Sunday)
 6. German working-time law applies: at most ${rules.arbzg.maxDailyHours}h net per day and ${rules.arbzg.maxWeeklyHours}h net per week per employee (minors 15-17: ${rules.jarbschg.maxDailyHours}h/${rules.jarbschg.maxWeeklyHours}h, no Sundays, done by ${rules.jarbschg.nightEndGastro16Plus}), and at least ${rules.arbzg.minRestHours}h rest between shifts on consecutive days. Violations will be voided by the system.
 7. PINNED slots (templateId:dayN → employeeId) MUST be assigned exactly as given: ${JSON.stringify(pins.map((p) => `${p.shiftTemplateId}:day${p.dayOfWeek}→${p.employeeId}`))}

@@ -35,6 +35,12 @@ enum ActionTokenAction {
   CONFIRM_AVAILABILITY
 }
 
+enum WishWeight {
+  LOW // typical for Teilzeit/Fest — the venue comes first
+  MEDIUM
+  HIGH
+}
+
 enum EmployeeCategory {
   MINIJOB_ZEITARBEIT // availability-bound; can accept/decline
   TEILZEIT_FEST // freely assignable; cannot decline, only request a change
@@ -150,6 +156,7 @@ model Employee {
   hourlyWageCents Int? // needed for the Minijob earnings cap
   isWerkstudent   Boolean          @default(false)
   lectureFree     Boolean          @default(false) // Werkstudent: lecture-free period lifts the 20h cap
+  wishWeight      WishWeight       @default(MEDIUM) // how strongly wishes count (hierarchy level 6)
   createdAt       DateTime         @default(now())
 
   location              Location               @relation(fields: [locationId], references: [id], onDelete: Cascade)

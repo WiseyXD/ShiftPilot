@@ -223,6 +223,13 @@ export type IntNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
 }
 
+export type EnumWishWeightFilter<$PrismaModel = never> = {
+  equals?: $Enums.WishWeight | Prisma.EnumWishWeightFieldRefInput<$PrismaModel>
+  in?: $Enums.WishWeight[] | Prisma.ListEnumWishWeightFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WishWeight[] | Prisma.ListEnumWishWeightFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWishWeightFilter<$PrismaModel> | $Enums.WishWeight
+}
+
 export type EnumEmployeeCategoryWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.EmployeeCategory | Prisma.EnumEmployeeCategoryFieldRefInput<$PrismaModel>
   in?: $Enums.EmployeeCategory[] | Prisma.ListEnumEmployeeCategoryFieldRefInput<$PrismaModel>
@@ -261,6 +268,16 @@ export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _max?: Prisma.NestedIntNullableFilter<$PrismaModel>
+}
+
+export type EnumWishWeightWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WishWeight | Prisma.EnumWishWeightFieldRefInput<$PrismaModel>
+  in?: $Enums.WishWeight[] | Prisma.ListEnumWishWeightFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WishWeight[] | Prisma.ListEnumWishWeightFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWishWeightWithAggregatesFilter<$PrismaModel> | $Enums.WishWeight
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWishWeightFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWishWeightFilter<$PrismaModel>
 }
 
 export type EnumScheduleStatusFilter<$PrismaModel = never> = {
@@ -695,6 +712,13 @@ export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
 }
 
+export type NestedEnumWishWeightFilter<$PrismaModel = never> = {
+  equals?: $Enums.WishWeight | Prisma.EnumWishWeightFieldRefInput<$PrismaModel>
+  in?: $Enums.WishWeight[] | Prisma.ListEnumWishWeightFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WishWeight[] | Prisma.ListEnumWishWeightFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWishWeightFilter<$PrismaModel> | $Enums.WishWeight
+}
+
 export type NestedEnumEmployeeCategoryWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.EmployeeCategory | Prisma.EnumEmployeeCategoryFieldRefInput<$PrismaModel>
   in?: $Enums.EmployeeCategory[] | Prisma.ListEnumEmployeeCategoryFieldRefInput<$PrismaModel>
@@ -733,6 +757,16 @@ export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _max?: Prisma.NestedIntNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumWishWeightWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WishWeight | Prisma.EnumWishWeightFieldRefInput<$PrismaModel>
+  in?: $Enums.WishWeight[] | Prisma.ListEnumWishWeightFieldRefInput<$PrismaModel>
+  notIn?: $Enums.WishWeight[] | Prisma.ListEnumWishWeightFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumWishWeightWithAggregatesFilter<$PrismaModel> | $Enums.WishWeight
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWishWeightFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWishWeightFilter<$PrismaModel>
 }
 
 export type NestedEnumScheduleStatusFilter<$PrismaModel = never> = {

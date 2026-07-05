@@ -106,6 +106,19 @@ function AddEmployeeForm({ locationId }: { locationId: string }) {
             <Input name="hourlyWage" type="number" step="0.01" min={0} placeholder="13.90" />
           </div>
         </div>
+        <div className="space-y-1">
+          <label className="text-sm font-medium text-slate-700">Wish weighting</label>
+          <select
+            name="wishWeight"
+            defaultValue=""
+            className="w-full border border-slate-200 rounded-md px-3 py-2 text-sm"
+          >
+            <option value="">Category default (Minijob: medium · Fest: low)</option>
+            <option value="LOW">Low — the venue comes first</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HIGH">High — honour wishes where possible</option>
+          </select>
+        </div>
         <div className="flex flex-wrap gap-4">
           <label className="flex items-center gap-2 cursor-pointer">
             <input

@@ -15,6 +15,7 @@ type ContractFields = {
   hourlyWageCents: number | null
   isWerkstudent: boolean
   lectureFree: boolean
+  wishWeight: "LOW" | "MEDIUM" | "HIGH"
 }
 
 function parseContractFields(formData: FormData): { error: string } | ContractFields {
@@ -30,7 +31,14 @@ function parseContractFields(formData: FormData): { error: string } | ContractFi
   const hourlyWageCents = wage === null ? null : Math.round(wage * 100)
   const isWerkstudent = formData.get("isWerkstudent") === "on"
   const lectureFree = isWerkstudent && formData.get("lectureFree") === "on"
-  return { category, birthDate, phone, hourlyWageCents, isWerkstudent, lectureFree }
+  const rawWish = formData.get("wishWeight") as string
+  // Category defaults per concept doc §3: Fest employees' wishes rank lower.
+  const wishWeight = (["LOW", "MEDIUM", "HIGH"].includes(rawWish)
+    ? rawWish
+    : category === "TEILZEIT_FEST"
+      ? "LOW"
+      : "MEDIUM") as "LOW" | "MEDIUM" | "HIGH"
+  return { category, birthDate, phone, hourlyWageCents, isWerkstudent, lectureFree, wishWeight }
 }
 
 async function assertOwnsLocation(locationId: string, ownerId: string) {
