@@ -1,4 +1,8 @@
 import { prisma } from "@/prisma/client"
+import { loadRules } from "@/lib/compliance/load"
+import { loadMonthNetHoursBeforeWeek } from "@/lib/compliance/hours"
+import { bindingWeeklyMax, type BindingMax } from "@/lib/compliance/report"
+import { countWeeksOverLimit } from "@/lib/compliance/caps"
 
 export interface WeeklyAcceptance {
   weekStart: string
@@ -20,6 +24,12 @@ export interface EmployeeHours {
   maxHours: number
   assignedHours: number
   status: "over" | "under" | "ok"
+  /** Smallest applicable weekly limit (law/status/contract), labeled. */
+  bindingMax: BindingMax
+  /** Approaching the binding max (≥80%). */
+  approaching: boolean
+  /** Werkstudent only: weeks over 20h this year vs the 26-week budget. */
+  weeksOverBudget?: { used: number; budget: number }
 }
 
 export interface EmployeeNoShows {
@@ -104,7 +114,7 @@ export async function getHoursDistribution(
 ): Promise<EmployeeHours[]> {
   const weekEnd = new Date(targetWeekStart.getTime() + 7 * 24 * 60 * 60 * 1000)
 
-  const [employees, shifts] = await Promise.all([
+  const [employees, shifts, rules] = await Promise.all([
     prisma.employee.findMany({ where: { locationId } }),
     prisma.shift.findMany({
       where: {
@@ -114,7 +124,47 @@ export async function getHoursDistribution(
       },
       include: { shiftTemplate: { select: { startTime: true, endTime: true } } },
     }),
+    loadRules(targetWeekStart),
   ])
+  const monthHours = await loadMonthNetHoursBeforeWeek(
+    employees.map((e) => e.id),
+    targetWeekStart,
+    rules.arbzg
+  )
+
+  // Werkstudent 26-week budget: weekly net hours this calendar year.
+  const werkstudents = employees.filter((e) => e.isWerkstudent)
+  const budgetByEmployee: Record<string, number> = {}
+  if (werkstudents.length > 0) {
+    const yearStart = new Date(targetWeekStart.getFullYear(), 0, 1)
+    const yearShifts = await prisma.shift.findMany({
+      where: {
+        employeeId: { in: werkstudents.map((e) => e.id) },
+        status: { notIn: ["DECLINED", "UNASSIGNED"] },
+        schedule: { weekStart: { gte: yearStart } },
+      },
+      select: {
+        employeeId: true,
+        schedule: { select: { weekStart: true } },
+        shiftTemplate: { select: { startTime: true, endTime: true } },
+      },
+    })
+    const weekly: Record<string, Record<string, number>> = {}
+    for (const s of yearShifts) {
+      if (!s.employeeId) continue
+      const [sh, sm] = s.shiftTemplate.startTime.split(":").map(Number)
+      const [eh, em] = s.shiftTemplate.endTime.split(":").map(Number)
+      const h = (eh * 60 + em - (sh * 60 + sm)) / 60
+      const wk = new Date(s.schedule.weekStart).toISOString().slice(0, 10)
+      ;(weekly[s.employeeId] ??= {})[wk] = (weekly[s.employeeId]?.[wk] ?? 0) + h
+    }
+    for (const emp of werkstudents) {
+      budgetByEmployee[emp.id] = countWeeksOverLimit(
+        Object.values(weekly[emp.id] ?? {}),
+        rules.werkstudent.maxWeeklyHoursLecture
+      )
+    }
+  }
 
   const hoursMap: Record<string, number> = {}
   for (const s of shifts) {
@@ -127,8 +177,9 @@ export async function getHoursDistribution(
 
   return employees.map((emp) => {
     const assigned = hoursMap[emp.id] ?? 0
+    const bindingMax = bindingWeeklyMax(emp, monthHours[emp.id] ?? 0, rules, targetWeekStart)
     const status =
-      assigned > emp.maxHours ? "over" : assigned < emp.minHours ? "under" : "ok"
+      assigned > bindingMax.hours ? "over" : assigned < emp.minHours ? "under" : "ok"
     return {
       employeeId: emp.id,
       name: emp.name,
@@ -136,6 +187,16 @@ export async function getHoursDistribution(
       maxHours: emp.maxHours,
       assignedHours: assigned,
       status,
+      bindingMax,
+      approaching: bindingMax.hours > 0 && assigned >= 0.8 * bindingMax.hours,
+      ...(emp.isWerkstudent
+        ? {
+            weeksOverBudget: {
+              used: budgetByEmployee[emp.id] ?? 0,
+              budget: rules.werkstudent.maxWeeksOverPerYear,
+            },
+          }
+        : {}),
     }
   })
 }

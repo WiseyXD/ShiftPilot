@@ -8,7 +8,15 @@ import { Button } from "@/components/ui/button"
 import { PageHeader } from "@/components/dashboard/page-header"
 import { confirmSickCall } from "@/app/actions/sick"
 import { getShiftStart, formatShiftDate } from "@/lib/scheduling/shift-date"
-import { Users, ClipboardList, Calendar, ChevronRight, ArrowRight, Siren } from "lucide-react"
+import { getHoursDistribution } from "@/lib/analytics/kpis"
+import { Users, ClipboardList, Calendar, ChevronRight, ArrowRight, Siren, TriangleAlert } from "lucide-react"
+
+const currentMonday = () => {
+  const d = new Date()
+  d.setDate(d.getDate() - ((d.getDay() + 6) % 7))
+  d.setHours(0, 0, 0, 0)
+  return d
+}
 
 export default async function LocationPage({
   params,
@@ -52,9 +60,38 @@ export default async function LocationPage({
     })
   )
 
+  // Hours warnings for the current week — early, before anything is blocked.
+  const hoursReport = await getHoursDistribution(locationId, currentMonday())
+  const hoursAlerts = hoursReport.filter(
+    (r) => r.status !== "ok" || r.approaching || (r.assignedHours > 0 && r.bindingMax.hours === 0)
+  )
+
   return (
     <div className="space-y-6">
       <PageHeader title={location.name} description={location.timezone} />
+
+      {hoursAlerts.length > 0 && (
+        <Card className="border-amber-200 bg-amber-50">
+          <CardContent className="py-4 space-y-2">
+            <div className="flex items-center gap-2 text-amber-800 font-semibold">
+              <TriangleAlert className="h-4 w-4" />
+              Hours warnings this week
+            </div>
+            <ul className="text-sm text-amber-900 list-disc list-inside">
+              {hoursAlerts.map((r) => (
+                <li key={r.employeeId}>
+                  <strong>{r.name}</strong>: {r.assignedHours.toFixed(1)}h scheduled —{" "}
+                  {r.status === "over"
+                    ? `over the ${r.bindingMax.source} limit of ${r.bindingMax.hours.toFixed(1)}h`
+                    : r.status === "under"
+                      ? `under the ${r.minHours}h contract minimum`
+                      : `approaching the ${r.bindingMax.source} limit of ${r.bindingMax.hours.toFixed(1)}h`}
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
 
       {sickDetails.length > 0 && (
         <Card className="border-red-300 bg-red-50">

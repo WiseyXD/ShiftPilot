@@ -12,6 +12,7 @@ export function HoursTable({ data }: { data: EmployeeHours[] }) {
             <th className="text-right px-4 py-3 font-medium text-slate-600">Min</th>
             <th className="text-right px-4 py-3 font-medium text-slate-600">Assigned</th>
             <th className="text-right px-4 py-3 font-medium text-slate-600">Max</th>
+            <th className="text-right px-4 py-3 font-medium text-slate-600">Legal max</th>
             <th className="px-4 py-3" />
           </tr>
         </thead>
@@ -33,6 +34,10 @@ export function HoursTable({ data }: { data: EmployeeHours[] }) {
                 {emp.assignedHours.toFixed(1)}h
               </td>
               <td className="px-4 py-3 text-right text-slate-500">{emp.maxHours}h</td>
+              <td className="px-4 py-3 text-right text-slate-500">
+                {emp.bindingMax.hours.toFixed(1)}h
+                <span className="block text-[10px] text-slate-400">{emp.bindingMax.source}</span>
+              </td>
               <td className="px-4 py-3 text-right">
                 {emp.status === "over" && (
                   <span className="text-xs font-medium text-red-600 bg-red-100 px-2 py-0.5 rounded-full">
@@ -42,6 +47,16 @@ export function HoursTable({ data }: { data: EmployeeHours[] }) {
                 {emp.status === "under" && (
                   <span className="text-xs font-medium text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
                     Under min
+                  </span>
+                )}
+                {emp.status === "ok" && emp.approaching && (
+                  <span className="text-xs font-medium text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
+                    Near {emp.bindingMax.source} limit
+                  </span>
+                )}
+                {emp.weeksOverBudget && (
+                  <span className="ml-1 text-xs font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">
+                    {emp.weeksOverBudget.used}/{emp.weeksOverBudget.budget} wks &gt;20h
                   </span>
                 )}
               </td>
