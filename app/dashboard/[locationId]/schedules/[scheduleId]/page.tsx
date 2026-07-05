@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { PageHeader } from "@/components/dashboard/page-header"
-import { Sparkles, CheckCircle2 } from "lucide-react"
+import { EditableCell } from "@/components/dashboard/editable-cell"
+import Link from "next/link"
+import { Sparkles, CheckCircle2, Pencil, Eye } from "lucide-react"
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
@@ -27,12 +29,13 @@ export default async function SchedulePage({
   searchParams,
 }: {
   params: Promise<{ locationId: string; scheduleId: string }>
-  searchParams: Promise<{ token?: string; demo?: string }>
+  searchParams: Promise<{ token?: string; demo?: string; edit?: string }>
 }) {
   const { locationId, scheduleId } = await params
   const sp = await searchParams
   const approveToken = sp.token
   const isDemo = sp.demo === "1"
+  const editMode = sp.edit === "1"
 
   const session = await auth()
   if (!session) redirect("/login")
@@ -65,6 +68,14 @@ export default async function SchedulePage({
     select: { employeeId: true, shiftTemplateId: true, dayOfWeek: true },
   })
   const pinnedKeys = new Set(pins.map((p) => `${p.shiftTemplateId}:${p.dayOfWeek}:${p.employeeId}`))
+
+  const editableEmployees = editMode
+    ? await prisma.employee.findMany({
+        where: { locationId },
+        select: { id: true, name: true },
+        orderBy: { name: "asc" },
+      })
+    : []
 
   const templates = [...new Map(schedule.shifts.map((s) => [s.shiftTemplateId, s.shiftTemplate])).values()]
   const weekStart = schedule.weekStart
@@ -100,6 +111,14 @@ export default async function SchedulePage({
         description={schedule.location.name}
         action={
           <div className="flex items-center gap-3">
+            <Link
+              href={`/dashboard/${locationId}/schedules/${scheduleId}${editMode ? "" : "?edit=1"}`}
+            >
+              <Button size="sm" variant="outline">
+                {editMode ? <Eye className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
+                {editMode ? "Done editing" : "Edit"}
+              </Button>
+            </Link>
             <Badge
               variant="outline"
               className={
@@ -185,7 +204,13 @@ export default async function SchedulePage({
                     )
                     return (
                       <td key={dow} className="px-2 py-2 text-center align-middle">
-                        {shift ? (
+                        {shift && editMode && shift.status !== "LENT_OUT" && !shift.sharingDealId ? (
+                          <EditableCell
+                            shiftId={shift.id}
+                            currentEmployeeId={shift.employeeId}
+                            employees={editableEmployees}
+                          />
+                        ) : shift ? (
                           <div className="space-y-1 inline-flex flex-col items-center px-2 py-1 rounded-md hover:bg-slate-50 transition-colors">
                             {shift.sharingDeal && !shift.employee ? (
                               // Borrowed cover: worker name is safe to show here —
