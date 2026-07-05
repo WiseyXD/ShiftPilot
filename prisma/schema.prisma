@@ -32,6 +32,7 @@ enum ActionTokenAction {
   REQUEST_CHANGE
   CONFIRM_SICK
   CHECK_IN
+  CONFIRM_AVAILABILITY
 }
 
 enum EmployeeCategory {
@@ -163,6 +164,7 @@ model Employee {
   fixedShifts           FixedShift[]
   blockedTimes          BlockedTime[]
   vacations             Vacation[]
+  availabilityConfirmations AvailabilityConfirmation[]
 
   @@unique([locationId, email])
   @@index([locationId])
@@ -205,6 +207,21 @@ model RecurringAvailability {
   @@index([employeeId])
 }
 
+// One-tap "nothing changed" for a specific week — the concept doc's deadline
+// rule: category-A employees without a confirmation (or an override) by the
+// generation deadline are not scheduled that week.
+model AvailabilityConfirmation {
+  id         String   @id @default(cuid())
+  employeeId String
+  weekStart  DateTime
+  createdAt  DateTime @default(now())
+
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, weekStart])
+  @@index([weekStart])
+}
+
 model AvailabilityOverride {
   id              String   @id @default(cuid())
   employeeId      String
@@ -227,6 +244,7 @@ model Schedule {
   weekStart   DateTime
   status      ScheduleStatus @default(DRAFT)
   generatedAt DateTime       @default(now())
+  notes       Json? // e.g. auto-dropped employees with reasons
   createdAt   DateTime       @default(now())
 
   location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)

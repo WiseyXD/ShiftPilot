@@ -56,6 +56,7 @@ export const ModelName = {
   Employee: 'Employee',
   ShiftTemplate: 'ShiftTemplate',
   RecurringAvailability: 'RecurringAvailability',
+  AvailabilityConfirmation: 'AvailabilityConfirmation',
   AvailabilityOverride: 'AvailabilityOverride',
   Schedule: 'Schedule',
   Shift: 'Shift',
@@ -165,6 +166,16 @@ export const RecurringAvailabilityScalarFieldEnum = {
 export type RecurringAvailabilityScalarFieldEnum = (typeof RecurringAvailabilityScalarFieldEnum)[keyof typeof RecurringAvailabilityScalarFieldEnum]
 
 
+export const AvailabilityConfirmationScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  weekStart: 'weekStart',
+  createdAt: 'createdAt'
+} as const
+
+export type AvailabilityConfirmationScalarFieldEnum = (typeof AvailabilityConfirmationScalarFieldEnum)[keyof typeof AvailabilityConfirmationScalarFieldEnum]
+
+
 export const AvailabilityOverrideScalarFieldEnum = {
   id: 'id',
   employeeId: 'employeeId',
@@ -182,6 +193,7 @@ export const ScheduleScalarFieldEnum = {
   weekStart: 'weekStart',
   status: 'status',
   generatedAt: 'generatedAt',
+  notes: 'notes',
   createdAt: 'createdAt'
 } as const
 
@@ -339,6 +351,14 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const JsonNullValueInput = {

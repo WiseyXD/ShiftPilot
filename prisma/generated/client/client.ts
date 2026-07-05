@@ -67,6 +67,11 @@ export type ShiftTemplate = Prisma.ShiftTemplateModel
  */
 export type RecurringAvailability = Prisma.RecurringAvailabilityModel
 /**
+ * Model AvailabilityConfirmation
+ * 
+ */
+export type AvailabilityConfirmation = Prisma.AvailabilityConfirmationModel
+/**
  * Model AvailabilityOverride
  * 
  */

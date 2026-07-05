@@ -203,6 +203,24 @@ async function handleAction(action: string, payload: unknown) {
       await inngest.send({ name: "swap/manager-response", data: { ...p, response: action } })
       return NextResponse.json({ ok: true, message: action === "APPROVE_SWAP" ? "Swap approved." : "Swap rejected." })
 
+    case "CONFIRM_AVAILABILITY": {
+      // One-tap "nothing changed": carries the standing availability into the
+      // week so the deadline rule doesn't drop this employee.
+      const weekStart = new Date(p.weekStart)
+      if (!p.employeeId || Number.isNaN(weekStart.getTime())) {
+        return NextResponse.json({ error: "Invalid confirmation link" }, { status: 400 })
+      }
+      await prisma.availabilityConfirmation.upsert({
+        where: { employeeId_weekStart: { employeeId: p.employeeId, weekStart } },
+        create: { employeeId: p.employeeId, weekStart },
+        update: {},
+      })
+      return NextResponse.json({
+        ok: true,
+        message: "Confirmed — your usual availability carries over. You're in the plan.",
+      })
+    }
+
     case "CHECK_IN": {
       const shift = await prisma.shift.findUnique({ where: { id: p.shiftId } })
       if (!shift) {

@@ -124,6 +124,29 @@ export default async function SchedulePage({
         }
       />
 
+      {(() => {
+        const notes = schedule.notes as {
+          autoDropped?: { name: string; reason: string }[]
+        } | null
+        if (!notes?.autoDropped?.length) return null
+        return (
+          <Card className="border-amber-200 bg-amber-50">
+            <div className="p-4 text-sm text-amber-800">
+              <p className="font-semibold mb-1">
+                Not scheduled this week ({notes.autoDropped.length}):
+              </p>
+              <ul className="list-disc list-inside">
+                {notes.autoDropped.map((d, i) => (
+                  <li key={i}>
+                    <strong>{d.name}</strong> — {d.reason}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Card>
+        )
+      })()}
+
       {/* Quick stats */}
       <div className="grid gap-3 sm:grid-cols-3">
         <MiniStat label="Total shifts" value={total} />

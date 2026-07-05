@@ -389,6 +389,7 @@ export const ModelName = {
   Employee: 'Employee',
   ShiftTemplate: 'ShiftTemplate',
   RecurringAvailability: 'RecurringAvailability',
+  AvailabilityConfirmation: 'AvailabilityConfirmation',
   AvailabilityOverride: 'AvailabilityOverride',
   Schedule: 'Schedule',
   Shift: 'Shift',
@@ -417,7 +418,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "sharingDeal" | "actionToken" | "sickCall" | "vacation" | "fixedShift" | "blockedTime" | "complianceRuleSet" | "auditLog"
+    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityConfirmation" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "sharingDeal" | "actionToken" | "sickCall" | "vacation" | "fixedShift" | "blockedTime" | "complianceRuleSet" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -788,6 +789,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.RecurringAvailabilityCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.RecurringAvailabilityCountAggregateOutputType> | number
+        }
+      }
+    }
+    AvailabilityConfirmation: {
+      payload: Prisma.$AvailabilityConfirmationPayload<ExtArgs>
+      fields: Prisma.AvailabilityConfirmationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AvailabilityConfirmationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AvailabilityConfirmationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AvailabilityConfirmationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AvailabilityConfirmationPayload>
+        }
+        findFirst: {
+          args: Prisma.AvailabilityConfirmationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AvailabilityConfirmationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AvailabilityConfirmationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AvailabilityConfirmationPayload>
+        }
+        findMany: {
+          args: Prisma.AvailabilityConfirmationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AvailabilityConfirmationPayload>[]
+        }
+        create: {
+          args: Prisma.AvailabilityConfirmationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AvailabilityConfirmationPayload>
+        }
+        createMany: {
+          args: Prisma.AvailabilityConfirmationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AvailabilityConfirmationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AvailabilityConfirmationPayload>[]
+        }
+        delete: {
+          args: Prisma.AvailabilityConfirmationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AvailabilityConfirmationPayload>
+        }
+        update: {
+          args: Prisma.AvailabilityConfirmationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AvailabilityConfirmationPayload>
+        }
+        deleteMany: {
+          args: Prisma.AvailabilityConfirmationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AvailabilityConfirmationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AvailabilityConfirmationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AvailabilityConfirmationPayload>[]
+        }
+        upsert: {
+          args: Prisma.AvailabilityConfirmationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AvailabilityConfirmationPayload>
+        }
+        aggregate: {
+          args: Prisma.AvailabilityConfirmationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAvailabilityConfirmation>
+        }
+        groupBy: {
+          args: Prisma.AvailabilityConfirmationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AvailabilityConfirmationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AvailabilityConfirmationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AvailabilityConfirmationCountAggregateOutputType> | number
         }
       }
     }
@@ -1870,6 +1945,16 @@ export const RecurringAvailabilityScalarFieldEnum = {
 export type RecurringAvailabilityScalarFieldEnum = (typeof RecurringAvailabilityScalarFieldEnum)[keyof typeof RecurringAvailabilityScalarFieldEnum]
 
 
+export const AvailabilityConfirmationScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  weekStart: 'weekStart',
+  createdAt: 'createdAt'
+} as const
+
+export type AvailabilityConfirmationScalarFieldEnum = (typeof AvailabilityConfirmationScalarFieldEnum)[keyof typeof AvailabilityConfirmationScalarFieldEnum]
+
+
 export const AvailabilityOverrideScalarFieldEnum = {
   id: 'id',
   employeeId: 'employeeId',
@@ -1887,6 +1972,7 @@ export const ScheduleScalarFieldEnum = {
   weekStart: 'weekStart',
   status: 'status',
   generatedAt: 'generatedAt',
+  notes: 'notes',
   createdAt: 'createdAt'
 } as const
 
@@ -2046,6 +2132,14 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
 export const JsonNullValueInput = {
   JsonNull: JsonNull
 } as const
@@ -2190,6 +2284,20 @@ export type ListEnumScheduleStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
  * Reference to a field of type 'ShiftStatus'
  */
 export type EnumShiftStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ShiftStatus'>
@@ -2270,20 +2378,6 @@ export type EnumActionTokenActionFieldRefInput<$PrismaModel> = FieldRefInputType
  * Reference to a field of type 'ActionTokenAction[]'
  */
 export type ListEnumActionTokenActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ActionTokenAction[]'>
-    
-
-
-/**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 /**
@@ -2401,6 +2495,7 @@ export type GlobalOmitConfig = {
   employee?: Prisma.EmployeeOmit
   shiftTemplate?: Prisma.ShiftTemplateOmit
   recurringAvailability?: Prisma.RecurringAvailabilityOmit
+  availabilityConfirmation?: Prisma.AvailabilityConfirmationOmit
   availabilityOverride?: Prisma.AvailabilityOverrideOmit
   schedule?: Prisma.ScheduleOmit
   shift?: Prisma.ShiftOmit

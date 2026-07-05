@@ -7,6 +7,7 @@ import { loadMonthNetHoursBeforeWeek } from "@/lib/compliance/hours"
 import { minijobCapWarning } from "@/lib/compliance/caps"
 import { netWorkHours } from "@/lib/compliance/arbzg"
 import { pinsForWeek } from "@/lib/scheduling/pins"
+import { partitionSchedulable } from "@/lib/scheduling/deadline"
 import { generateToken } from "@/lib/tokens/generate"
 import { sendEmail } from "@/lib/email/send"
 import { ScheduleDraftEmail } from "@/lib/email/templates/schedule-draft"
@@ -39,9 +40,31 @@ export const weeklyScheduleGeneration = inngest.createFunction(
         const weekStart = nextMonday(today)
 
         const availability = await getEffectiveAvailability(location.id, weekStart)
+
+        // Deadline rule: category-A employees who neither confirmed nor
+        // submitted an override for this week are dropped from the plan.
+        const [confirmations, weekOverrides] = await Promise.all([
+          prisma.availabilityConfirmation.findMany({
+            where: { weekStart, employeeId: { in: location.employees.map((e) => e.id) } },
+            select: { employeeId: true },
+          }),
+          prisma.availabilityOverride.findMany({
+            where: {
+              employeeId: { in: location.employees.map((e) => e.id) },
+              date: { gte: weekStart, lt: new Date(weekStart.getTime() + 7 * 86400000) },
+            },
+            select: { employeeId: true },
+          }),
+        ])
+        const confirmedIds = new Set([
+          ...confirmations.map((c) => c.employeeId),
+          ...weekOverrides.map((o) => o.employeeId),
+        ])
+        const { schedulable, dropped } = partitionSchedulable(location.employees, confirmedIds)
+
         const rules = await loadRules(weekStart)
         const monthHours = await loadMonthNetHoursBeforeWeek(
-          location.employees.map((e) => e.id),
+          schedulable.map((e) => e.id),
           weekStart,
           rules.arbzg
         )
@@ -52,7 +75,7 @@ export const weeklyScheduleGeneration = inngest.createFunction(
         ])
         const { assignments, reasoning } = await generateSchedule(
           location.shiftTemplates,
-          location.employees,
+          schedulable,
           availability,
           { rules, monthHours, pins: pinsForWeek(allPins, weekStart), blocks, vacations, weekStart }
         )
@@ -60,7 +83,7 @@ export const weeklyScheduleGeneration = inngest.createFunction(
         // Early warning: minijobbers approaching the earnings cap after this
         // week's assignments — the manager hears about it before blocks start.
         const tmplTimes = new Map(location.shiftTemplates.map((t) => [t.id, t]))
-        for (const emp of location.employees) {
+        for (const emp of schedulable) {
           if (emp.category !== "MINIJOB_ZEITARBEIT" || !emp.hourlyWageCents) continue
           const weekNet = assignments
             .filter((a) => a.employeeId === emp.id)
@@ -96,6 +119,16 @@ export const weeklyScheduleGeneration = inngest.createFunction(
             locationId: location.id,
             weekStart,
             status: "DRAFT",
+            notes:
+              dropped.length > 0
+                ? {
+                    autoDropped: dropped.map((e) => ({
+                      employeeId: e.id,
+                      name: e.name,
+                      reason: "no availability confirmation by the deadline",
+                    })),
+                  }
+                : undefined,
             shifts: {
               create: assignments.map((a) => ({
                 shiftTemplateId: a.shiftTemplateId,

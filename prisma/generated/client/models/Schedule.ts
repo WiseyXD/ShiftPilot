@@ -48,6 +48,7 @@ export type ScheduleCountAggregateOutputType = {
   weekStart: number
   status: number
   generatedAt: number
+  notes: number
   createdAt: number
   _all: number
 }
@@ -77,6 +78,7 @@ export type ScheduleCountAggregateInputType = {
   weekStart?: true
   status?: true
   generatedAt?: true
+  notes?: true
   createdAt?: true
   _all?: true
 }
@@ -159,6 +161,7 @@ export type ScheduleGroupByOutputType = {
   weekStart: Date
   status: $Enums.ScheduleStatus
   generatedAt: Date
+  notes: runtime.JsonValue | null
   createdAt: Date
   _count: ScheduleCountAggregateOutputType | null
   _min: ScheduleMinAggregateOutputType | null
@@ -189,6 +192,7 @@ export type ScheduleWhereInput = {
   weekStart?: Prisma.DateTimeFilter<"Schedule"> | Date | string
   status?: Prisma.EnumScheduleStatusFilter<"Schedule"> | $Enums.ScheduleStatus
   generatedAt?: Prisma.DateTimeFilter<"Schedule"> | Date | string
+  notes?: Prisma.JsonNullableFilter<"Schedule">
   createdAt?: Prisma.DateTimeFilter<"Schedule"> | Date | string
   location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>
   shifts?: Prisma.ShiftListRelationFilter
@@ -200,6 +204,7 @@ export type ScheduleOrderByWithRelationInput = {
   weekStart?: Prisma.SortOrder
   status?: Prisma.SortOrder
   generatedAt?: Prisma.SortOrder
+  notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   location?: Prisma.LocationOrderByWithRelationInput
   shifts?: Prisma.ShiftOrderByRelationAggregateInput
@@ -214,6 +219,7 @@ export type ScheduleWhereUniqueInput = Prisma.AtLeast<{
   weekStart?: Prisma.DateTimeFilter<"Schedule"> | Date | string
   status?: Prisma.EnumScheduleStatusFilter<"Schedule"> | $Enums.ScheduleStatus
   generatedAt?: Prisma.DateTimeFilter<"Schedule"> | Date | string
+  notes?: Prisma.JsonNullableFilter<"Schedule">
   createdAt?: Prisma.DateTimeFilter<"Schedule"> | Date | string
   location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>
   shifts?: Prisma.ShiftListRelationFilter
@@ -225,6 +231,7 @@ export type ScheduleOrderByWithAggregationInput = {
   weekStart?: Prisma.SortOrder
   status?: Prisma.SortOrder
   generatedAt?: Prisma.SortOrder
+  notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ScheduleCountOrderByAggregateInput
   _max?: Prisma.ScheduleMaxOrderByAggregateInput
@@ -240,6 +247,7 @@ export type ScheduleScalarWhereWithAggregatesInput = {
   weekStart?: Prisma.DateTimeWithAggregatesFilter<"Schedule"> | Date | string
   status?: Prisma.EnumScheduleStatusWithAggregatesFilter<"Schedule"> | $Enums.ScheduleStatus
   generatedAt?: Prisma.DateTimeWithAggregatesFilter<"Schedule"> | Date | string
+  notes?: Prisma.JsonNullableWithAggregatesFilter<"Schedule">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Schedule"> | Date | string
 }
 
@@ -248,6 +256,7 @@ export type ScheduleCreateInput = {
   weekStart: Date | string
   status?: $Enums.ScheduleStatus
   generatedAt?: Date | string
+  notes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutSchedulesInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutScheduleInput
@@ -259,6 +268,7 @@ export type ScheduleUncheckedCreateInput = {
   weekStart: Date | string
   status?: $Enums.ScheduleStatus
   generatedAt?: Date | string
+  notes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutScheduleInput
 }
@@ -268,6 +278,7 @@ export type ScheduleUpdateInput = {
   weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutSchedulesNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutScheduleNestedInput
@@ -279,6 +290,7 @@ export type ScheduleUncheckedUpdateInput = {
   weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutScheduleNestedInput
 }
@@ -289,6 +301,7 @@ export type ScheduleCreateManyInput = {
   weekStart: Date | string
   status?: $Enums.ScheduleStatus
   generatedAt?: Date | string
+  notes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -297,6 +310,7 @@ export type ScheduleUpdateManyMutationInput = {
   weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -306,6 +320,7 @@ export type ScheduleUncheckedUpdateManyInput = {
   weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -325,6 +340,7 @@ export type ScheduleCountOrderByAggregateInput = {
   weekStart?: Prisma.SortOrder
   status?: Prisma.SortOrder
   generatedAt?: Prisma.SortOrder
+  notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -416,6 +432,7 @@ export type ScheduleCreateWithoutLocationInput = {
   weekStart: Date | string
   status?: $Enums.ScheduleStatus
   generatedAt?: Date | string
+  notes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   shifts?: Prisma.ShiftCreateNestedManyWithoutScheduleInput
 }
@@ -425,6 +442,7 @@ export type ScheduleUncheckedCreateWithoutLocationInput = {
   weekStart: Date | string
   status?: $Enums.ScheduleStatus
   generatedAt?: Date | string
+  notes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutScheduleInput
 }
@@ -464,6 +482,7 @@ export type ScheduleScalarWhereInput = {
   weekStart?: Prisma.DateTimeFilter<"Schedule"> | Date | string
   status?: Prisma.EnumScheduleStatusFilter<"Schedule"> | $Enums.ScheduleStatus
   generatedAt?: Prisma.DateTimeFilter<"Schedule"> | Date | string
+  notes?: Prisma.JsonNullableFilter<"Schedule">
   createdAt?: Prisma.DateTimeFilter<"Schedule"> | Date | string
 }
 
@@ -472,6 +491,7 @@ export type ScheduleCreateWithoutShiftsInput = {
   weekStart: Date | string
   status?: $Enums.ScheduleStatus
   generatedAt?: Date | string
+  notes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   location: Prisma.LocationCreateNestedOneWithoutSchedulesInput
 }
@@ -482,6 +502,7 @@ export type ScheduleUncheckedCreateWithoutShiftsInput = {
   weekStart: Date | string
   status?: $Enums.ScheduleStatus
   generatedAt?: Date | string
+  notes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -506,6 +527,7 @@ export type ScheduleUpdateWithoutShiftsInput = {
   weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   location?: Prisma.LocationUpdateOneRequiredWithoutSchedulesNestedInput
 }
@@ -516,6 +538,7 @@ export type ScheduleUncheckedUpdateWithoutShiftsInput = {
   weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -524,6 +547,7 @@ export type ScheduleCreateManyLocationInput = {
   weekStart: Date | string
   status?: $Enums.ScheduleStatus
   generatedAt?: Date | string
+  notes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -532,6 +556,7 @@ export type ScheduleUpdateWithoutLocationInput = {
   weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   shifts?: Prisma.ShiftUpdateManyWithoutScheduleNestedInput
 }
@@ -541,6 +566,7 @@ export type ScheduleUncheckedUpdateWithoutLocationInput = {
   weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutScheduleNestedInput
 }
@@ -550,6 +576,7 @@ export type ScheduleUncheckedUpdateManyWithoutLocationInput = {
   weekStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumScheduleStatusFieldUpdateOperationsInput | $Enums.ScheduleStatus
   generatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -590,6 +617,7 @@ export type ScheduleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   weekStart?: boolean
   status?: boolean
   generatedAt?: boolean
+  notes?: boolean
   createdAt?: boolean
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
   shifts?: boolean | Prisma.Schedule$shiftsArgs<ExtArgs>
@@ -602,6 +630,7 @@ export type ScheduleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   weekStart?: boolean
   status?: boolean
   generatedAt?: boolean
+  notes?: boolean
   createdAt?: boolean
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["schedule"]>
@@ -612,6 +641,7 @@ export type ScheduleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   weekStart?: boolean
   status?: boolean
   generatedAt?: boolean
+  notes?: boolean
   createdAt?: boolean
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["schedule"]>
@@ -622,10 +652,11 @@ export type ScheduleSelectScalar = {
   weekStart?: boolean
   status?: boolean
   generatedAt?: boolean
+  notes?: boolean
   createdAt?: boolean
 }
 
-export type ScheduleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "locationId" | "weekStart" | "status" | "generatedAt" | "createdAt", ExtArgs["result"]["schedule"]>
+export type ScheduleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "locationId" | "weekStart" | "status" | "generatedAt" | "notes" | "createdAt", ExtArgs["result"]["schedule"]>
 export type ScheduleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
   shifts?: boolean | Prisma.Schedule$shiftsArgs<ExtArgs>
@@ -650,6 +681,7 @@ export type $SchedulePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     weekStart: Date
     status: $Enums.ScheduleStatus
     generatedAt: Date
+    notes: runtime.JsonValue | null
     createdAt: Date
   }, ExtArgs["result"]["schedule"]>
   composites: {}
@@ -1081,6 +1113,7 @@ export interface ScheduleFieldRefs {
   readonly weekStart: Prisma.FieldRef<"Schedule", 'DateTime'>
   readonly status: Prisma.FieldRef<"Schedule", 'ScheduleStatus'>
   readonly generatedAt: Prisma.FieldRef<"Schedule", 'DateTime'>
+  readonly notes: Prisma.FieldRef<"Schedule", 'Json'>
   readonly createdAt: Prisma.FieldRef<"Schedule", 'DateTime'>
 }
     
