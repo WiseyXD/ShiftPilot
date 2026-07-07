@@ -85,12 +85,12 @@ export function AppSidebar({ locations, user }: Props) {
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-1.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-slate-900 text-white">
+          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
             <Sparkles className="h-4 w-4" />
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-            <span className="font-semibold text-slate-900">ShiftPilot</span>
-            <span className="text-xs text-slate-500 truncate">AI shift scheduling</span>
+            <span className="font-display text-lg font-semibold tracking-tight text-sidebar-foreground">ShiftPilot</span>
+            <span className="text-xs text-sidebar-foreground/60 truncate">AI shift scheduling</span>
           </div>
         </div>
       </SidebarHeader>
@@ -113,7 +113,7 @@ export function AppSidebar({ locations, user }: Props) {
               ))}
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Add location">
-                  <Link href="/dashboard/locations/new" className="text-slate-500">
+                  <Link href="/dashboard/locations/new" className="text-sidebar-foreground/70">
                     <Plus />
                     <span>Add location</span>
                   </Link>
@@ -122,7 +122,7 @@ export function AppSidebar({ locations, user }: Props) {
               {locations.length === 0 && (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="Try the demo">
-                    <Link href="/dashboard/demo" className="text-slate-700">
+                    <Link href="/dashboard/demo" className="text-sidebar-foreground/80">
                       <Sparkles />
                       <span>Try demo</span>
                     </Link>
@@ -184,12 +184,12 @@ export function AppSidebar({ locations, user }: Props) {
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton size="lg" className="data-[state=open]:bg-slate-100">
+                <SidebarMenuButton size="lg" className="data-[state=open]:bg-sidebar-accent">
                   <Avatar className="h-8 w-8 rounded-md">
-                    <AvatarFallback className="rounded-md bg-slate-900 text-white text-xs">{initials}</AvatarFallback>
+                    <AvatarFallback className="rounded-md bg-sidebar-primary text-sidebar-primary-foreground text-xs">{initials}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium text-slate-900">{user.email}</span>
+                    <span className="truncate font-medium text-sidebar-foreground">{user.email}</span>
                     <div className="flex items-center gap-1.5">
                       <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">{planLabel}</Badge>
                     </div>

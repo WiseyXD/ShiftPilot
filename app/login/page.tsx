@@ -5,59 +5,68 @@ import { useActionState } from "react"
 import { logIn } from "@/app/actions/auth"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Sparkles } from "lucide-react"
+import { AuthPanel, AuthShell } from "@/components/auth-shell"
 
 export default function LoginPage() {
   const [state, action, pending] = useActionState(logIn, null)
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-      <div className="w-full max-w-sm space-y-6">
-        <div className="text-center">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-slate-900 text-white mb-3">
-            <Sparkles className="h-6 w-6" />
+    <AuthShell>
+      <AuthPanel
+        title="Welcome back"
+        subtitle={
+          <>
+            New here?{" "}
+            <Link href="/signup" className="font-semibold text-primary hover:underline underline-offset-4">
+              Create an account
+            </Link>
+          </>
+        }
+      >
+        <form action={action} className="space-y-5">
+          {state?.error && (
+            <p className="rise text-sm text-destructive bg-destructive/10 border border-destructive/20 px-3 py-2 rounded-md">
+              {state.error}
+            </p>
+          )}
+          <div className="space-y-1.5 rise rise-3">
+            <label
+              className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground"
+              htmlFor="email"
+            >
+              Email
+            </label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="you@yourcafe.de"
+              className="h-11 bg-card"
+            />
           </div>
-          <h1 className="text-xl font-bold text-slate-900">ShiftPilot</h1>
-          <p className="text-sm text-slate-500 mt-1">AI-powered shift scheduling</p>
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Sign in</CardTitle>
-            <CardDescription>
-              Don&apos;t have an account?{" "}
-              <Link href="/signup" className="text-slate-900 font-medium hover:underline">
-                Sign up
-              </Link>
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form action={action} className="space-y-4">
-              {state?.error && (
-                <p className="text-sm text-red-600 bg-red-50 border border-red-200 px-3 py-2 rounded-md">
-                  {state.error}
-                </p>
-              )}
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium text-slate-700" htmlFor="email">
-                  Email
-                </label>
-                <Input id="email" name="email" type="email" required autoComplete="email" placeholder="you@example.com" />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium text-slate-700" htmlFor="password">
-                  Password
-                </label>
-                <Input id="password" name="password" type="password" required autoComplete="current-password" />
-              </div>
-              <Button type="submit" className="w-full" disabled={pending}>
-                {pending ? "Signing in…" : "Sign in"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+          <div className="space-y-1.5 rise rise-4">
+            <label
+              className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground"
+              htmlFor="password"
+            >
+              Password
+            </label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              required
+              autoComplete="current-password"
+              className="h-11 bg-card"
+            />
+          </div>
+          <Button type="submit" size="lg" className="w-full rise rise-5" disabled={pending}>
+            {pending ? "Brewing…" : "Sign in"}
+          </Button>
+        </form>
+      </AuthPanel>
+    </AuthShell>
   )
 }

@@ -283,6 +283,18 @@ export default async function SchedulePage({
             </tbody>
           </table>
         </div>
+        {/* Legend — every mark on the grid, decoded */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-border bg-slate-50 px-4 py-2.5 text-[11px] text-slate-500">
+          <span className="font-semibold uppercase tracking-[0.12em] text-slate-400">Legend</span>
+          <span>📌 pinned by you</span>
+          <span className="flex items-center gap-1"><i className="h-2 w-2 rounded-full bg-green-500/70" />accepted</span>
+          <span className="flex items-center gap-1"><i className="h-2 w-2 rounded-full bg-slate-400/70" />awaiting reply</span>
+          <span className="flex items-center gap-1"><i className="h-2 w-2 rounded-full bg-blue-500/70" />reassigned</span>
+          <span className="flex items-center gap-1"><i className="h-2 w-2 rounded-full bg-yellow-500/80" />unfilled</span>
+          <span className="flex items-center gap-1"><i className="h-2 w-2 rounded-full bg-red-500/70" />declined / no-show</span>
+          <span className="flex items-center gap-1"><i className="h-2 w-2 rounded-full bg-purple-500/70" />lent out / borrowed</span>
+          <span>— no shift{editMode ? "" : " (use Edit to add one)"}</span>
+        </div>
       </Card>
     </div>
   )
