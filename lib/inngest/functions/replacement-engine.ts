@@ -69,6 +69,7 @@ export const replacementEngine = inngest.createFunction(
       timeoutHours: shift.schedule.location.escalationTimeoutHours,
       outreachAction: "REPLACEMENT_OUTREACH",
       declinedAction: "REPLACEMENT_DECLINED",
+      chatMessage: `🔔 Kann jemand einspringen? Die *${shift.shiftTemplate.name}*-Schicht am ${dateLabel} (${shift.shiftTemplate.startTime}–${shift.shiftTemplate.endTime}) ist gerade frei geworden.`,
       buildOutreach: (candidate, urls) => ({
         subject: `Can you cover a shift at ${shift.schedule.location.name} on ${dateLabel}?`,
         react: React.createElement(NotificationEmail, {

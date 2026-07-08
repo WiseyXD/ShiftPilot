@@ -5,6 +5,7 @@ import { sendEmail } from "@/lib/email/send"
 import { ShiftAssignmentEmail } from "@/lib/email/templates/shift-assignment"
 import { getShiftStart, getShiftEnd, buildGoogleCalendarUrl } from "@/lib/scheduling/shift-date"
 import { notificationMode } from "@/lib/scheduling/categories"
+import { pushAgentMessage } from "@/lib/whatsapp-sim/handler"
 import * as React from "react"
 
 export const shiftNotifications = inngest.createFunction(
@@ -109,6 +110,38 @@ export const shiftNotifications = inngest.createFunction(
             mode,
           }),
         })
+
+        // Simulator: DM the same plan into the employee's WhatsApp thread.
+        // Category A gets tappable accept/decline; B gets an info line.
+        const planLines = shifts
+          .map((s) => {
+            const start = getShiftStart(new Date(schedule.weekStart), s.dayOfWeek, s.shiftTemplate.startTime)
+            const date = start.toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "short" })
+            return `${date} · *${s.shiftTemplate.name}* ${s.shiftTemplate.startTime}–${s.shiftTemplate.endTime}`
+          })
+          .join("\n")
+        await pushAgentMessage(
+          schedule.locationId,
+          employee.id,
+          `📋 Dein Plan für ${weekLabel} bei ${schedule.location.name}:\n\n${planLines}${
+            mode === "INFO_CHANGE_REQUEST" ? "\n\nDiese Schichten stehen fest." : ""
+          }`
+        )
+        if (mode === "ACCEPT_DECLINE") {
+          for (const s of shifts) {
+            const start = getShiftStart(new Date(schedule.weekStart), s.dayOfWeek, s.shiftTemplate.startTime)
+            const date = start.toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "short" })
+            await pushAgentMessage(
+              schedule.locationId,
+              employee.id,
+              `${date} · ${s.shiftTemplate.name} ${s.shiftTemplate.startTime}–${s.shiftTemplate.endTime} — zusagen?`,
+              [
+                { label: "✅ Zusagen", command: `ACCEPT:${s.id}` },
+                { label: "❌ Absagen", command: `DECLINE:${s.id}` },
+              ]
+            )
+          }
+        }
       }
     })
 

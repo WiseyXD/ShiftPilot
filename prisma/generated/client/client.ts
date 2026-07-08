@@ -112,6 +112,11 @@ export type ActionToken = Prisma.ActionTokenModel
  */
 export type ManagerRule = Prisma.ManagerRuleModel
 /**
+ * Model ChatMessage
+ * 
+ */
+export type ChatMessage = Prisma.ChatMessageModel
+/**
  * Model SickCall
  * 
  */

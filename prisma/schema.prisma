@@ -144,6 +144,7 @@ model Location {
   vacations       Vacation[]
   sickCalls       SickCall[]
   managerRules    ManagerRule[]
+  chatMessages    ChatMessage[]
 
   @@index([ownerId])
 }
@@ -180,6 +181,7 @@ model Employee {
   blockedTimes          BlockedTime[]
   vacations             Vacation[]
   availabilityConfirmations AvailabilityConfirmation[]
+  chatMessages          ChatMessage[]
 
   @@unique([locationId, email])
   @@index([locationId])
@@ -388,6 +390,31 @@ model ManagerRule {
   location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
 
   @@index([locationId])
+}
+
+// ─── WhatsApp simulator ───────────────────────────────────────────────────────
+
+enum ChatRole {
+  EMPLOYEE
+  AGENT
+}
+
+// One line in an employee ⇄ ShiftPilot-agent WhatsApp thread. The simulator's
+// transport; real actions still run through the normal engines.
+model ChatMessage {
+  id         String   @id @default(cuid())
+  locationId String
+  employeeId String
+  role       ChatRole
+  body       String
+  actions    Json? // [{ label, command }] — tappable reply buttons the agent offered
+  createdAt  DateTime @default(now())
+
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([locationId])
+  @@index([employeeId, createdAt])
 }
 
 // ─── Sick calls ───────────────────────────────────────────────────────────────

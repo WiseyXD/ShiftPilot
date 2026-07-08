@@ -65,6 +65,7 @@ export const ModelName = {
   SharingDeal: 'SharingDeal',
   ActionToken: 'ActionToken',
   ManagerRule: 'ManagerRule',
+  ChatMessage: 'ChatMessage',
   SickCall: 'SickCall',
   Vacation: 'Vacation',
   FixedShift: 'FixedShift',
@@ -285,6 +286,19 @@ export const ManagerRuleScalarFieldEnum = {
 } as const
 
 export type ManagerRuleScalarFieldEnum = (typeof ManagerRuleScalarFieldEnum)[keyof typeof ManagerRuleScalarFieldEnum]
+
+
+export const ChatMessageScalarFieldEnum = {
+  id: 'id',
+  locationId: 'locationId',
+  employeeId: 'employeeId',
+  role: 'role',
+  body: 'body',
+  actions: 'actions',
+  createdAt: 'createdAt'
+} as const
+
+export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
 
 
 export const SickCallScalarFieldEnum = {

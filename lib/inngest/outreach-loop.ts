@@ -12,6 +12,7 @@ import { loadRules } from "@/lib/compliance/load"
 import { loadMonthNetHoursBeforeWeek } from "@/lib/compliance/hours"
 import { isBlocked, type Block } from "@/lib/scheduling/pins"
 import { isOnVacation, type VacationRange } from "@/lib/scheduling/vacation"
+import { pushAgentMessage } from "@/lib/whatsapp-sim/handler"
 import type { ComplianceRules } from "@/lib/compliance/rules"
 import type { Prisma } from "@/prisma/generated/client/client"
 import * as React from "react"
@@ -79,6 +80,10 @@ export interface OutreachConfig {
   // Audit action names. Stay as strings until the audit recorder is deepened.
   outreachAction: string
   declinedAction: string
+
+  // Simulator: if set, each contacted candidate also gets this cover request
+  // in their WhatsApp thread, with a Yes button that resolves this same loop.
+  chatMessage?: string
 }
 
 export interface OutreachResult {
@@ -132,6 +137,13 @@ export async function runOutreachLoop(config: OutreachConfig): Promise<OutreachR
       const outreach = await Promise.resolve(buildOutreach(candidate, urls))
 
       await sendEmail({ to: candidate.email, subject: outreach.subject, react: outreach.react })
+
+      if (config.chatMessage) {
+        await pushAgentMessage(locationId, candidate.employeeId, config.chatMessage, [
+          { label: "🙋 Ja, klar", command: `COVER:${shiftId}` },
+          { label: "Nein", command: `NOCOVER:${shiftId}` },
+        ])
+      }
 
       await prisma.auditLog.create({
         data: {

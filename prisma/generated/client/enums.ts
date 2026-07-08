@@ -127,3 +127,11 @@ export const SwapRequestStatus = {
 } as const
 
 export type SwapRequestStatus = (typeof SwapRequestStatus)[keyof typeof SwapRequestStatus]
+
+
+export const ChatRole = {
+  EMPLOYEE: 'EMPLOYEE',
+  AGENT: 'AGENT'
+} as const
+
+export type ChatRole = (typeof ChatRole)[keyof typeof ChatRole]

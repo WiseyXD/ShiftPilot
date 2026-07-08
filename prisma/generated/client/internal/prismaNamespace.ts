@@ -398,6 +398,7 @@ export const ModelName = {
   SharingDeal: 'SharingDeal',
   ActionToken: 'ActionToken',
   ManagerRule: 'ManagerRule',
+  ChatMessage: 'ChatMessage',
   SickCall: 'SickCall',
   Vacation: 'Vacation',
   FixedShift: 'FixedShift',
@@ -419,7 +420,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityConfirmation" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "sharingDeal" | "actionToken" | "managerRule" | "sickCall" | "vacation" | "fixedShift" | "blockedTime" | "complianceRuleSet" | "auditLog"
+    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityConfirmation" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "sharingDeal" | "actionToken" | "managerRule" | "chatMessage" | "sickCall" | "vacation" | "fixedShift" | "blockedTime" | "complianceRuleSet" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1459,6 +1460,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ChatMessage: {
+      payload: Prisma.$ChatMessagePayload<ExtArgs>
+      fields: Prisma.ChatMessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChatMessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChatMessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        findFirst: {
+          args: Prisma.ChatMessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChatMessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        findMany: {
+          args: Prisma.ChatMessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>[]
+        }
+        create: {
+          args: Prisma.ChatMessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        createMany: {
+          args: Prisma.ChatMessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChatMessageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>[]
+        }
+        delete: {
+          args: Prisma.ChatMessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        update: {
+          args: Prisma.ChatMessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.ChatMessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChatMessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChatMessageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>[]
+        }
+        upsert: {
+          args: Prisma.ChatMessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatMessagePayload>
+        }
+        aggregate: {
+          args: Prisma.ChatMessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChatMessage>
+        }
+        groupBy: {
+          args: Prisma.ChatMessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatMessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChatMessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatMessageCountAggregateOutputType> | number
+        }
+      }
+    }
     SickCall: {
       payload: Prisma.$SickCallPayload<ExtArgs>
       fields: Prisma.SickCallFieldRefs
@@ -2140,6 +2215,19 @@ export const ManagerRuleScalarFieldEnum = {
 export type ManagerRuleScalarFieldEnum = (typeof ManagerRuleScalarFieldEnum)[keyof typeof ManagerRuleScalarFieldEnum]
 
 
+export const ChatMessageScalarFieldEnum = {
+  id: 'id',
+  locationId: 'locationId',
+  employeeId: 'employeeId',
+  role: 'role',
+  body: 'body',
+  actions: 'actions',
+  createdAt: 'createdAt'
+} as const
+
+export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
+
+
 export const SickCallScalarFieldEnum = {
   id: 'id',
   locationId: 'locationId',
@@ -2497,6 +2585,20 @@ export type EnumManagerRuleKindFieldRefInput<$PrismaModel> = FieldRefInputType<$
 export type ListEnumManagerRuleKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ManagerRuleKind[]'>
     
 
+
+/**
+ * Reference to a field of type 'ChatRole'
+ */
+export type EnumChatRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatRole'>
+    
+
+
+/**
+ * Reference to a field of type 'ChatRole[]'
+ */
+export type ListEnumChatRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatRole[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -2621,6 +2723,7 @@ export type GlobalOmitConfig = {
   sharingDeal?: Prisma.SharingDealOmit
   actionToken?: Prisma.ActionTokenOmit
   managerRule?: Prisma.ManagerRuleOmit
+  chatMessage?: Prisma.ChatMessageOmit
   sickCall?: Prisma.SickCallOmit
   vacation?: Prisma.VacationOmit
   fixedShift?: Prisma.FixedShiftOmit

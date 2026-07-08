@@ -15,6 +15,7 @@ import {
   Sparkles,
   Building2,
   Store,
+  MessageCircle,
   LogOut,
 } from "lucide-react"
 import {
@@ -65,6 +66,7 @@ export function AppSidebar({ locations, user }: Props) {
         { label: "Overview", icon: Home, href: `/dashboard/${activeLocationId}` },
         { label: "Schedules", icon: Calendar, href: `/dashboard/${activeLocationId}/schedules` },
         { label: "Employees", icon: Users, href: `/dashboard/${activeLocationId}/employees` },
+        { label: "WhatsApp", icon: MessageCircle, href: `/dashboard/${activeLocationId}/whatsapp` },
         { label: "Templates", icon: ClipboardList, href: `/dashboard/${activeLocationId}/templates` },
         { label: "Audit log", icon: Activity, href: `/dashboard/${activeLocationId}/audit-log` },
         { label: "Analytics", icon: BarChart3, href: `/dashboard/${activeLocationId}/analytics` },

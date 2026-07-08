@@ -313,6 +313,7 @@ export type EmployeeWhereInput = {
   blockedTimes?: Prisma.BlockedTimeListRelationFilter
   vacations?: Prisma.VacationListRelationFilter
   availabilityConfirmations?: Prisma.AvailabilityConfirmationListRelationFilter
+  chatMessages?: Prisma.ChatMessageListRelationFilter
 }
 
 export type EmployeeOrderByWithRelationInput = {
@@ -344,6 +345,7 @@ export type EmployeeOrderByWithRelationInput = {
   blockedTimes?: Prisma.BlockedTimeOrderByRelationAggregateInput
   vacations?: Prisma.VacationOrderByRelationAggregateInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationOrderByRelationAggregateInput
+  chatMessages?: Prisma.ChatMessageOrderByRelationAggregateInput
 }
 
 export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
@@ -379,6 +381,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   blockedTimes?: Prisma.BlockedTimeListRelationFilter
   vacations?: Prisma.VacationListRelationFilter
   availabilityConfirmations?: Prisma.AvailabilityConfirmationListRelationFilter
+  chatMessages?: Prisma.ChatMessageListRelationFilter
 }, "id" | "locationId_email">
 
 export type EmployeeOrderByWithAggregationInput = {
@@ -453,6 +456,7 @@ export type EmployeeCreateInput = {
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateInput = {
@@ -483,6 +487,7 @@ export type EmployeeUncheckedCreateInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUpdateInput = {
@@ -513,6 +518,7 @@ export type EmployeeUpdateInput = {
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateInput = {
@@ -543,6 +549,7 @@ export type EmployeeUncheckedUpdateInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateManyInput = {
@@ -900,6 +907,20 @@ export type EmployeeUpdateOneWithoutActionTokensNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutActionTokensInput, Prisma.EmployeeUpdateWithoutActionTokensInput>, Prisma.EmployeeUncheckedUpdateWithoutActionTokensInput>
 }
 
+export type EmployeeCreateNestedOneWithoutChatMessagesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutChatMessagesInput, Prisma.EmployeeUncheckedCreateWithoutChatMessagesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutChatMessagesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutChatMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutChatMessagesInput, Prisma.EmployeeUncheckedCreateWithoutChatMessagesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutChatMessagesInput
+  upsert?: Prisma.EmployeeUpsertWithoutChatMessagesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutChatMessagesInput, Prisma.EmployeeUpdateWithoutChatMessagesInput>, Prisma.EmployeeUncheckedUpdateWithoutChatMessagesInput>
+}
+
 export type EmployeeCreateNestedOneWithoutVacationsInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutVacationsInput, Prisma.EmployeeUncheckedCreateWithoutVacationsInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutVacationsInput
@@ -969,6 +990,7 @@ export type EmployeeCreateWithoutLocationInput = {
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutLocationInput = {
@@ -998,6 +1020,7 @@ export type EmployeeUncheckedCreateWithoutLocationInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutLocationInput = {
@@ -1074,6 +1097,7 @@ export type EmployeeCreateWithoutRecurringAvailabilityInput = {
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutRecurringAvailabilityInput = {
@@ -1103,6 +1127,7 @@ export type EmployeeUncheckedCreateWithoutRecurringAvailabilityInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutRecurringAvailabilityInput = {
@@ -1148,6 +1173,7 @@ export type EmployeeUpdateWithoutRecurringAvailabilityInput = {
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutRecurringAvailabilityInput = {
@@ -1177,6 +1203,7 @@ export type EmployeeUncheckedUpdateWithoutRecurringAvailabilityInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateWithoutAvailabilityConfirmationsInput = {
@@ -1206,6 +1233,7 @@ export type EmployeeCreateWithoutAvailabilityConfirmationsInput = {
   fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutEmployeeInput
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutAvailabilityConfirmationsInput = {
@@ -1235,6 +1263,7 @@ export type EmployeeUncheckedCreateWithoutAvailabilityConfirmationsInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutEmployeeInput
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutAvailabilityConfirmationsInput = {
@@ -1280,6 +1309,7 @@ export type EmployeeUpdateWithoutAvailabilityConfirmationsInput = {
   fixedShifts?: Prisma.FixedShiftUpdateManyWithoutEmployeeNestedInput
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutAvailabilityConfirmationsInput = {
@@ -1309,6 +1339,7 @@ export type EmployeeUncheckedUpdateWithoutAvailabilityConfirmationsInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutEmployeeNestedInput
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateWithoutAvailabilityOverridesInput = {
@@ -1338,6 +1369,7 @@ export type EmployeeCreateWithoutAvailabilityOverridesInput = {
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutAvailabilityOverridesInput = {
@@ -1367,6 +1399,7 @@ export type EmployeeUncheckedCreateWithoutAvailabilityOverridesInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutAvailabilityOverridesInput = {
@@ -1412,6 +1445,7 @@ export type EmployeeUpdateWithoutAvailabilityOverridesInput = {
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutAvailabilityOverridesInput = {
@@ -1441,6 +1475,7 @@ export type EmployeeUncheckedUpdateWithoutAvailabilityOverridesInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateWithoutShiftsInput = {
@@ -1470,6 +1505,7 @@ export type EmployeeCreateWithoutShiftsInput = {
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutShiftsInput = {
@@ -1499,6 +1535,7 @@ export type EmployeeUncheckedCreateWithoutShiftsInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutShiftsInput = {
@@ -1544,6 +1581,7 @@ export type EmployeeUpdateWithoutShiftsInput = {
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutShiftsInput = {
@@ -1573,6 +1611,7 @@ export type EmployeeUncheckedUpdateWithoutShiftsInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateWithoutSwapRequestsInitiatedInput = {
@@ -1602,6 +1641,7 @@ export type EmployeeCreateWithoutSwapRequestsInitiatedInput = {
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutSwapRequestsInitiatedInput = {
@@ -1631,6 +1671,7 @@ export type EmployeeUncheckedCreateWithoutSwapRequestsInitiatedInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutSwapRequestsInitiatedInput = {
@@ -1665,6 +1706,7 @@ export type EmployeeCreateWithoutSwapRequestsProposedInput = {
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutSwapRequestsProposedInput = {
@@ -1694,6 +1736,7 @@ export type EmployeeUncheckedCreateWithoutSwapRequestsProposedInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutSwapRequestsProposedInput = {
@@ -1739,6 +1782,7 @@ export type EmployeeUpdateWithoutSwapRequestsInitiatedInput = {
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutSwapRequestsInitiatedInput = {
@@ -1768,6 +1812,7 @@ export type EmployeeUncheckedUpdateWithoutSwapRequestsInitiatedInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUpsertWithoutSwapRequestsProposedInput = {
@@ -1808,6 +1853,7 @@ export type EmployeeUpdateWithoutSwapRequestsProposedInput = {
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutSwapRequestsProposedInput = {
@@ -1837,6 +1883,7 @@ export type EmployeeUncheckedUpdateWithoutSwapRequestsProposedInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateWithoutSharingListingsInput = {
@@ -1866,6 +1913,7 @@ export type EmployeeCreateWithoutSharingListingsInput = {
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutSharingListingsInput = {
@@ -1895,6 +1943,7 @@ export type EmployeeUncheckedCreateWithoutSharingListingsInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutSharingListingsInput = {
@@ -1940,6 +1989,7 @@ export type EmployeeUpdateWithoutSharingListingsInput = {
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutSharingListingsInput = {
@@ -1969,6 +2019,7 @@ export type EmployeeUncheckedUpdateWithoutSharingListingsInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateWithoutSharingDealsInput = {
@@ -1998,6 +2049,7 @@ export type EmployeeCreateWithoutSharingDealsInput = {
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutSharingDealsInput = {
@@ -2027,6 +2079,7 @@ export type EmployeeUncheckedCreateWithoutSharingDealsInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutSharingDealsInput = {
@@ -2072,6 +2125,7 @@ export type EmployeeUpdateWithoutSharingDealsInput = {
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutSharingDealsInput = {
@@ -2101,6 +2155,7 @@ export type EmployeeUncheckedUpdateWithoutSharingDealsInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateWithoutActionTokensInput = {
@@ -2130,6 +2185,7 @@ export type EmployeeCreateWithoutActionTokensInput = {
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutActionTokensInput = {
@@ -2159,6 +2215,7 @@ export type EmployeeUncheckedCreateWithoutActionTokensInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutActionTokensInput = {
@@ -2204,6 +2261,7 @@ export type EmployeeUpdateWithoutActionTokensInput = {
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutActionTokensInput = {
@@ -2224,6 +2282,143 @@ export type EmployeeUncheckedUpdateWithoutActionTokensInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedUpdateManyWithoutProposedEmployeeNestedInput
+  sharingListings?: Prisma.SharingListingUncheckedUpdateManyWithoutEmployeeNestedInput
+  sharingDeals?: Prisma.SharingDealUncheckedUpdateManyWithoutEmployeeNestedInput
+  fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutEmployeeNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutEmployeeNestedInput
+  vacations?: Prisma.VacationUncheckedUpdateManyWithoutEmployeeNestedInput
+  availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutChatMessagesInput = {
+  id?: string
+  name: string
+  email: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
+  lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
+  createdAt?: Date | string
+  location: Prisma.LocationCreateNestedOneWithoutEmployeesInput
+  recurringAvailability?: Prisma.RecurringAvailabilityCreateNestedManyWithoutEmployeeInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenCreateNestedManyWithoutEmployeeInput
+  shifts?: Prisma.ShiftCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestCreateNestedManyWithoutRequesterInput
+  swapRequestsProposed?: Prisma.SwapRequestCreateNestedManyWithoutProposedEmployeeInput
+  sharingListings?: Prisma.SharingListingCreateNestedManyWithoutEmployeeInput
+  sharingDeals?: Prisma.SharingDealCreateNestedManyWithoutEmployeeInput
+  fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutEmployeeInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutEmployeeInput
+  vacations?: Prisma.VacationCreateNestedManyWithoutEmployeeInput
+  availabilityConfirmations?: Prisma.AvailabilityConfirmationCreateNestedManyWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutChatMessagesInput = {
+  id?: string
+  locationId: string
+  name: string
+  email: string
+  roles?: Prisma.EmployeeCreaterolesInput | string[]
+  minHours?: number
+  maxHours?: number
+  category?: $Enums.EmployeeCategory
+  birthDate?: Date | string | null
+  phone?: string | null
+  hourlyWageCents?: number | null
+  isWerkstudent?: boolean
+  lectureFree?: boolean
+  wishWeight?: $Enums.WishWeight
+  createdAt?: Date | string
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedCreateNestedManyWithoutEmployeeInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutEmployeeInput
+  shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutEmployeeInput
+  swapRequestsInitiated?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutRequesterInput
+  swapRequestsProposed?: Prisma.SwapRequestUncheckedCreateNestedManyWithoutProposedEmployeeInput
+  sharingListings?: Prisma.SharingListingUncheckedCreateNestedManyWithoutEmployeeInput
+  sharingDeals?: Prisma.SharingDealUncheckedCreateNestedManyWithoutEmployeeInput
+  fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutEmployeeInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutEmployeeInput
+  vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutEmployeeInput
+  availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutChatMessagesInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutChatMessagesInput, Prisma.EmployeeUncheckedCreateWithoutChatMessagesInput>
+}
+
+export type EmployeeUpsertWithoutChatMessagesInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutChatMessagesInput, Prisma.EmployeeUncheckedUpdateWithoutChatMessagesInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutChatMessagesInput, Prisma.EmployeeUncheckedCreateWithoutChatMessagesInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutChatMessagesInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutChatMessagesInput, Prisma.EmployeeUncheckedUpdateWithoutChatMessagesInput>
+}
+
+export type EmployeeUpdateWithoutChatMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  location?: Prisma.LocationUpdateOneRequiredWithoutEmployeesNestedInput
+  recurringAvailability?: Prisma.RecurringAvailabilityUpdateManyWithoutEmployeeNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUpdateManyWithoutEmployeeNestedInput
+  shifts?: Prisma.ShiftUpdateManyWithoutEmployeeNestedInput
+  swapRequestsInitiated?: Prisma.SwapRequestUpdateManyWithoutRequesterNestedInput
+  swapRequestsProposed?: Prisma.SwapRequestUpdateManyWithoutProposedEmployeeNestedInput
+  sharingListings?: Prisma.SharingListingUpdateManyWithoutEmployeeNestedInput
+  sharingDeals?: Prisma.SharingDealUpdateManyWithoutEmployeeNestedInput
+  fixedShifts?: Prisma.FixedShiftUpdateManyWithoutEmployeeNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutEmployeeNestedInput
+  vacations?: Prisma.VacationUpdateManyWithoutEmployeeNestedInput
+  availabilityConfirmations?: Prisma.AvailabilityConfirmationUpdateManyWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutChatMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  locationId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  roles?: Prisma.EmployeeUpdaterolesInput | string[]
+  minHours?: Prisma.IntFieldUpdateOperationsInput | number
+  maxHours?: Prisma.IntFieldUpdateOperationsInput | number
+  category?: Prisma.EnumEmployeeCategoryFieldUpdateOperationsInput | $Enums.EmployeeCategory
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hourlyWageCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isWerkstudent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lectureFree?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wishWeight?: Prisma.EnumWishWeightFieldUpdateOperationsInput | $Enums.WishWeight
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recurringAvailability?: Prisma.RecurringAvailabilityUncheckedUpdateManyWithoutEmployeeNestedInput
+  availabilityOverrides?: Prisma.AvailabilityOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutEmployeeNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutEmployeeNestedInput
   swapRequestsInitiated?: Prisma.SwapRequestUncheckedUpdateManyWithoutRequesterNestedInput
   swapRequestsProposed?: Prisma.SwapRequestUncheckedUpdateManyWithoutProposedEmployeeNestedInput
@@ -2262,6 +2457,7 @@ export type EmployeeCreateWithoutVacationsInput = {
   fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutEmployeeInput
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutVacationsInput = {
@@ -2291,6 +2487,7 @@ export type EmployeeUncheckedCreateWithoutVacationsInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutEmployeeInput
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutVacationsInput = {
@@ -2336,6 +2533,7 @@ export type EmployeeUpdateWithoutVacationsInput = {
   fixedShifts?: Prisma.FixedShiftUpdateManyWithoutEmployeeNestedInput
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutVacationsInput = {
@@ -2365,6 +2563,7 @@ export type EmployeeUncheckedUpdateWithoutVacationsInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutEmployeeNestedInput
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateWithoutFixedShiftsInput = {
@@ -2394,6 +2593,7 @@ export type EmployeeCreateWithoutFixedShiftsInput = {
   blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutFixedShiftsInput = {
@@ -2423,6 +2623,7 @@ export type EmployeeUncheckedCreateWithoutFixedShiftsInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutFixedShiftsInput = {
@@ -2468,6 +2669,7 @@ export type EmployeeUpdateWithoutFixedShiftsInput = {
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutFixedShiftsInput = {
@@ -2497,6 +2699,7 @@ export type EmployeeUncheckedUpdateWithoutFixedShiftsInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateWithoutBlockedTimesInput = {
@@ -2526,6 +2729,7 @@ export type EmployeeCreateWithoutBlockedTimesInput = {
   fixedShifts?: Prisma.FixedShiftCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutBlockedTimesInput = {
@@ -2555,6 +2759,7 @@ export type EmployeeUncheckedCreateWithoutBlockedTimesInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedCreateNestedManyWithoutEmployeeInput
   vacations?: Prisma.VacationUncheckedCreateNestedManyWithoutEmployeeInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutBlockedTimesInput = {
@@ -2600,6 +2805,7 @@ export type EmployeeUpdateWithoutBlockedTimesInput = {
   fixedShifts?: Prisma.FixedShiftUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutBlockedTimesInput = {
@@ -2629,6 +2835,7 @@ export type EmployeeUncheckedUpdateWithoutBlockedTimesInput = {
   fixedShifts?: Prisma.FixedShiftUncheckedUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateManyLocationInput = {
@@ -2675,6 +2882,7 @@ export type EmployeeUpdateWithoutLocationInput = {
   blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutLocationInput = {
@@ -2704,6 +2912,7 @@ export type EmployeeUncheckedUpdateWithoutLocationInput = {
   blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutEmployeeNestedInput
   vacations?: Prisma.VacationUncheckedUpdateManyWithoutEmployeeNestedInput
   availabilityConfirmations?: Prisma.AvailabilityConfirmationUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateManyWithoutLocationInput = {
@@ -2741,6 +2950,7 @@ export type EmployeeCountOutputType = {
   blockedTimes: number
   vacations: number
   availabilityConfirmations: number
+  chatMessages: number
 }
 
 export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2756,6 +2966,7 @@ export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   blockedTimes?: boolean | EmployeeCountOutputTypeCountBlockedTimesArgs
   vacations?: boolean | EmployeeCountOutputTypeCountVacationsArgs
   availabilityConfirmations?: boolean | EmployeeCountOutputTypeCountAvailabilityConfirmationsArgs
+  chatMessages?: boolean | EmployeeCountOutputTypeCountChatMessagesArgs
 }
 
 /**
@@ -2852,6 +3063,13 @@ export type EmployeeCountOutputTypeCountAvailabilityConfirmationsArgs<ExtArgs ex
   where?: Prisma.AvailabilityConfirmationWhereInput
 }
 
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountChatMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChatMessageWhereInput
+}
+
 
 export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2882,6 +3100,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   blockedTimes?: boolean | Prisma.Employee$blockedTimesArgs<ExtArgs>
   vacations?: boolean | Prisma.Employee$vacationsArgs<ExtArgs>
   availabilityConfirmations?: boolean | Prisma.Employee$availabilityConfirmationsArgs<ExtArgs>
+  chatMessages?: boolean | Prisma.Employee$chatMessagesArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employee"]>
 
@@ -2956,6 +3175,7 @@ export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   blockedTimes?: boolean | Prisma.Employee$blockedTimesArgs<ExtArgs>
   vacations?: boolean | Prisma.Employee$vacationsArgs<ExtArgs>
   availabilityConfirmations?: boolean | Prisma.Employee$availabilityConfirmationsArgs<ExtArgs>
+  chatMessages?: boolean | Prisma.Employee$chatMessagesArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EmployeeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2981,6 +3201,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     blockedTimes: Prisma.$BlockedTimePayload<ExtArgs>[]
     vacations: Prisma.$VacationPayload<ExtArgs>[]
     availabilityConfirmations: Prisma.$AvailabilityConfirmationPayload<ExtArgs>[]
+    chatMessages: Prisma.$ChatMessagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3405,6 +3626,7 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
   blockedTimes<T extends Prisma.Employee$blockedTimesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$blockedTimesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BlockedTimePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vacations<T extends Prisma.Employee$vacationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$vacationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VacationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   availabilityConfirmations<T extends Prisma.Employee$availabilityConfirmationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$availabilityConfirmationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AvailabilityConfirmationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  chatMessages<T extends Prisma.Employee$chatMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$chatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4135,6 +4357,30 @@ export type Employee$availabilityConfirmationsArgs<ExtArgs extends runtime.Types
   take?: number
   skip?: number
   distinct?: Prisma.AvailabilityConfirmationScalarFieldEnum | Prisma.AvailabilityConfirmationScalarFieldEnum[]
+}
+
+/**
+ * Employee.chatMessages
+ */
+export type Employee$chatMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatMessage
+   */
+  select?: Prisma.ChatMessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChatMessage
+   */
+  omit?: Prisma.ChatMessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChatMessageInclude<ExtArgs> | null
+  where?: Prisma.ChatMessageWhereInput
+  orderBy?: Prisma.ChatMessageOrderByWithRelationInput | Prisma.ChatMessageOrderByWithRelationInput[]
+  cursor?: Prisma.ChatMessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatMessageScalarFieldEnum | Prisma.ChatMessageScalarFieldEnum[]
 }
 
 /**
