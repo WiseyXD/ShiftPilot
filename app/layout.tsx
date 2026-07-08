@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ShiftPilot — shift scheduling that runs itself",
+  title: "Covrly — shift scheduling that covers itself",
   description:
     "AI-handled shift scheduling for cafés and restaurants: availability, replacements, swaps and German working-time law — without the group-chat chaos.",
 };

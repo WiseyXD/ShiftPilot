@@ -16,11 +16,11 @@ export async function POST(req: NextRequest) {
 
   await sendEmail({
     to,
-    subject: "ShiftPilot — test email",
+    subject: "Covrly — test email",
     react: React.createElement(NotificationEmail, {
       heading: "Email delivery confirmed",
-      body: "This is a test email from ShiftPilot. If you received this, transactional email is working correctly.",
-      ctaLabel: "Visit ShiftPilot",
+      body: "This is a test email from Covrly. If you received this, transactional email is working correctly.",
+      ctaLabel: "Visit Covrly",
       ctaUrl: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
     }),
   })

@@ -24,7 +24,7 @@ export async function signUp(
   const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
 
   await prisma.user.create({ data: { email, passwordHash, trialEndsAt } })
-  await signIn("credentials", { email, password, redirectTo: "/dashboard" })
+  await signIn("credentials", { email, password, redirectTo: "/onboarding" })
   return null
 }
 

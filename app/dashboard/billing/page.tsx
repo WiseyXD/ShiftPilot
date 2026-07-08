@@ -45,7 +45,7 @@ export default async function BillingPage({
 
       {justSubscribed && (
         <div className="bg-green-50 border border-green-200 rounded-md px-4 py-3 text-sm text-green-700">
-          Subscription activated. Welcome to ShiftPilot!
+          Subscription activated. Welcome to Covrly!
         </div>
       )}
 

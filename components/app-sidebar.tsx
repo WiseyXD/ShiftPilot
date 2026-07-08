@@ -25,7 +25,7 @@ export function AppSidebar({ tab, setTab }: any) {
         <Sidebar collapsible="icon">
             <SidebarHeader>
                 <div className="px-2 py-2">
-                    <div className="font-semibold text-lg">ShiftPilot</div>
+                    <div className="font-semibold text-lg">Covrly</div>
                     <div className="text-xs text-muted-foreground">
                         Smart scheduling
                     </div>

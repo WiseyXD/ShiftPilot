@@ -1,5 +1,5 @@
 // wa.me nudges: WhatsApp is only the transport — every actionable link in the
-// message is a tokenised ShiftPilot URL, so the DB stays the source of truth.
+// message is a tokenised Covrly URL, so the DB stays the source of truth.
 
 export function buildWhatsAppUrl(message: string, phone?: string): string {
   const base = phone ? `https://wa.me/${phone}` : "https://wa.me/"
@@ -40,7 +40,7 @@ interface ManagerNudgeInput {
 // Managers confirm from their dashboard (auth-gated), exactly like the email.
 export function buildManagerNudgeMessage(input: ManagerNudgeInput): string {
   return [
-    `Hi! We responded to your ShiftPilot listing — ${input.role} on ${input.dateLabel}, ${input.window}.`,
+    `Hi! We responded to your Covrly listing — ${input.role} on ${input.dateLabel}, ${input.window}.`,
     `Can you confirm or decline the deal here?`,
     input.marketplaceUrl,
   ].join("\n")

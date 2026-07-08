@@ -55,8 +55,8 @@ export default async function DashboardPage() {
                   Try the demo
                 </Button>
               </Link>
-              <Link href="/dashboard/locations/new">
-                <Button variant="outline">Add real location</Button>
+              <Link href="/onboarding">
+                <Button variant="outline">Set up my café</Button>
               </Link>
             </div>
           </CardContent>

@@ -187,7 +187,7 @@ async function replyHelp(locationId: string, employeeId: string, name: string) {
   await pushAgentMessage(
     locationId,
     employeeId,
-    `Hallo ${name.split(" ")[0]}! 👋 Ich bin dein ShiftPilot-Assistent. Ich kann:\n\n• *"meine Schichten"* — deinen Plan zeigen\n• *"frei"* — freie Schichten zum Übernehmen\n• *"krank"* — dich krankmelden\n\nSchreib einfach, was du brauchst.`,
+    `Hallo ${name.split(" ")[0]}! 👋 Ich bin Covrly, dein Schicht-Assistent. Ich kann:\n\n• *"meine Schichten"* — deinen Plan zeigen\n• *"frei"* — freie Schichten zum Übernehmen\n• *"krank"* — dich krankmelden\n\nSchreib einfach, was du brauchst.`,
     [
       { label: "📋 Meine Schichten", command: "MENU:MY_SHIFTS" },
       { label: "🙋 Freie Schichten", command: "MENU:OPEN_SHIFTS" },

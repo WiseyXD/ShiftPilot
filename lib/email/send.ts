@@ -8,7 +8,7 @@ import * as React from "react";
 let _resend: Resend | null = null;
 const resendClient = () => (_resend ??= new Resend(process.env.RESEND_API_KEY));
 
-const FROM = process.env.EMAIL_FROM ?? "ShiftPilot <onboarding@resend.dev>";
+const FROM = process.env.EMAIL_FROM ?? "Covrly <onboarding@resend.dev>";
 
 interface SendEmailOptions {
   to: string | string[];

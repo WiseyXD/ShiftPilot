@@ -22,12 +22,12 @@ export function BaseLayout({ preview, children }: BaseLayoutProps) {
       <Body style={body}>
         <Container style={container}>
           <Section style={header}>
-            <Text style={logo}>ShiftPilot</Text>
+            <Text style={logo}>Covrly</Text>
           </Section>
           <Section style={content}>{children}</Section>
           <Section style={footer}>
             <Text style={footerText}>
-              ShiftPilot — AI-powered shift scheduling
+              Covrly — AI-powered shift scheduling
             </Text>
           </Section>
         </Container>

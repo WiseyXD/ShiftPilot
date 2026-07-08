@@ -11,7 +11,7 @@ export async function geocodeAddress(address: string): Promise<GeoPoint | null> 
 
   try {
     const res = await fetch(url, {
-      headers: { "User-Agent": "ShiftPilot/1.0 (staff-sharing marketplace)" },
+      headers: { "User-Agent": "Covrly/1.0 (staff-sharing marketplace)" },
     })
     if (!res.ok) return null
 

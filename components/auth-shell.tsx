@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Sparkles } from "lucide-react"
+import { Covrly } from "@/components/covrly"
 
 // Dark Roast auth shell: espresso brand panel on the left, cream form paper
 // on the right. Server-safe — pages drop their forms into <AuthPanel/>.
@@ -34,17 +34,16 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
         />
 
         <div className="relative rise rise-1 flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-            <Sparkles className="h-5 w-5" />
-          </div>
-          <span className="font-display text-xl font-semibold tracking-tight">ShiftPilot</span>
+          <Covrly size={40} wave />
+          <span className="font-display text-xl font-semibold tracking-tight">Covrly</span>
         </div>
 
         <div className="relative max-w-md">
+          <Covrly size={112} className="rise rise-1 mb-6 drop-shadow-xl" />
           <h1 className="rise rise-2 font-display text-[3.4rem] leading-[1.05] font-medium tracking-tight">
-            The roster
+            Every shift
             <br />
-            runs <em className="text-sidebar-primary not-italic font-semibold" style={{ fontStyle: "italic" }}>itself.</em>
+            <em className="text-sidebar-primary not-italic font-semibold" style={{ fontStyle: "italic" }}>covered.</em>
           </h1>
           <p className="rise rise-3 mt-5 text-sidebar-foreground/70 text-lg leading-relaxed">
             Scheduling, sick-call cover and German working-time law — handled,
@@ -90,10 +89,8 @@ export function AuthPanel({
   return (
     <div className="space-y-8">
       <div className="lg:hidden rise flex items-center gap-2.5">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-          <Sparkles className="h-5 w-5" />
-        </div>
-        <span className="font-display text-xl font-semibold tracking-tight">ShiftPilot</span>
+        <Covrly size={38} wave />
+        <span className="font-display text-xl font-semibold tracking-tight">Covrly</span>
       </div>
       <div>
         <h2 className="rise rise-1 font-display text-3xl font-medium tracking-tight">{title}</h2>

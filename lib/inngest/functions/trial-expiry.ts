@@ -29,10 +29,10 @@ export const trialExpiryWarning = inngest.createFunction(
         )
         await sendEmail({
           to: user.email,
-          subject: `Your ShiftPilot trial ends in ${daysLeft} day${daysLeft !== 1 ? "s" : ""}`,
+          subject: `Your Covrly trial ends in ${daysLeft} day${daysLeft !== 1 ? "s" : ""}`,
           react: React.createElement(NotificationEmail, {
             heading: `Your trial ends in ${daysLeft} day${daysLeft !== 1 ? "s" : ""}`,
-            body: "Don't lose access to ShiftPilot. Subscribe to keep automated scheduling running.",
+            body: "Don't lose access to Covrly. Subscribe to keep automated scheduling running.",
             ctaLabel: "Choose a plan",
             ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing`,
           }),

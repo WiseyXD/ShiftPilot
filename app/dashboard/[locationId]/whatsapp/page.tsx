@@ -28,7 +28,7 @@ export default async function WhatsAppPage({
     <div className="space-y-6">
       <PageHeader
         title="WhatsApp"
-        description="How your team actually talks to ShiftPilot — try it as one of your staff."
+        description="How your team actually talks to Covrly — try it as one of your staff."
       />
       <WhatsAppSimulator locationName={location.name} employees={location.employees} />
     </div>

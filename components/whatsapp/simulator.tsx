@@ -3,6 +3,7 @@
 import * as React from "react"
 import { sendChatMessage, clearChatThread } from "@/app/actions/whatsapp-sim"
 import { Send, Check, CheckCheck, MoreVertical, Search, Phone } from "lucide-react"
+import { Covrly } from "@/components/covrly"
 
 interface Employee {
   id: string
@@ -140,12 +141,12 @@ export function WhatsAppSimulator({
         <section className="flex min-w-0 flex-1 flex-col">
           {/* Header */}
           <header className="flex items-center gap-3 bg-[#008069] px-4 py-2.5 text-white">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-sm font-semibold">
-              {initials(selected.name)}
+            <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white">
+              <Covrly size={34} />
             </span>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-semibold leading-tight">{selected.name}</p>
-              <p className="text-[11px] text-white/70">ShiftPilot-Assistent · online</p>
+              <p className="text-[11px] text-white/70">Covrly · online</p>
             </div>
             <button
               onClick={reset}
@@ -165,7 +166,7 @@ export function WhatsAppSimulator({
             {messages.length === 0 && !pending && (
               <div className="mx-auto mt-6 max-w-xs rounded-lg bg-[#ffeecd] px-4 py-3 text-center text-xs text-[#54656f] shadow-sm">
                 Schreib <strong>&quot;Hallo&quot;</strong> oder tippe unten auf einen Vorschlag, um mit dem
-                ShiftPilot-Assistenten zu starten.
+                Covrly zu starten.
               </div>
             )}
             {messages.map((m) =>

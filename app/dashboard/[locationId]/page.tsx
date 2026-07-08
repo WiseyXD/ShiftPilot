@@ -10,7 +10,8 @@ import { confirmSickCall } from "@/app/actions/sick"
 import { getShiftStart, formatShiftDate } from "@/lib/scheduling/shift-date"
 import { getHoursDistribution } from "@/lib/analytics/kpis"
 import { RulesCard } from "@/components/dashboard/rules-card"
-import { Users, ClipboardList, Calendar, ChevronRight, ArrowRight, Siren, TriangleAlert } from "lucide-react"
+import { Users, ClipboardList, Calendar, ChevronRight, ArrowRight, Siren, TriangleAlert, CheckCircle2, Circle } from "lucide-react"
+import { Covrly } from "@/components/covrly"
 
 const currentMonday = () => {
   const d = new Date()
@@ -76,6 +77,53 @@ export default async function LocationPage({
   return (
     <div className="space-y-6">
       <PageHeader title={location.name} description={location.timezone} />
+
+      {location.schedules.length === 0 && (() => {
+        const steps = [
+          { done: location.shiftTemplates.length > 0, label: "Define your shifts", href: `/dashboard/${locationId}/templates` },
+          { done: location.employees.length > 0, label: "Add your team", href: `/dashboard/${locationId}/employees` },
+          {
+            done: false,
+            label: `Covrly drafts your first week automatically on ${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][location.generationDayOfWeek]}`,
+            href: `/dashboard/${locationId}/schedules`,
+          },
+          { done: false, label: "See how your team chats with Covrly", href: `/dashboard/${locationId}/whatsapp` },
+        ]
+        const doneCount = steps.filter((s) => s.done).length
+        return (
+          <Card className="border-primary/20 bg-primary/[0.04]">
+            <CardContent className="flex items-start gap-4 py-5">
+              <Covrly size={64} wave className="shrink-0" />
+              <div className="min-w-0 flex-1">
+                <p className="font-display text-lg font-medium text-foreground">
+                  Let&apos;s get {location.name} running
+                </p>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  {doneCount} of {steps.length} done — a couple more and you&apos;re set.
+                </p>
+                <ul className="mt-3 space-y-1.5">
+                  {steps.map((s) => (
+                    <li key={s.label}>
+                      <Link
+                        href={s.href}
+                        className="group flex items-center gap-2 text-sm text-foreground hover:text-primary"
+                      >
+                        {s.done ? (
+                          <CheckCircle2 className="h-4 w-4 text-primary" />
+                        ) : (
+                          <Circle className="h-4 w-4 text-muted-foreground/50" />
+                        )}
+                        <span className={s.done ? "text-muted-foreground line-through" : ""}>{s.label}</span>
+                        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/40 group-hover:translate-x-0.5 transition-transform" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        )
+      })()}
 
       {hoursAlerts.length > 0 && (
         <Card className="border-amber-200 bg-amber-50">
