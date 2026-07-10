@@ -7,8 +7,9 @@
 import { prisma } from "@/prisma/client"
 import { TOOLS } from "./tools"
 import { dispatchToolCall, confirmPending, declinePending, undoLast } from "./dispatcher"
-import { pushOwnerMessage, recordOwnerMessage } from "./owner-thread"
-import { currentMonday, DAY_LABELS } from "./resolve"
+import { pushOwnerMessage, recordOwnerMessage, ownerThreadLanguage } from "./owner-thread"
+import { currentMonday } from "./resolve"
+import { detectLanguage, DAY_LABELS, t } from "./i18n"
 import type { AgentContext, ToolOutcome } from "./types"
 
 const COMMAND_RE = /^([A-Z_]+):(.*)$/
@@ -22,9 +23,15 @@ export async function handleOwnerMessage(
 ) {
   const trimmed = text.trim()
   if (!trimmed) return
+
+  // Language of THIS message; button taps and unclassifiable text fall back
+  // to the thread's language, then English. Resolved before persisting so the
+  // current message doesn't shadow the lookup.
+  const lang = detectLanguage(trimmed) ?? (await ownerThreadLanguage(locationId, userId))
+
   await recordOwnerMessage(locationId, userId, trimmed)
 
-  const ctx: AgentContext = { userId, locationId, sourceText: trimmed }
+  const ctx: AgentContext = { userId, locationId, sourceText: trimmed, lang }
 
   // Deterministic command routing — buttons and the undo keyword.
   const cmd = trimmed.match(COMMAND_RE)
@@ -48,10 +55,7 @@ export async function handleOwnerMessage(
     await runLlmTurn(ctx, trimmed, pageContext)
   } catch (err) {
     console.error("copilot LLM turn failed:", err)
-    await pushOwnerMessage(
-      locationId,
-      "Gerade komme ich nicht an mein Sprachmodell. Du kannst mich trotzdem Dinge fragen wie *„Wer arbeitet Freitag?“* oder *„Erstelle den Plan“* — versuch es gleich nochmal."
-    )
+    await pushOwnerMessage(locationId, t(ctx.lang).llmDown)
   }
 }
 
@@ -98,9 +102,9 @@ You operate the scheduling system for them via tools. Never invent facts: look e
 Today is ${new Date().toLocaleDateString("de-DE", { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" })}; the current week starts Monday ${monday.toLocaleDateString("de-DE")}. dayOfWeek convention: 0=Sunday, 1=Monday … 6=Saturday. weekOffset: 0=current week, 1=next week.
 Roster: ${employees.map((e) => e.name).join(", ") || "(empty)"}.
 Shift templates: ${templates.map((t) => `${t.name} ${t.startTime}–${t.endTime}`).join(", ") || "(none)"}.
-Day labels used in replies: ${DAY_LABELS.join(", ")} (So=Sunday … Sa=Saturday).
+Day labels: ${DAY_LABELS.en.join(", ")} / German ${DAY_LABELS.de.join(", ")}.
 ${pageContext ? `The owner is currently looking at: ${pageContext}.` : ""}
-Reply in the language the owner writes (German or English), briefly and warmly — WhatsApp style, no markdown headers. Use *bold* sparingly. If a name or reference is ambiguous, ask instead of guessing.
+The owner's current language is ${ctx.lang === "de" ? "German" : "English"} — reply in it. Match their language if they switch (English and German are supported; when unclear, use English). Tool results arrive in English — translate the facts into the owner's language. Reply briefly and warmly — WhatsApp style, no markdown headers. Use *bold* sparingly. If a name or reference is ambiguous, ask instead of guessing.
 
 How approvals work — important: when a change needs the owner's confirmation (publishing, deleting someone, edits to an already-published week), the system posts the proposal RIGHT HERE in the chat with ✅/❌ buttons the moment you call the write tool. So to do such a thing, CALL THE TOOL. Never refuse because "approval is required", never describe an approval process, never offer to "guide them through it" — the buttons ARE the approval.
 
@@ -127,7 +131,7 @@ What you cannot do — be honest about it: a PENDING ("offen") shift is waiting 
     if (toolCalls.length === 0) {
       const content =
         typeof response.content === "string" ? response.content.trim() : ""
-      await pushOwnerMessage(ctx.locationId, content || "Wie kann ich helfen? ☕")
+      await pushOwnerMessage(ctx.locationId, content || t(ctx.lang).howCanIHelp)
       return
     }
 
@@ -145,8 +149,5 @@ What you cannot do — be honest about it: a PENDING ("offen") shift is waiting 
     }
   }
 
-  await pushOwnerMessage(
-    ctx.locationId,
-    "Da habe ich mich verlaufen 😅 — magst du es nochmal anders formulieren?"
-  )
+  await pushOwnerMessage(ctx.locationId, t(ctx.lang).lost)
 }

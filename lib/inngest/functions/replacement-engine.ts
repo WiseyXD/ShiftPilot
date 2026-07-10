@@ -10,7 +10,8 @@ import {
 } from "@/lib/scheduling/shift-date"
 import { runOutreachLoop, buildShiftCandidates } from "../outreach-loop"
 import { canBackfill } from "@/lib/marketplace/roster"
-import { pushOwnerMessage } from "@/lib/agent/owner-thread"
+import { pushOwnerMessage, ownerThreadLanguage } from "@/lib/agent/owner-thread"
+import { t, fmtDay } from "@/lib/agent/i18n"
 import * as React from "react"
 
 export const replacementEngine = inngest.createFunction(
@@ -119,9 +120,16 @@ export const replacementEngine = inngest.createFunction(
           })
 
           // The owner hears the outcome proactively in their copilot thread.
+          const lang = await ownerThreadLanguage(locationId)
           await pushOwnerMessage(
             locationId,
-            `✅ Ersatz gefunden: *${candidate.name}* übernimmt die ${shift.shiftTemplate.name}-Schicht am ${dateLabel} (${shift.shiftTemplate.startTime}–${shift.shiftTemplate.endTime})${shift.employee ? ` für ${shift.employee.name}` : ""}.`
+            t(lang).replacementFound(
+              candidate.name,
+              shift.shiftTemplate.name,
+              fmtDay(lang, shiftStart),
+              `${shift.shiftTemplate.startTime}–${shift.shiftTemplate.endTime}`,
+              shift.employee?.name ?? null
+            )
           )
         })
         return { outcome: "completed" }
@@ -156,9 +164,14 @@ export const replacementEngine = inngest.createFunction(
           },
         })
 
+        const lang = await ownerThreadLanguage(locationId)
         await pushOwnerMessage(
           locationId,
-          `⚠️ Für die ${shift.shiftTemplate.name}-Schicht am ${dateLabel} habe ich niemanden gefunden — ${result.candidatesTried} Personen gefragt, alle abgesagt oder keine Antwort. Sag mir, wer einspringen soll, dann trage ich es ein.`
+          t(lang).replacementFailed(
+            shift.shiftTemplate.name,
+            fmtDay(lang, shiftStart),
+            result.candidatesTried
+          )
         )
       })
     }

@@ -65,6 +65,7 @@ const ctx: AgentContext = {
   userId: "owner1",
   locationId: "loc1",
   sourceText: "nimm Emma für Freitag Abend",
+  lang: "de",
 }
 
 const monday = weekStartFor(0)

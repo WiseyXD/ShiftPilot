@@ -3,10 +3,13 @@
 // classifies (instant vs confirm-first) and executes them through the same
 // guarded doors as the dashboard/token/simulator paths.
 
+import type { Lang } from "./i18n"
+
 export interface AgentContext {
   userId: string
   locationId: string
   sourceText: string // what the owner originally typed — lands in the audit log
+  lang: Lang // detected from the owner's message (thread fallback, default en)
 }
 
 export interface ChatAction {

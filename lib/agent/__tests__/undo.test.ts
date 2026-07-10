@@ -11,8 +11,20 @@ describe("buildInverse — undo descriptors", () => {
     expect(inv).toEqual({
       tool: "reassign_shift",
       params: { shiftId: "sh1", employeeId: "old", override: true },
-      preview: "Schicht zurück an Emma",
+      preview: "Shift back to Emma",
     })
+  })
+
+  it("previews follow the owner's language", () => {
+    const de = buildInverse(
+      {
+        tool: "reassign_shift",
+        params: { shiftId: "sh1", employeeId: "new" },
+        prior: { employeeId: "old", employeeName: "Emma" },
+      },
+      "de"
+    )
+    expect(de?.preview).toBe("Schicht zurück an Emma")
   })
 
   it("reassign onto an open shift inverts to unassign", () => {

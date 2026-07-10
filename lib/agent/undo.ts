@@ -2,8 +2,10 @@
 // executor captured, produce the fully-resolved tool call that reverses it —
 // or null when the action is inherently irreversible (publishing a schedule,
 // deleting a person, reporting sickness). The inverse re-runs through the
-// dispatcher, so legality is re-checked at undo time, never assumed.
+// dispatcher, so legality is re-checked at undo time, never assumed. Previews
+// are written in the owner's language at execute time.
 
+import { DEFAULT_LANG, t, type Lang } from "./i18n"
 import type { InverseCall } from "./types"
 
 export interface ExecutedAction {
@@ -13,8 +15,9 @@ export interface ExecutedAction {
   prior?: Record<string, unknown>
 }
 
-export function buildInverse(action: ExecutedAction): InverseCall | null {
+export function buildInverse(action: ExecutedAction, lang: Lang = DEFAULT_LANG): InverseCall | null {
   const { tool, params, prior } = action
+  const tr = t(lang)
   switch (tool) {
     case "reassign_shift": {
       const prevId = (prior?.employeeId as string | null) ?? null
@@ -22,14 +25,14 @@ export function buildInverse(action: ExecutedAction): InverseCall | null {
         return {
           tool: "unassign_shift",
           params: { shiftId: params.shiftId },
-          preview: "Schicht wieder freigeben",
+          preview: tr.releaseShift,
         }
       }
       return {
         tool: "reassign_shift",
         // prior assignment was reality before — soft conflicts don't stall an undo
         params: { shiftId: params.shiftId, employeeId: prevId, override: true },
-        preview: `Schicht zurück an ${(prior?.employeeName as string) ?? "vorherige Person"}`,
+        preview: tr.shiftBackTo((prior?.employeeName as string) ?? tr.previousPerson),
       }
     }
 
@@ -39,7 +42,7 @@ export function buildInverse(action: ExecutedAction): InverseCall | null {
       return {
         tool: "reassign_shift",
         params: { shiftId: params.shiftId, employeeId: prevId, override: true },
-        preview: `Schicht zurück an ${(prior?.employeeName as string) ?? "vorherige Person"}`,
+        preview: tr.shiftBackTo((prior?.employeeName as string) ?? tr.previousPerson),
       }
     }
 
@@ -48,7 +51,7 @@ export function buildInverse(action: ExecutedAction): InverseCall | null {
         ? {
             tool: "delete_vacation",
             params: { vacationId: prior.vacationId },
-            preview: "Urlaub wieder entfernen",
+            preview: tr.removeVacationAgain,
           }
         : null
 
@@ -61,13 +64,13 @@ export function buildInverse(action: ExecutedAction): InverseCall | null {
               startDate: prior.startDate,
               endDate: prior.endDate,
             },
-            preview: "Urlaub wiederherstellen",
+            preview: tr.restoreVacation,
           }
         : null
 
     case "create_rule":
       return prior?.ruleId
-        ? { tool: "delete_rule", params: { ruleId: prior.ruleId }, preview: "Regel wieder löschen" }
+        ? { tool: "delete_rule", params: { ruleId: prior.ruleId }, preview: tr.deleteRuleAgain }
         : null
 
     case "delete_rule":
@@ -80,7 +83,7 @@ export function buildInverse(action: ExecutedAction): InverseCall | null {
               sourceText: prior.sourceText,
               plain: prior.plain,
             },
-            preview: "Regel wiederherstellen",
+            preview: tr.restoreRule,
           }
         : null
 
@@ -89,7 +92,7 @@ export function buildInverse(action: ExecutedAction): InverseCall | null {
         ? {
             tool: "delete_employee",
             params: { employeeId: prior.employeeId },
-            preview: `${(prior?.name as string) ?? "Person"} wieder entfernen`,
+            preview: tr.removePersonAgain((prior?.name as string) ?? tr.somebody),
           }
         : null
 
@@ -98,7 +101,7 @@ export function buildInverse(action: ExecutedAction): InverseCall | null {
         ? {
             tool: "update_employee",
             params: { employeeId: params.employeeId, fields: prior.fields },
-            preview: "Mitarbeiterdaten zurücksetzen",
+            preview: tr.resetEmployee,
           }
         : null
 

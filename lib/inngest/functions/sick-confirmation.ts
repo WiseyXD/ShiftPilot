@@ -4,7 +4,8 @@ import { generateManagerToken } from "@/lib/tokens/generate"
 import { sendEmail } from "@/lib/email/send"
 import { NotificationEmail } from "@/lib/email/templates/notification"
 import { getShiftStart, formatShiftDate } from "@/lib/scheduling/shift-date"
-import { pushOwnerMessage } from "@/lib/agent/owner-thread"
+import { pushOwnerMessage, ownerThreadLanguage } from "@/lib/agent/owner-thread"
+import { t, fmtDay } from "@/lib/agent/i18n"
 import * as React from "react"
 
 // Reminder cadence: escalating but finite — the red dashboard banner persists
@@ -48,12 +49,17 @@ export const sickConfirmationNag = inngest.createFunction(
     const summary = `${context.employee.name} — ${context.shift.shiftTemplate.name} on ${formatShiftDate(start)}`
 
     // Copilot thread first: the owner usually sees chat before email.
-    await step.run("notify-copilot", () =>
-      pushOwnerMessage(
+    await step.run("notify-copilot", async () => {
+      const lang = await ownerThreadLanguage(sickCall.locationId)
+      await pushOwnerMessage(
         sickCall.locationId,
-        `🤒 *${context.employee!.name}* hat sich krankgemeldet (${context.shift!.shiftTemplate.name} am ${formatShiftDate(start)}). Ich suche bereits Ersatz — bitte bestätige die Krankmeldung im Dashboard oder per E-Mail.`
+        t(lang).sickCallPush(
+          context.employee!.name,
+          context.shift!.shiftTemplate.name,
+          fmtDay(lang, start)
+        )
       )
-    )
+    })
 
     for (let attempt = 0; attempt <= REMINDER_DELAYS.length; attempt++) {
       await step.run(`notify-${attempt}`, async () => {

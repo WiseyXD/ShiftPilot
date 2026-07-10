@@ -110,7 +110,7 @@ export function AgentChatPanel({ locations }: { locations: { id: string; name: s
             </div>
             <button
               onClick={() => send("undo")}
-              title="Letzte Aktion rückgängig machen"
+              title="Undo the last action"
               className="rounded p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
             >
               <RotateCcw className="h-4 w-4" />
@@ -127,9 +127,10 @@ export function AgentChatPanel({ locations }: { locations: { id: string; name: s
           <div ref={scrollRef} className="flex-1 space-y-2 overflow-y-auto bg-background px-4 py-4">
             {messages.length === 0 && !pending && (
               <div className="mx-auto mt-8 max-w-xs rounded-lg border border-dashed border-border px-4 py-4 text-center text-xs text-muted-foreground">
-                Sag mir einfach, was du brauchst — z.&nbsp;B. <strong>„Wer arbeitet Freitag?“</strong>,{" "}
-                <strong>„Erstell den Plan für nächste Woche“</strong> oder{" "}
-                <strong>„Marco ist krank“</strong>.
+                Just tell me what you need — English or German. E.g.{" "}
+                <strong>&quot;Who works Friday?&quot;</strong>,{" "}
+                <strong>&quot;Create next week&apos;s schedule&quot;</strong> or{" "}
+                <strong>&quot;Marco is sick&quot;</strong>.
               </div>
             )}
             {messages.map((m) =>
@@ -176,7 +177,7 @@ export function AgentChatPanel({ locations }: { locations: { id: string; name: s
             )}
             {pending && (
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Covrly size={18} /> denkt nach…
+                <Covrly size={18} /> thinking…
               </div>
             )}
           </div>
@@ -192,7 +193,7 @@ export function AgentChatPanel({ locations }: { locations: { id: string; name: s
             <input
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder="Was soll ich tun?"
+              placeholder="What should I do?"
               className="flex-1 rounded-full border border-border bg-background px-4 py-2 text-sm outline-none focus:border-primary"
             />
             <button

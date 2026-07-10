@@ -4,7 +4,34 @@
 // Kept free of app/actions imports so Inngest functions can import it.
 
 import { prisma } from "@/prisma/client"
+import { detectLanguage, DEFAULT_LANG, type Lang } from "./i18n"
 import type { ChatAction } from "./types"
+
+// The thread's language: the most recent owner message we can classify wins;
+// a fresh thread defaults to English. Proactive pushes and button taps (which
+// carry no language themselves) use this.
+export async function ownerThreadLanguage(locationId: string, userId?: string): Promise<Lang> {
+  let ownerId = userId
+  if (!ownerId) {
+    const location = await prisma.location.findUnique({
+      where: { id: locationId },
+      select: { ownerId: true },
+    })
+    if (!location) return DEFAULT_LANG
+    ownerId = location.ownerId
+  }
+  const recent = await prisma.chatMessage.findMany({
+    where: { locationId, userId: ownerId, role: "OWNER" },
+    orderBy: { createdAt: "desc" },
+    take: 10,
+    select: { body: true },
+  })
+  for (const m of recent) {
+    const lang = detectLanguage(m.body)
+    if (lang) return lang
+  }
+  return DEFAULT_LANG
+}
 
 export async function pushOwnerMessage(
   locationId: string,

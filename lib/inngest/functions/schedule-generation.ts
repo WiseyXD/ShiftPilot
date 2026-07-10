@@ -11,7 +11,8 @@ import { partitionSchedulable } from "@/lib/scheduling/deadline"
 import { generateToken } from "@/lib/tokens/generate"
 import { sendEmail } from "@/lib/email/send"
 import { ScheduleDraftEmail } from "@/lib/email/templates/schedule-draft"
-import { pushOwnerMessage } from "@/lib/agent/owner-thread"
+import { pushOwnerMessage, ownerThreadLanguage } from "@/lib/agent/owner-thread"
+import { t, fmtDate } from "@/lib/agent/i18n"
 import * as React from "react"
 
 export const weeklyScheduleGeneration = inngest.createFunction(
@@ -199,9 +200,16 @@ export const weeklyScheduleGeneration = inngest.createFunction(
 
         // Copilot thread: the owner asked for this (or expects the weekly
         // rhythm) — tell them the draft is ready, right where they work.
+        const lang = await ownerThreadLanguage(location.id)
         await pushOwnerMessage(
           location.id,
-          `🛠️ Der Entwurf für die Woche ab ${weekStart.toLocaleDateString("de-DE")} ist fertig: ${assignments.filter((a) => a.filled).length}/${assignments.length} Schichten besetzt${unfilled.length > 0 ? `, ${unfilled.length} noch offen` : ""}${dropped.length > 0 ? ` (${dropped.map((e) => e.name).join(", ")} ohne Verfügbarkeits-Bestätigung ausgelassen)` : ""}. Sag *„veröffentlichen“*, wenn er passt.`
+          t(lang).draftReady(
+            fmtDate(lang, weekStart),
+            assignments.filter((a) => a.filled).length,
+            assignments.length,
+            unfilled.length,
+            dropped.map((e) => e.name).join(", ")
+          )
         )
 
         generated++

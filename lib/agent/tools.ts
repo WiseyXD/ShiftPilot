@@ -8,7 +8,7 @@
 import { z } from "zod"
 import { prisma } from "@/prisma/client"
 import { inngest } from "@/lib/inngest/client"
-import { getShiftStart, formatShiftDate } from "@/lib/scheduling/shift-date"
+import { getShiftStart } from "@/lib/scheduling/shift-date"
 import { resolveNames } from "@/lib/scheduling/manager-rules"
 import { getHoursDistribution } from "@/lib/analytics/kpis"
 import { reassignShift } from "@/app/actions/edit-shift"
@@ -16,8 +16,9 @@ import { approveSchedule, manualGenerateSchedule } from "@/app/actions/schedule"
 import { parseManagerRule, saveManagerRule, deleteManagerRule, type RuleDraft } from "@/app/actions/manager-rules"
 import { createVacation, deleteVacation } from "@/app/actions/vacation"
 import { createEmployee, updateEmployee, deleteEmployee } from "@/app/actions/employee"
-import { weekStartFor, currentMonday, resolveShift, shiftLabel, chronologicalDay, DAY_LABELS, type ResolvableShift } from "./resolve"
+import { weekStartFor, currentMonday, resolveShift, shiftLabel, chronologicalDay, type ResolvableShift } from "./resolve"
 import { buildInverse } from "./undo"
+import { t, fmtDate, fmtDay, type Lang } from "./i18n"
 import type { AgentContext, InverseCall } from "./types"
 import type { ConfirmTarget } from "./classify"
 
@@ -64,8 +65,10 @@ async function safeSend(event: { name: string; data: Record<string, unknown> }) 
   }
 }
 
-const fmtDate = (d: Date) =>
-  d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })
+// Read-tool outputs are always English: they only feed the LLM, which answers
+// in the owner's language. Write-tool previews/replies are pushed verbatim,
+// so those use the owner's language via t(ctx.lang).
+const fmtDateEn = (d: Date) => fmtDate("en", d)
 
 type EmployeeRef = { error: string; id?: never; name?: never } | { error?: never; id: string; name: string }
 
@@ -108,19 +111,19 @@ async function loadWeekShifts(locationId: string, weekStart: Date) {
 }
 
 // Real calendar label for a shift ("Fri 18 Jul · Abend 17:00–23:00").
-function realShiftLabel(weekStart: Date, s: ResolvableShift) {
+function realShiftLabel(lang: Lang, weekStart: Date, s: ResolvableShift) {
   const start = getShiftStart(new Date(weekStart), s.dayOfWeek, s.startTime)
-  return `${formatShiftDate(start)} · ${s.templateName} ${s.startTime}–${s.endTime}`
+  return `${fmtDay(lang, start)} · ${s.templateName} ${s.startTime}–${s.endTime}`
 }
 
-const STATUS_DE: Record<string, string> = {
-  PENDING: "offen (unbestätigt)",
-  ACCEPTED: "bestätigt",
-  DECLINED: "abgesagt",
-  REASSIGNED: "übernommen",
-  UNASSIGNED: "NICHT BESETZT",
-  LENT_OUT: "verliehen",
-  NO_SHOW: "nicht erschienen",
+const STATUS_EN: Record<string, string> = {
+  PENDING: "pending (unconfirmed)",
+  ACCEPTED: "confirmed",
+  DECLINED: "declined",
+  REASSIGNED: "covered",
+  UNASSIGNED: "UNASSIGNED",
+  LENT_OUT: "lent out",
+  NO_SHOW: "no-show",
 }
 
 const weekOffsetParam = z
@@ -148,11 +151,11 @@ const getSchedule: ReadTool = {
   async run(ctx, params: { weekOffset: number }) {
     const weekStart = weekStartFor(params.weekOffset)
     const loaded = await loadWeekShifts(ctx.locationId, weekStart)
-    if (!loaded) return `Für die Woche ab ${fmtDate(weekStart)} gibt es keinen Plan.`
+    if (!loaded) return `There is no schedule for the week starting ${fmtDateEn(weekStart)}.`
     const lines = [...loaded.shifts]
       .sort((a, b) => chronologicalDay(a.dayOfWeek) - chronologicalDay(b.dayOfWeek) || a.startTime.localeCompare(b.startTime))
-      .map((s) => `${realShiftLabel(weekStart, s)} — ${s.employeeName ?? "—"} [${STATUS_DE[s.status] ?? s.status}]`)
-    return `Plan Woche ab ${fmtDate(weekStart)} (Status: ${loaded.schedule.status}):\n${lines.join("\n")}`
+      .map((s) => `${realShiftLabel("en", weekStart, s)} — ${s.employeeName ?? "—"} [${STATUS_EN[s.status] ?? s.status}]`)
+    return `Schedule for the week starting ${fmtDateEn(weekStart)} (status: ${loaded.schedule.status}):\n${lines.join("\n")}`
   },
 }
 
@@ -164,17 +167,17 @@ const getHours: ReadTool = {
   async run(ctx, params: { weekOffset: number }) {
     const weekStart = weekStartFor(params.weekOffset)
     const rows = await getHoursDistribution(ctx.locationId, weekStart)
-    if (rows.length === 0) return "Keine Mitarbeitenden angelegt."
+    if (rows.length === 0) return "No employees yet."
     const lines = rows.map((r) => {
       const flags = [
-        r.status === "over" ? "❌ ÜBER dem Limit" : null,
-        r.status !== "over" && r.approaching ? "⚠️ nähert sich dem Limit" : null,
-        r.status === "under" ? "unter Mindeststunden" : null,
-        r.weeksOverBudget ? `Werkstudent-Budget: ${r.weeksOverBudget.used}/${r.weeksOverBudget.budget} Wochen über 20h` : null,
+        r.status === "over" ? "❌ OVER the limit" : null,
+        r.status !== "over" && r.approaching ? "⚠️ approaching the limit" : null,
+        r.status === "under" ? "below contract minimum" : null,
+        r.weeksOverBudget ? `Werkstudent budget: ${r.weeksOverBudget.used}/${r.weeksOverBudget.budget} weeks over 20h` : null,
       ].filter(Boolean)
-      return `${r.name}: ${r.assignedHours}h geplant (Vertrag ${r.minHours}–${r.maxHours}h, bindendes Max ${Math.round(r.bindingMax.hours * 10) / 10}h laut ${r.bindingMax.source})${flags.length ? ` — ${flags.join("; ")}` : ""}`
+      return `${r.name}: ${r.assignedHours}h planned (contract ${r.minHours}–${r.maxHours}h, binding max ${Math.round(r.bindingMax.hours * 10) / 10}h per ${r.bindingMax.source})${flags.length ? ` — ${flags.join("; ")}` : ""}`
     })
-    return `Stunden Woche ab ${fmtDate(weekStart)}:\n${lines.join("\n")}`
+    return `Hours for the week starting ${fmtDateEn(weekStart)}:\n${lines.join("\n")}`
   },
 }
 
@@ -185,10 +188,10 @@ const getOpenShifts: ReadTool = {
   async run(ctx, params: { weekOffset: number }) {
     const weekStart = weekStartFor(params.weekOffset)
     const loaded = await loadWeekShifts(ctx.locationId, weekStart)
-    if (!loaded) return `Für die Woche ab ${fmtDate(weekStart)} gibt es keinen Plan.`
+    if (!loaded) return `There is no schedule for the week starting ${fmtDateEn(weekStart)}.`
     const open = loaded.shifts.filter((s) => s.status === "UNASSIGNED")
-    if (open.length === 0) return "Alle Schichten dieser Woche sind besetzt. 🎉"
-    return `Offene Schichten:\n${open.map((s) => realShiftLabel(weekStart, s)).join("\n")}`
+    if (open.length === 0) return "Every shift that week is covered. 🎉"
+    return `Open shifts:\n${open.map((s) => realShiftLabel("en", weekStart, s)).join("\n")}`
   },
 }
 
@@ -204,7 +207,7 @@ const getUnconfirmedAvailability: ReadTool = {
       where: { locationId: ctx.locationId, category: "MINIJOB_ZEITARBEIT" },
       select: { id: true, name: true },
     })
-    if (catA.length === 0) return "Keine verfügbarkeitspflichtigen (Minijob-)Mitarbeitenden."
+    if (catA.length === 0) return "No availability-bound (minijob) employees."
     const [confirmations, overrides] = await Promise.all([
       prisma.availabilityConfirmation.findMany({
         where: { weekStart, employeeId: { in: catA.map((e) => e.id) } },
@@ -217,8 +220,8 @@ const getUnconfirmedAvailability: ReadTool = {
     ])
     const confirmed = new Set([...confirmations, ...overrides].map((c) => c.employeeId))
     const missing = catA.filter((e) => !confirmed.has(e.id))
-    if (missing.length === 0) return `Alle haben für die Woche ab ${fmtDate(weekStart)} bestätigt. ✅`
-    return `Noch keine Bestätigung für die Woche ab ${fmtDate(weekStart)}: ${missing.map((e) => e.name).join(", ")}`
+    if (missing.length === 0) return `Everyone has confirmed for the week starting ${fmtDateEn(weekStart)}. ✅`
+    return `Not yet confirmed for the week starting ${fmtDateEn(weekStart)}: ${missing.map((e) => e.name).join(", ")}`
   },
 }
 
@@ -243,15 +246,15 @@ const getOpenIssues: ReadTool = {
         where: { id: { in: sickCalls.map((s) => s.employeeId) } },
         select: { id: true, name: true },
       })
-      const nameOf = (id: string) => employees.find((e) => e.id === id)?.name ?? "Unbekannt"
+      const nameOf = (id: string) => employees.find((e) => e.id === id)?.name ?? "Unknown"
       parts.push(
-        `Unbestätigte Krankmeldungen:\n${sickCalls.map((s) => `- ${nameOf(s.employeeId)} (gemeldet ${fmtDate(s.reportedAt)})`).join("\n")}`
+        `Unconfirmed sick calls:\n${sickCalls.map((s) => `- ${nameOf(s.employeeId)} (reported ${fmtDateEn(s.reportedAt)})`).join("\n")}`
       )
     }
     if (swaps.length > 0) {
-      parts.push(`Offene Tauschanfragen:\n${swaps.map((s) => `- von ${s.requester.name}`).join("\n")}`)
+      parts.push(`Pending swap requests:\n${swaps.map((s) => `- from ${s.requester.name}`).join("\n")}`)
     }
-    return parts.length ? parts.join("\n\n") : "Nichts offen — alles erledigt. ✅"
+    return parts.length ? parts.join("\n\n") : "Nothing open — all handled. ✅"
   },
 }
 
@@ -264,8 +267,8 @@ const listRules: ReadTool = {
       where: { locationId: ctx.locationId },
       orderBy: { createdAt: "asc" },
     })
-    if (rules.length === 0) return "Keine Regeln hinterlegt."
-    return `Regeln:\n${rules.map((r) => `- ${r.plain} (id: ${r.id})`).join("\n")}`
+    if (rules.length === 0) return "No rules saved."
+    return `Rules:\n${rules.map((r) => `- ${r.plain} (id: ${r.id})`).join("\n")}`
   },
 }
 
@@ -285,9 +288,9 @@ const listVacations: ReadTool = {
       include: { employee: { select: { name: true } } },
       orderBy: { startDate: "asc" },
     })
-    if (vacations.length === 0) return "Keine Urlaube eingetragen."
-    return `Urlaube:\n${vacations
-      .map((v) => `- ${v.employee.name}: ${fmtDate(v.startDate)}–${fmtDate(v.endDate)} (id: ${v.id})`)
+    if (vacations.length === 0) return "No vacations recorded."
+    return `Vacations:\n${vacations
+      .map((v) => `- ${v.employee.name}: ${fmtDateEn(v.startDate)}–${fmtDateEn(v.endDate)} (id: ${v.id})`)
       .join("\n")}`
   },
 }
@@ -301,16 +304,16 @@ const listEmployees: ReadTool = {
       where: { locationId: ctx.locationId },
       orderBy: { name: "asc" },
     })
-    if (employees.length === 0) return "Noch keine Mitarbeitenden angelegt."
+    if (employees.length === 0) return "No employees yet."
     return employees
       .map((e) => {
         const bits = [
-          e.category === "TEILZEIT_FEST" ? "Fest/Teilzeit" : "Minijob",
+          e.category === "TEILZEIT_FEST" ? "part/full-time" : "minijob",
           e.roles.join("/") || null,
           `${e.minHours}–${e.maxHours}h`,
           e.hourlyWageCents ? `${(e.hourlyWageCents / 100).toFixed(2)}€/h` : null,
           e.isWerkstudent ? "Werkstudent" : null,
-          e.birthDate ? `geb. ${fmtDate(e.birthDate)}` : null,
+          e.birthDate ? `born ${fmtDateEn(e.birthDate)}` : null,
         ].filter(Boolean)
         return `- ${e.name} — ${bits.join(", ")}`
       })
@@ -342,16 +345,16 @@ async function resolveTargetShift(
 ): Promise<ShiftTarget> {
   const weekStart = weekStartFor(params.weekOffset)
   const loaded = await loadWeekShifts(ctx.locationId, weekStart)
-  if (!loaded) return { error: `Für die Woche ab ${fmtDate(weekStart)} gibt es keinen Plan.` }
+  if (!loaded) return { error: t(ctx.lang).noPlanForWeek(fmtDate(ctx.lang, weekStart)) }
   const query = {
     dayOfWeek: params.dayOfWeek,
     templateName: params.templateName,
     employeeName: params.currentEmployeeName,
   }
-  let result = resolveShift(loaded.shifts, query)
+  let result = resolveShift(loaded.shifts, query, ctx.lang)
   // Assigning without naming who's replaced usually means the open slot.
   if (!result.ok && params.preferUnassigned && !params.currentEmployeeName) {
-    const unassigned = resolveShift(loaded.shifts, { ...query, unassignedOnly: true })
+    const unassigned = resolveShift(loaded.shifts, { ...query, unassignedOnly: true }, ctx.lang)
     if (unassigned.ok) result = unassigned
   }
   if (!result.ok) return { error: result.error }
@@ -374,8 +377,9 @@ const reassignShiftTool: WriteTool = {
     if (emp.error !== undefined) return { error: emp.error }
     const target = await resolveTargetShift(ctx, { ...params, preferUnassigned: true })
     if (target.error !== undefined) return { error: target.error }
+    const tr = t(ctx.lang)
     return {
-      preview: `${emp.name} übernimmt: ${realShiftLabel(target.weekStart, target.shift)}${target.shift.employeeName ? ` (statt ${target.shift.employeeName})` : ""}`,
+      preview: `${tr.takesOver(emp.name, realShiftLabel(ctx.lang, target.weekStart, target.shift))}${target.shift.employeeName ? tr.insteadOf(target.shift.employeeName) : ""}`,
       execParams: { shiftId: target.shift.id, employeeId: emp.id },
       target: { scheduleStatus: target.scheduleStatus },
     }
@@ -393,9 +397,10 @@ const reassignShiftTool: WriteTool = {
       }),
       prisma.employee.findFirst({ where: { id: employeeId, location: { ownerId: ctx.userId } } }),
     ])
-    if (!shift || !employee) return { error: "Schicht oder Person nicht (mehr) gefunden." }
+    const tr = t(ctx.lang)
+    if (!shift || !employee) return { error: tr.shiftOrPersonGone }
     const prior = { employeeId: shift.employeeId, employeeName: shift.employee?.name ?? null }
-    const label = realShiftLabel(new Date(shift.schedule.weekStart), {
+    const label = realShiftLabel(ctx.lang, new Date(shift.schedule.weekStart), {
       id: shift.id,
       dayOfWeek: shift.dayOfWeek,
       status: shift.status,
@@ -416,14 +421,14 @@ const reassignShiftTool: WriteTool = {
     if (result && "warning" in result) {
       return {
         confirmFirst: {
-          preview: `⚠️ ${result.warning} — ${employee.name} trotzdem zuweisen (${label})?`,
+          preview: tr.overrideAnyway(result.warning, employee.name, label),
           execParams: { shiftId, employeeId, override: true },
         },
       }
     }
     return {
-      reply: `✅ ${employee.name} übernimmt: ${label}${prior.employeeName ? ` (statt ${prior.employeeName})` : ""}. Die Benachrichtigungen sind raus.`,
-      inverse: buildInverse({ tool: "reassign_shift", params: { shiftId, employeeId }, prior }),
+      reply: tr.reassigned(employee.name, label, prior.employeeName),
+      inverse: buildInverse({ tool: "reassign_shift", params: { shiftId, employeeId }, prior }, ctx.lang),
     }
   },
 }
@@ -441,9 +446,10 @@ const unassignShiftTool: WriteTool = {
   async prepare(ctx, params: { employeeName?: string; dayOfWeek?: number; templateName?: string; weekOffset: number }) {
     const target = await resolveTargetShift(ctx, { ...params, currentEmployeeName: params.employeeName })
     if (target.error !== undefined) return { error: target.error }
-    if (!target.shift.employeeId) return { error: "Diese Schicht ist gar nicht besetzt." }
+    const tr = t(ctx.lang)
+    if (!target.shift.employeeId) return { error: tr.shiftNotAssigned }
     return {
-      preview: `${target.shift.employeeName} von der Schicht nehmen: ${realShiftLabel(target.weekStart, target.shift)}`,
+      preview: tr.takeOffShift(target.shift.employeeName ?? "?", realShiftLabel(ctx.lang, target.weekStart, target.shift)),
       execParams: { shiftId: target.shift.id },
       target: { scheduleStatus: target.scheduleStatus },
     }
@@ -458,7 +464,8 @@ const unassignShiftTool: WriteTool = {
         schedule: { select: { weekStart: true } },
       },
     })
-    if (!shift) return { error: "Schicht nicht (mehr) gefunden." }
+    const tr = t(ctx.lang)
+    if (!shift) return { error: tr.shiftGone }
     const prior = { employeeId: shift.employeeId, employeeName: shift.employee?.name ?? null }
 
     const fd = new FormData()
@@ -467,8 +474,8 @@ const unassignShiftTool: WriteTool = {
     const result = await reassignShift(null, fd)
     if (result && "error" in result) return { error: result.error }
     return {
-      reply: `✅ ${prior.employeeName ?? "Die Person"} ist von der Schicht runter — sie ist jetzt offen. Soll ich jemanden suchen? Sag einfach, wer übernehmen soll, oder frag nach offenen Schichten.`,
-      inverse: buildInverse({ tool: "unassign_shift", params: { shiftId }, prior }),
+      reply: tr.unassigned(prior.employeeName ?? tr.somebody),
+      inverse: buildInverse({ tool: "unassign_shift", params: { shiftId }, prior }, ctx.lang),
     }
   },
 }
@@ -477,18 +484,15 @@ const generateScheduleTool: WriteTool = {
   kind: "write",
   description: "Generate a new draft schedule for next week (runs the AI scheduler in the background).",
   schema: z.object({}),
-  async prepare() {
-    return { preview: "Neuen Wochenplan erstellen", execParams: {} }
+  async prepare(ctx) {
+    return { preview: t(ctx.lang).generateDraft, execParams: {} }
   },
   async execute(ctx) {
     const result = await manualGenerateSchedule(ctx.locationId)
     if (result && "error" in result && typeof result.error === "string") {
       return { error: result.error }
     }
-    return {
-      reply: "🛠️ Ich erstelle den Entwurf — das dauert einen Moment. Ich melde mich hier, sobald er fertig ist.",
-      inverse: null,
-    }
+    return { reply: t(ctx.lang).generating, inverse: null }
   },
 }
 
@@ -508,10 +512,10 @@ const publishScheduleTool: WriteTool = {
       orderBy: { weekStart: "desc" },
       include: { shifts: { select: { status: true } } },
     })
-    if (!schedule) return { error: "Es gibt gerade keinen Entwurf zum Veröffentlichen." }
+    if (!schedule) return { error: t(ctx.lang).noDraftToPublish }
     const open = schedule.shifts.filter((s) => s.status === "UNASSIGNED").length
     return {
-      preview: `Plan für die Woche ab ${fmtDate(schedule.weekStart)} veröffentlichen — ${schedule.shifts.length} Schichten${open > 0 ? `, davon ${open} noch offen` : ""}. Alle Mitarbeitenden werden benachrichtigt.`,
+      preview: t(ctx.lang).publishPreview(fmtDate(ctx.lang, schedule.weekStart), schedule.shifts.length, open),
       execParams: { scheduleId: schedule.id, weekStart: schedule.weekStart.toISOString() },
       target: { scheduleStatus: schedule.status },
     }
@@ -524,12 +528,9 @@ const publishScheduleTool: WriteTool = {
       select: { status: true, weekStart: true },
     })
     if (!after || after.status === "DRAFT") {
-      return { error: "Das hat nicht geklappt — ist der Entwurf noch da?" }
+      return { error: t(ctx.lang).publishFailed }
     }
-    return {
-      reply: `📣 Der Plan für die Woche ab ${fmtDate(after.weekStart)} ist raus! Alle Mitarbeitenden bekommen jetzt ihre Schichten. Ich sammle die Zu-/Absagen ein und melde mich bei Problemen.`,
-      inverse: null,
-    }
+    return { reply: t(ctx.lang).published(fmtDate(ctx.lang, after.weekStart)), inverse: null }
   },
 }
 
@@ -558,35 +559,33 @@ const reportSickTool: WriteTool = {
       },
       orderBy: [{ schedule: { weekStart: "asc" } }, { dayOfWeek: "asc" }],
     })
+    const tr = t(ctx.lang)
     const inWeek = params.dayOfWeek != null || params.weekOffset !== 0
       ? shifts.filter((s) => s.schedule.weekStart.getTime() === weekStartFor(params.weekOffset).getTime())
       : shifts
-    if (inWeek.length === 0) return { error: `${emp.name} hat keine passende anstehende Schicht.` }
+    if (inWeek.length === 0) return { error: tr.noUpcomingShift(emp.name) }
+    const label = (s: (typeof inWeek)[number]) =>
+      realShiftLabel(ctx.lang, new Date(s.schedule.weekStart), {
+        id: s.id, dayOfWeek: s.dayOfWeek, status: s.status, employeeId: emp.id, employeeName: emp.name,
+        templateName: s.shiftTemplate.name, startTime: s.shiftTemplate.startTime, endTime: s.shiftTemplate.endTime,
+      })
     if (inWeek.length > 1) {
-      const options = inWeek.map((s) =>
-        realShiftLabel(new Date(s.schedule.weekStart), {
-          id: s.id, dayOfWeek: s.dayOfWeek, status: s.status, employeeId: emp.id, employeeName: emp.name,
-          templateName: s.shiftTemplate.name, startTime: s.shiftTemplate.startTime, endTime: s.shiftTemplate.endTime,
-        })
-      )
-      return { error: `${emp.name} hat mehrere Schichten — welche? ${options.join("; ")}` }
+      return { error: tr.whichShiftSick(emp.name, inWeek.map(label).join("; ")) }
     }
     const s = inWeek[0]
     return {
-      preview: `${emp.name} krankmelden für ${realShiftLabel(new Date(s.schedule.weekStart), {
-        id: s.id, dayOfWeek: s.dayOfWeek, status: s.status, employeeId: emp.id, employeeName: emp.name,
-        templateName: s.shiftTemplate.name, startTime: s.shiftTemplate.startTime, endTime: s.shiftTemplate.endTime,
-      })}`,
+      preview: tr.sickPreview(emp.name, label(s)),
       execParams: { shiftId: s.id, employeeId: emp.id, employeeName: emp.name },
     }
   },
   async execute(ctx, execParams) {
     const { shiftId, employeeId } = execParams as { shiftId: string; employeeId: string }
+    const tr = t(ctx.lang)
     const employee = await prisma.employee.findFirst({
       where: { id: employeeId, location: { ownerId: ctx.userId } },
       select: { name: true },
     })
-    if (!employee) return { error: "Person nicht gefunden." }
+    if (!employee) return { error: tr.personNotFound }
     // Same guarded transition as the token/simulator sick paths.
     const { count } = await prisma.shift.updateMany({
       where: {
@@ -597,16 +596,13 @@ const reportSickTool: WriteTool = {
       },
       data: { status: "DECLINED" },
     })
-    if (count === 0) return { error: "Die Schicht ist inzwischen schon anderweitig behandelt." }
+    if (count === 0) return { error: tr.shiftAlreadyHandled }
     // Owner reported it → they obviously know; confirmedAt skips the nag loop.
     await prisma.sickCall.create({
       data: { locationId: ctx.locationId, shiftId, employeeId, confirmedAt: new Date() },
     })
     await safeSend({ name: "shift/sick-call", data: { shiftId } })
-    return {
-      reply: `🤒 Gute Besserung an ${employee.name}! Die Schicht ist freigegeben und ich suche schon nach Ersatz — ich melde mich, sobald jemand übernimmt.`,
-      inverse: null,
-    }
+    return { reply: tr.sickReported(employee.name), inverse: null }
   },
 }
 
@@ -620,10 +616,10 @@ const createRuleTool: WriteTool = {
     fd.set("locationId", ctx.locationId)
     fd.set("text", params.text)
     const parsed = await parseManagerRule(null, fd)
-    if (!parsed) return { error: "Das konnte ich nicht als Regel lesen." }
+    if (!parsed) return { error: t(ctx.lang).couldNotParseRule }
     if ("error" in parsed) return { error: parsed.error }
     return {
-      preview: `Neue Regel: „${parsed.draft.plain}“`,
+      preview: t(ctx.lang).newRule(parsed.draft.plain),
       execParams: { draft: parsed.draft },
     }
   },
@@ -635,8 +631,8 @@ const createRuleTool: WriteTool = {
       orderBy: { createdAt: "desc" },
     })
     return {
-      reply: `✅ Regel gespeichert: ${draft.plain} — sie gilt ab der nächsten Planerstellung.`,
-      inverse: buildInverse({ tool: "create_rule", params: execParams, prior: { ruleId: rule?.id } }),
+      reply: t(ctx.lang).ruleSaved(draft.plain),
+      inverse: buildInverse({ tool: "create_rule", params: execParams, prior: { ruleId: rule?.id } }, ctx.lang),
     }
   },
 }
@@ -649,23 +645,26 @@ const deleteRuleTool: WriteTool = {
     const rule = await prisma.managerRule.findFirst({
       where: { id: params.ruleId, locationId: ctx.locationId },
     })
-    if (!rule) return { error: "Diese Regel finde ich nicht." }
-    return { preview: `Regel löschen: „${rule.plain}“`, execParams: { ruleId: params.ruleId } }
+    if (!rule) return { error: t(ctx.lang).ruleNotFound }
+    return { preview: t(ctx.lang).deleteRulePreview(rule.plain), execParams: { ruleId: params.ruleId } }
   },
   async execute(ctx, execParams) {
     const { ruleId } = execParams as { ruleId: string }
     const rule = await prisma.managerRule.findFirst({
       where: { id: ruleId, locationId: ctx.locationId },
     })
-    if (!rule) return { error: "Diese Regel finde ich nicht (mehr)." }
+    if (!rule) return { error: t(ctx.lang).ruleNotFoundAnymore }
     await deleteManagerRule(ruleId)
     return {
-      reply: `🗑️ Regel gelöscht: „${rule.plain}“.`,
-      inverse: buildInverse({
-        tool: "delete_rule",
-        params: execParams,
-        prior: { kind: rule.kind, params: rule.params, sourceText: rule.sourceText, plain: rule.plain },
-      }),
+      reply: t(ctx.lang).ruleDeleted(rule.plain),
+      inverse: buildInverse(
+        {
+          tool: "delete_rule",
+          params: execParams,
+          prior: { kind: rule.kind, params: rule.params, sourceText: rule.sourceText, plain: rule.plain },
+        },
+        ctx.lang
+      ),
     }
   },
 }
@@ -681,8 +680,8 @@ const restoreRuleTool: WriteTool = {
     sourceText: z.string(),
     plain: z.string(),
   }),
-  async prepare(_ctx, params: { plain: string }) {
-    return { preview: `Regel wiederherstellen: „${params.plain}“`, execParams: params as unknown as Record<string, unknown> }
+  async prepare(ctx, params: { plain: string }) {
+    return { preview: t(ctx.lang).restoreRulePreview(params.plain), execParams: params as unknown as Record<string, unknown> }
   },
   async execute(ctx, execParams) {
     const p = execParams as { kind: RuleDraft["kind"]; params: { employeeIds?: string[]; dayOfWeek?: number | null; maxPerWeek?: number | null }; sourceText: string; plain: string }
@@ -695,7 +694,7 @@ const restoreRuleTool: WriteTool = {
       plain: p.plain,
       sourceText: p.sourceText,
     })
-    return { reply: `✅ Regel wiederhergestellt: „${p.plain}“.`, inverse: null }
+    return { reply: t(ctx.lang).ruleRestored(p.plain), inverse: null }
   },
 }
 
@@ -713,10 +712,11 @@ const createVacationTool: WriteTool = {
     const emp = params.employeeId
       ? await prisma.employee.findFirst({ where: { id: params.employeeId, locationId: ctx.locationId }, select: { id: true, name: true } })
       : null
-    const resolved = emp ?? (params.employeeName ? await findEmployeeByName(ctx.locationId, params.employeeName) : { error: "Für wen ist der Urlaub?" })
-    if (!resolved || "error" in resolved) return { error: (resolved as { error: string })?.error ?? "Person nicht gefunden." }
+    const tr = t(ctx.lang)
+    const resolved = emp ?? (params.employeeName ? await findEmployeeByName(ctx.locationId, params.employeeName) : { error: tr.whoseVacation })
+    if (!resolved || "error" in resolved) return { error: (resolved as { error: string })?.error ?? tr.personNotFound }
     return {
-      preview: `Urlaub für ${resolved.name}: ${params.startDate} bis ${params.endDate}`,
+      preview: tr.vacationPreview(resolved.name!, params.startDate, params.endDate),
       execParams: { employeeId: resolved.id, employeeName: resolved.name, startDate: params.startDate, endDate: params.endDate },
     }
   },
@@ -735,10 +735,11 @@ const createVacationTool: WriteTool = {
       where: { employeeId, startDate: new Date(`${startDate}T00:00:00Z`) },
       orderBy: { createdAt: "desc" },
     })
+    const tr = t(ctx.lang)
     const warning = result && "warning" in result ? `\n⚠️ ${result.warning}` : ""
     return {
-      reply: `🏖️ Urlaub eingetragen für ${employeeName ?? "die Person"}: ${startDate} bis ${endDate}.${warning}`,
-      inverse: buildInverse({ tool: "create_vacation", params: execParams, prior: { vacationId: vacation?.id } }),
+      reply: `${tr.vacationSaved(employeeName ?? tr.somebody, startDate, endDate)}${warning}`,
+      inverse: buildInverse({ tool: "create_vacation", params: execParams, prior: { vacationId: vacation?.id } }, ctx.lang),
     }
   },
 }
@@ -751,6 +752,7 @@ const deleteVacationTool: WriteTool = {
     employeeName: z.string().optional(),
   }),
   async prepare(ctx, params: { vacationId?: string; employeeName?: string }) {
+    const tr = t(ctx.lang)
     let vacation = null
     if (params.vacationId) {
       vacation = await prisma.vacation.findFirst({
@@ -764,34 +766,44 @@ const deleteVacationTool: WriteTool = {
         where: { employeeId: emp.id },
         include: { employee: { select: { name: true } } },
       })
-      if (all.length > 1) return { error: `${emp.name} hat mehrere Urlaube — nutze list_vacations und gib die id an.` }
+      if (all.length > 1) return { error: tr.severalVacations(emp.name) }
       vacation = all[0] ?? null
     }
-    if (!vacation) return { error: "Diesen Urlaub finde ich nicht." }
+    if (!vacation) return { error: tr.vacationNotFound }
     return {
-      preview: `Urlaub löschen: ${vacation.employee.name}, ${fmtDate(vacation.startDate)}–${fmtDate(vacation.endDate)}`,
+      preview: tr.deleteVacationPreview(
+        vacation.employee.name,
+        `${fmtDate(ctx.lang, vacation.startDate)}–${fmtDate(ctx.lang, vacation.endDate)}`
+      ),
       execParams: { vacationId: vacation.id },
     }
   },
   async execute(ctx, execParams) {
     const { vacationId } = execParams as { vacationId: string }
+    const tr = t(ctx.lang)
     const vacation = await prisma.vacation.findFirst({
       where: { id: vacationId, location: { ownerId: ctx.userId } },
       include: { employee: { select: { name: true } } },
     })
-    if (!vacation) return { error: "Diesen Urlaub finde ich nicht (mehr)." }
+    if (!vacation) return { error: tr.vacationNotFoundAnymore }
     await deleteVacation(vacationId)
     return {
-      reply: `🗑️ Urlaub von ${vacation.employee.name} (${fmtDate(vacation.startDate)}–${fmtDate(vacation.endDate)}) gelöscht.`,
-      inverse: buildInverse({
-        tool: "delete_vacation",
-        params: execParams,
-        prior: {
-          employeeId: vacation.employeeId,
-          startDate: vacation.startDate.toISOString().slice(0, 10),
-          endDate: vacation.endDate.toISOString().slice(0, 10),
+      reply: tr.vacationDeleted(
+        vacation.employee.name,
+        `${fmtDate(ctx.lang, vacation.startDate)}–${fmtDate(ctx.lang, vacation.endDate)}`
+      ),
+      inverse: buildInverse(
+        {
+          tool: "delete_vacation",
+          params: execParams,
+          prior: {
+            employeeId: vacation.employeeId,
+            startDate: vacation.startDate.toISOString().slice(0, 10),
+            endDate: vacation.endDate.toISOString().slice(0, 10),
+          },
         },
-      }),
+        ctx.lang
+      ),
     }
   },
 }
@@ -812,9 +824,10 @@ const createEmployeeTool: WriteTool = {
     maxHours: z.number().int().min(1).default(40),
     isWerkstudent: z.boolean().default(false),
   }),
-  async prepare(_ctx, params: { name: string; category: string }) {
+  async prepare(ctx, params: { name: string; category: string }) {
+    const tr = t(ctx.lang)
     return {
-      preview: `${params.name} anlegen (${params.category === "TEILZEIT_FEST" ? "Fest/Teilzeit" : "Minijob"})`,
+      preview: tr.createEmployeePreview(params.name, tr.categoryLabel(params.category)),
       execParams: params as unknown as Record<string, unknown>,
     }
   },
@@ -842,8 +855,11 @@ const createEmployeeTool: WriteTool = {
       select: { id: true, name: true },
     })
     return {
-      reply: `✅ ${p.name} ist im Team! Sag Bescheid, wenn ich die Verfügbarkeits-Abfrage per E-Mail schicken soll.`,
-      inverse: buildInverse({ tool: "create_employee", params: execParams, prior: { employeeId: created?.id, name: created?.name } }),
+      reply: t(ctx.lang).employeeCreated(p.name),
+      inverse: buildInverse(
+        { tool: "create_employee", params: execParams, prior: { employeeId: created?.id, name: created?.name } },
+        ctx.lang
+      ),
     }
   },
 }
@@ -870,18 +886,19 @@ const updateEmployeeTool: WriteTool = {
     }),
   }),
   async prepare(ctx, params: { employeeName?: string; employeeId?: string; fields: Record<string, unknown> }) {
+    const tr = t(ctx.lang)
     const emp = params.employeeId
       ? await prisma.employee.findFirst({ where: { id: params.employeeId, locationId: ctx.locationId }, select: { id: true, name: true } })
       : params.employeeName
         ? await findEmployeeByName(ctx.locationId, params.employeeName)
-        : { error: "Wen soll ich ändern?" }
-    if (!emp || "error" in emp) return { error: (emp as { error: string })?.error ?? "Person nicht gefunden." }
+        : { error: tr.whoToChange }
+    if (!emp || "error" in emp) return { error: (emp as { error: string })?.error ?? tr.personNotFound }
     const changes = Object.entries(params.fields)
       .filter(([, v]) => v !== undefined)
       .map(([k, v]) => `${k} → ${Array.isArray(v) ? v.join("/") : String(v)}`)
-    if (changes.length === 0) return { error: "Was genau soll ich ändern?" }
+    if (changes.length === 0) return { error: tr.whatToChange }
     return {
-      preview: `${emp.name} ändern: ${changes.join(", ")}`,
+      preview: tr.changePreview(emp.name!, changes.join(", ")),
       execParams: { employeeId: emp.id, fields: params.fields },
     }
   },
@@ -898,7 +915,7 @@ const updateEmployeeTool: WriteTool = {
     const current = await prisma.employee.findFirst({
       where: { id: employeeId, location: { ownerId: ctx.userId } },
     })
-    if (!current) return { error: "Person nicht gefunden." }
+    if (!current) return { error: t(ctx.lang).personNotFound }
 
     // Prior snapshot of exactly the fields being touched — powers the inverse.
     const prior: Record<string, unknown> = {}
@@ -956,8 +973,8 @@ const updateEmployeeTool: WriteTool = {
     const result = await updateEmployee(null, fd)
     if (result && "error" in result) return { error: result.error }
     return {
-      reply: `✅ ${merged.name} ist aktualisiert.`,
-      inverse: buildInverse({ tool: "update_employee", params: execParams, prior: { fields: prior } }),
+      reply: t(ctx.lang).employeeUpdated(merged.name),
+      inverse: buildInverse({ tool: "update_employee", params: execParams, prior: { fields: prior } }, ctx.lang),
     }
   },
 }
@@ -971,12 +988,13 @@ const deleteEmployeeTool: WriteTool = {
     employeeId: z.string().optional().describe("Prefer employeeName; id is for internal use"),
   }),
   async prepare(ctx, params: { employeeName?: string; employeeId?: string }) {
+    const tr = t(ctx.lang)
     const emp = params.employeeId
       ? await prisma.employee.findFirst({ where: { id: params.employeeId, locationId: ctx.locationId }, select: { id: true, name: true } })
       : params.employeeName
         ? await findEmployeeByName(ctx.locationId, params.employeeName)
-        : { error: "Wen soll ich entfernen?" }
-    if (!emp || "error" in emp) return { error: (emp as { error: string })?.error ?? "Person nicht gefunden." }
+        : { error: tr.whoToRemove }
+    if (!emp || "error" in emp) return { error: (emp as { error: string })?.error ?? tr.personNotFound }
     const upcoming = await prisma.shift.count({
       where: {
         employeeId: emp.id,
@@ -985,16 +1003,17 @@ const deleteEmployeeTool: WriteTool = {
       },
     })
     return {
-      preview: `${emp.name} ENDGÜLTIG aus dem Team entfernen${upcoming > 0 ? ` — ${upcoming} anstehende Schicht(en) werden frei` : ""}. Das kann ich nicht rückgängig machen.`,
+      preview: tr.deleteEmployeePreview(emp.name!, upcoming),
       execParams: { employeeId: emp.id, name: emp.name },
     }
   },
   async execute(ctx, execParams) {
     const { employeeId, name } = execParams as { employeeId: string; name?: string }
+    const tr = t(ctx.lang)
     await deleteEmployee(employeeId)
     const still = await prisma.employee.findUnique({ where: { id: employeeId }, select: { id: true } })
-    if (still) return { error: "Das hat nicht geklappt — die Person ist noch da." }
-    return { reply: `🗑️ ${name ?? "Die Person"} wurde aus dem Team entfernt.`, inverse: null }
+    if (still) return { error: tr.deleteFailed }
+    return { reply: tr.employeeDeleted(name ?? tr.somebody), inverse: null }
   },
 }
 

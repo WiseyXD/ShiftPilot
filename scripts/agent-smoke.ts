@@ -34,7 +34,7 @@ async function main() {
   }
 
   console.log("\n— confirm-first proposal on the real AgentAction table —")
-  const ctx = { userId: julia.id, locationId: loc.id, sourceText: "smoke: publish" }
+  const ctx = { userId: julia.id, locationId: loc.id, sourceText: "smoke: publish", lang: "en" as const }
   let proposal = await dispatchToolCall(ctx, "publish_schedule", {})
   console.log("publish proposal:", JSON.stringify(proposal, null, 2))
   if (proposal.kind !== "pending") {

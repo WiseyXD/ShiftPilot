@@ -143,10 +143,10 @@ export function WhatsAppSimulator({
             </span>
             <span className="min-w-0">
               <span className="block truncate text-sm font-medium text-foreground">
-                Du (Inhaber:in)
+                You (owner)
               </span>
               <span className="block truncate text-xs text-muted-foreground">
-                Covrly Copilot — dein Draht ins System
+                Covrly Copilot — your line into the system
               </span>
             </span>
           </button>
@@ -185,7 +185,7 @@ export function WhatsAppSimulator({
                 {isOwnerThread ? "Covrly Copilot" : selected!.name}
               </p>
               <p className="text-[11px] text-white/70">
-                {isOwnerThread ? "führt dein Café mit dir · online" : "Covrly · online"}
+                {isOwnerThread ? "runs your café with you · online" : "Covrly · online"}
               </p>
             </div>
             <button
@@ -207,8 +207,8 @@ export function WhatsAppSimulator({
               <div className="mx-auto mt-6 max-w-xs rounded-lg bg-[#ffeecd] px-4 py-3 text-center text-xs text-[#54656f] shadow-sm">
                 {isOwnerThread ? (
                   <>
-                    Sag deinem Copilot, was zu tun ist — z.&nbsp;B.{" "}
-                    <strong>&quot;Wer arbeitet Freitag?&quot;</strong> oder{" "}
+                    Tell your copilot what to do — English or German. E.g.{" "}
+                    <strong>&quot;Who works Friday?&quot;</strong> or{" "}
                     <strong>&quot;Marco ist krank&quot;</strong>.
                   </>
                 ) : (
@@ -269,10 +269,10 @@ export function WhatsAppSimulator({
             <div className="flex flex-wrap gap-1.5 px-3 pt-2">
               {(isOwnerThread
                 ? [
-                    ["Wer arbeitet heute?", "Wer arbeitet diese Woche?"],
-                    ["Stunden-Check", "Wie sehen die Stunden diese Woche aus?"],
-                    ["Plan erstellen", "Erstell den Plan für nächste Woche"],
-                    ["Rückgängig", "undo"],
+                    ["Who works this week?", "Who works this week?"],
+                    ["Hours check", "How are the hours looking this week?"],
+                    ["Create schedule", "Create the schedule for next week"],
+                    ["Undo", "undo"],
                   ]
                 : [
                     ["Meine Schichten", "meine Schichten"],

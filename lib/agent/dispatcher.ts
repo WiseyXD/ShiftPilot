@@ -7,11 +7,12 @@
 import { prisma } from "@/prisma/client"
 import { TOOLS, type WriteTool, type PrepareResult } from "./tools"
 import { needsConfirmation } from "./classify"
+import { t, type Lang } from "./i18n"
 import type { AgentContext, ToolOutcome, AgentReply } from "./types"
 
-const confirmButtons = (actionId: string): AgentReply["actions"] => [
-  { label: "✅ Ja, machen", command: `CONFIRM:${actionId}` },
-  { label: "❌ Abbrechen", command: `CANCEL:${actionId}` },
+const confirmButtons = (lang: Lang, actionId: string): AgentReply["actions"] => [
+  { label: t(lang).confirmYes, command: `CONFIRM:${actionId}` },
+  { label: t(lang).confirmNo, command: `CANCEL:${actionId}` },
 ]
 
 async function proposePending(
@@ -33,7 +34,10 @@ async function proposePending(
   })
   return {
     kind: "pending",
-    reply: { body: `${preview}\n\nSoll ich?`, actions: confirmButtons(action.id) },
+    reply: {
+      body: `${preview}\n\n${t(ctx.lang).shallI}`,
+      actions: confirmButtons(ctx.lang, action.id),
+    },
   }
 }
 
@@ -67,7 +71,10 @@ async function executeWrite(
       })
       return {
         kind: "pending",
-        reply: { body: `${result.confirmFirst.preview}`, actions: confirmButtons(updated.id) },
+        reply: {
+          body: `${result.confirmFirst.preview}`,
+          actions: confirmButtons(ctx.lang, updated.id),
+        },
       }
     }
     return proposePending(ctx, toolName, result.confirmFirst.preview, result.confirmFirst.execParams)
@@ -114,14 +121,16 @@ export async function dispatchToolCall(
 ): Promise<ToolOutcome> {
   const def = TOOLS[toolName]
   if (!def || ("internal" in def && def.internal)) {
-    return { kind: "error", reply: { body: `Das Werkzeug „${toolName}“ kenne ich nicht.` } }
+    return { kind: "error", reply: { body: t(ctx.lang).unknownTool(toolName) } }
   }
 
   const parsed = def.schema.safeParse(rawParams ?? {})
   if (!parsed.success) {
     return {
       kind: "error",
-      reply: { body: `Da fehlen mir Angaben: ${parsed.error.issues.map((i) => i.message).join("; ")}` },
+      reply: {
+        body: t(ctx.lang).missingParams(parsed.error.issues.map((i) => i.message).join("; ")),
+      },
     }
   }
 
@@ -147,11 +156,11 @@ export async function confirmPending(ctx: AgentContext, actionId: string): Promi
     where: { id: actionId, userId: ctx.userId, status: "PENDING" },
   })
   if (!action) {
-    return { kind: "error", reply: { body: "Da ist nichts (mehr) offen zum Bestätigen." } }
+    return { kind: "error", reply: { body: t(ctx.lang).nothingToConfirm } }
   }
   const def = TOOLS[action.tool]
   if (!def || def.kind !== "write") {
-    return { kind: "error", reply: { body: "Diese Aktion kann ich nicht mehr ausführen." } }
+    return { kind: "error", reply: { body: t(ctx.lang).cannotRunAnymore } }
   }
   const execCtx: AgentContext = { ...ctx, sourceText: action.sourceText }
   return executeWrite(
@@ -170,9 +179,9 @@ export async function declinePending(ctx: AgentContext, actionId: string): Promi
     data: { status: "DECLINED" },
   })
   if (count === 0) {
-    return { kind: "error", reply: { body: "Da war nichts (mehr) offen." } }
+    return { kind: "error", reply: { body: t(ctx.lang).nothingWasPending } }
   }
-  return { kind: "done", reply: { body: "Okay, verworfen — nichts wurde geändert. 👍" } }
+  return { kind: "done", reply: { body: t(ctx.lang).declined } }
 }
 
 // "Undo": the latest executed, reversible action runs its recorded inverse
@@ -185,12 +194,12 @@ export async function undoLast(ctx: AgentContext): Promise<ToolOutcome> {
   })
   const target = recent.find((a) => a.inverse != null)
   if (!target) {
-    return { kind: "error", reply: { body: "Ich finde nichts, das ich rückgängig machen könnte." } }
+    return { kind: "error", reply: { body: t(ctx.lang).nothingToUndo } }
   }
   const inverse = target.inverse as unknown as { tool: string; params: Record<string, unknown>; preview: string }
   const def = TOOLS[inverse.tool]
   if (!def || def.kind !== "write") {
-    return { kind: "error", reply: { body: "Diese Aktion lässt sich nicht rückgängig machen." } }
+    return { kind: "error", reply: { body: t(ctx.lang).cannotUndoThat } }
   }
 
   const outcome = await executeWrite(
@@ -198,13 +207,13 @@ export async function undoLast(ctx: AgentContext): Promise<ToolOutcome> {
     inverse.tool,
     def,
     inverse.params,
-    `↩️ Rückgängig: ${target.preview}`
+    t(ctx.lang).undoPrefix(target.preview)
   )
   if (outcome.kind === "done") {
     await prisma.agentAction.update({ where: { id: target.id }, data: { status: "UNDONE" } })
     return {
       kind: "done",
-      reply: { body: `↩️ Rückgängig gemacht („${target.preview}“).\n${outcome.reply.body}` },
+      reply: { body: `${t(ctx.lang).undone(target.preview)}\n${outcome.reply.body}` },
     }
   }
   return outcome
