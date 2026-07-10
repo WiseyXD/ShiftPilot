@@ -7,14 +7,17 @@ import Link from "next/link"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight, PencilLine } from "lucide-react"
+import { ChevronLeft, ChevronRight, PencilLine, Check, Info } from "lucide-react"
 import { ui, uiDateLocale, type UiLang } from "@/lib/i18n/dashboard"
 import { GenerateDraftButton, PublishButton } from "./week-board-actions"
+import { EditableCell } from "./editable-cell"
+import { AddShiftCell } from "./add-shift-cell"
 
 export interface BoardShift {
   id: string
   dayOfWeek: number
   status: string
+  employeeId: string | null
   employeeName: string | null
   templateId: string
 }
@@ -54,6 +57,10 @@ export function WeekBoard({
   schedule,
   templates,
   generationDayLabel,
+  editMode = false,
+  employees = [],
+  droppedNames = [],
+  availabilityHint = null,
 }: {
   locationId: string
   lang: UiLang
@@ -62,6 +69,10 @@ export function WeekBoard({
   schedule: { id: string; status: string; shifts: BoardShift[] } | null
   templates: BoardTemplate[]
   generationDayLabel: string
+  editMode?: boolean
+  employees?: { id: string; name: string }[]
+  droppedNames?: string[]
+  availabilityHint?: string | null
 }) {
   const d = ui(lang).dash
   const locale = uiDateLocale(lang)
@@ -124,10 +135,14 @@ export function WeekBoard({
             <GenerateDraftButton locationId={locationId} label={d.createDraft} pendingLabel={d.generating} />
           )}
           {schedule && (
-            <Link href={`/dashboard/${locationId}/schedules/${schedule.id}?edit=1`}>
-              <Button variant="outline" size="sm">
-                <PencilLine className="h-3.5 w-3.5" />
-                {d.openEditor}
+            // Editing happens right here on the board — no page change.
+            <Link
+              href={`/dashboard/${locationId}?week=${weekOffset}${editMode ? "" : "&edit=1"}`}
+              scroll={false}
+            >
+              <Button variant={editMode ? "default" : "outline"} size="sm">
+                {editMode ? <Check className="h-3.5 w-3.5" /> : <PencilLine className="h-3.5 w-3.5" />}
+                {editMode ? d.doneEditing : d.editBoard}
               </Button>
             </Link>
           )}
@@ -135,9 +150,21 @@ export function WeekBoard({
       </CardHeader>
 
       <CardContent className="p-0">
+        {droppedNames.length > 0 && (
+          <div className="mx-4 mb-3 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+            <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            {d.droppedNote(droppedNames.join(", "))}
+          </div>
+        )}
         {!schedule ? (
           <div className="px-6 py-12 text-center text-sm text-muted-foreground">
-            {weekOffset === 1 ? d.noScheduleNext(generationDayLabel) : d.noSchedule}
+            <p>{weekOffset === 1 ? d.noScheduleNext(generationDayLabel) : d.noSchedule}</p>
+            {availabilityHint && (
+              <p className="mx-auto mt-3 flex max-w-md items-start justify-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-left text-xs text-amber-800">
+                <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                {availabilityHint}
+              </p>
+            )}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -188,7 +215,14 @@ export function WeekBoard({
                         } ${isToday ? "bg-accent/40" : ""}`}
                       >
                         {shifts.map((s) =>
-                          s.status === "UNASSIGNED" || !s.employeeName ? (
+                          editMode && s.status !== "LENT_OUT" ? (
+                            <EditableCell
+                              key={s.id}
+                              shiftId={s.id}
+                              currentEmployeeId={s.employeeId}
+                              employees={employees}
+                            />
+                          ) : s.status === "UNASSIGNED" || !s.employeeName ? (
                             <div
                               key={s.id}
                               className="rounded-md border border-dashed border-yellow-400/70 bg-yellow-50/60 px-1.5 py-1 text-[11px] font-medium text-yellow-800"
@@ -205,6 +239,14 @@ export function WeekBoard({
                               <span className="truncate text-[11px] text-foreground">{s.employeeName}</span>
                             </div>
                           )
+                        )}
+                        {editMode && shifts.length === 0 && (
+                          <AddShiftCell
+                            scheduleId={schedule.id}
+                            shiftTemplateId={tpl.id}
+                            dayOfWeek={dow}
+                            employees={employees}
+                          />
                         )}
                       </div>
                     )

@@ -100,6 +100,11 @@ const en = {
     noScheduleNext: (day: string) =>
       `Next week isn't drafted yet. Covrly drafts it automatically on ${day} — or start now.`,
     openChip: "Open",
+    editBoard: "Edit board",
+    doneEditing: "Done",
+    droppedNote: (names: string) => `Left out — no availability confirmation: ${names}`,
+    availabilityHint: (confirmed: number, total: number) =>
+      `${confirmed} of ${total} minijobbers have confirmed their availability so far — unconfirmed ones are left out of the draft.`,
     chartCoverage: "Coverage by day",
     chartCoverageSub: "Filled vs open shifts in the shown week",
     chartResponse: "Team response time",
@@ -217,6 +222,11 @@ const de: typeof en = {
     noScheduleNext: (day) =>
       `Für nächste Woche gibt es noch keinen Entwurf. Covrly erstellt ihn automatisch am ${day} — oder starte jetzt.`,
     openChip: "Offen",
+    editBoard: "Bearbeiten",
+    doneEditing: "Fertig",
+    droppedNote: (names) => `Ausgelassen — keine Verfügbarkeits-Bestätigung: ${names}`,
+    availabilityHint: (confirmed, total) =>
+      `${confirmed} von ${total} Minijobbern haben ihre Verfügbarkeit bestätigt — Unbestätigte bleiben im Entwurf außen vor.`,
     chartCoverage: "Besetzung pro Tag",
     chartCoverageSub: "Besetzte vs. offene Schichten der angezeigten Woche",
     chartResponse: "Reaktionszeit im Team",
