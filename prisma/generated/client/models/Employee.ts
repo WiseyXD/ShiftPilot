@@ -913,10 +913,12 @@ export type EmployeeCreateNestedOneWithoutChatMessagesInput = {
   connect?: Prisma.EmployeeWhereUniqueInput
 }
 
-export type EmployeeUpdateOneRequiredWithoutChatMessagesNestedInput = {
+export type EmployeeUpdateOneWithoutChatMessagesNestedInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutChatMessagesInput, Prisma.EmployeeUncheckedCreateWithoutChatMessagesInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutChatMessagesInput
   upsert?: Prisma.EmployeeUpsertWithoutChatMessagesInput
+  disconnect?: Prisma.EmployeeWhereInput | boolean
+  delete?: Prisma.EmployeeWhereInput | boolean
   connect?: Prisma.EmployeeWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutChatMessagesInput, Prisma.EmployeeUpdateWithoutChatMessagesInput>, Prisma.EmployeeUncheckedUpdateWithoutChatMessagesInput>
 }

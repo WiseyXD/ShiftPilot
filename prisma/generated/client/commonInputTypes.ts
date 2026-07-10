@@ -535,6 +535,23 @@ export type EnumChatRoleWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumChatRoleFilter<$PrismaModel>
 }
 
+export type EnumAgentActionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.AgentActionStatus | Prisma.EnumAgentActionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AgentActionStatus[] | Prisma.ListEnumAgentActionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AgentActionStatus[] | Prisma.ListEnumAgentActionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAgentActionStatusFilter<$PrismaModel> | $Enums.AgentActionStatus
+}
+
+export type EnumAgentActionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AgentActionStatus | Prisma.EnumAgentActionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AgentActionStatus[] | Prisma.ListEnumAgentActionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AgentActionStatus[] | Prisma.ListEnumAgentActionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAgentActionStatusWithAggregatesFilter<$PrismaModel> | $Enums.AgentActionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAgentActionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAgentActionStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1002,6 +1019,23 @@ export type NestedEnumChatRoleWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumChatRoleFilter<$PrismaModel>
   _max?: Prisma.NestedEnumChatRoleFilter<$PrismaModel>
+}
+
+export type NestedEnumAgentActionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.AgentActionStatus | Prisma.EnumAgentActionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AgentActionStatus[] | Prisma.ListEnumAgentActionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AgentActionStatus[] | Prisma.ListEnumAgentActionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAgentActionStatusFilter<$PrismaModel> | $Enums.AgentActionStatus
+}
+
+export type NestedEnumAgentActionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AgentActionStatus | Prisma.EnumAgentActionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AgentActionStatus[] | Prisma.ListEnumAgentActionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AgentActionStatus[] | Prisma.ListEnumAgentActionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAgentActionStatusWithAggregatesFilter<$PrismaModel> | $Enums.AgentActionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAgentActionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAgentActionStatusFilter<$PrismaModel>
 }
 
 

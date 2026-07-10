@@ -2,8 +2,12 @@
 
 import * as React from "react"
 import { sendChatMessage, clearChatThread } from "@/app/actions/whatsapp-sim"
-import { Send, Check, CheckCheck, MoreVertical, Search, Phone } from "lucide-react"
+import { sendOwnerMessage, clearOwnerThread } from "@/app/actions/agent"
+import { Send, Check, CheckCheck, MoreVertical, Search, Phone, Sparkles } from "lucide-react"
 import { Covrly } from "@/components/covrly"
+
+// Sentinel id for the owner ⇄ copilot thread pinned above the team chats.
+const OWNER_THREAD = "__owner__"
 
 interface Employee {
   id: string
@@ -20,7 +24,7 @@ interface ChatAction {
 
 interface Message {
   id: string
-  role: "EMPLOYEE" | "AGENT"
+  role: "EMPLOYEE" | "AGENT" | "OWNER"
   body: string
   actions: ChatAction[] | null
   createdAt: string
@@ -52,26 +56,37 @@ function formatBody(body: string): React.ReactNode[] {
 }
 
 export function WhatsAppSimulator({
+  locationId,
   locationName,
   employees,
 }: {
+  locationId: string
   locationName: string
   employees: Employee[]
 }) {
-  const [selectedId, setSelectedId] = React.useState<string | null>(employees[0]?.id ?? null)
+  const [selectedId, setSelectedId] = React.useState<string | null>(
+    employees[0]?.id ?? OWNER_THREAD
+  )
   const [messages, setMessages] = React.useState<Message[]>([])
   const [draft, setDraft] = React.useState("")
   const [pending, setPending] = React.useState<string | null>(null)
   const scrollRef = React.useRef<HTMLDivElement>(null)
 
+  const isOwnerThread = selectedId === OWNER_THREAD
   const selected = employees.find((e) => e.id === selectedId) ?? null
 
-  const loadThread = React.useCallback(async (id: string) => {
-    const res = await fetch(`/api/whatsapp-sim/${id}`, { cache: "no-store" })
-    if (!res.ok) return
-    const data = await res.json()
-    setMessages(data.messages ?? [])
-  }, [])
+  const loadThread = React.useCallback(
+    async (id: string) => {
+      const res = await fetch(
+        id === OWNER_THREAD ? `/api/agent/${locationId}` : `/api/whatsapp-sim/${id}`,
+        { cache: "no-store" }
+      )
+      if (!res.ok) return
+      const data = await res.json()
+      setMessages(data.messages ?? [])
+    },
+    [locationId]
+  )
 
   // Poll the selected thread so proactive agent messages appear live.
   React.useEffect(() => {
@@ -90,14 +105,16 @@ export function WhatsAppSimulator({
     if (!selectedId || !text.trim()) return
     setPending(text.trim())
     setDraft("")
-    await sendChatMessage(selectedId, text.trim())
+    if (isOwnerThread) await sendOwnerMessage(locationId, text.trim())
+    else await sendChatMessage(selectedId, text.trim())
     setPending(null)
     await loadThread(selectedId)
   }
 
   const reset = async () => {
     if (!selectedId) return
-    await clearChatThread(selectedId)
+    if (isOwnerThread) await clearOwnerThread(locationId)
+    else await clearChatThread(selectedId)
     await loadThread(selectedId)
   }
 
@@ -114,6 +131,25 @@ export function WhatsAppSimulator({
           <span className="text-xs">Your team — tap to open a chat</span>
         </div>
         <div className="flex-1 overflow-y-auto">
+          {/* Owner ⇄ copilot thread, pinned above the team */}
+          <button
+            onClick={() => setSelectedId(OWNER_THREAD)}
+            className={`flex w-full items-center gap-3 border-b border-border px-3 py-2.5 text-left transition-colors hover:bg-accent/40 ${
+              isOwnerThread ? "bg-accent/60" : ""
+            }`}
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#008069] text-white">
+              <Sparkles className="h-4 w-4" />
+            </span>
+            <span className="min-w-0">
+              <span className="block truncate text-sm font-medium text-foreground">
+                Du (Inhaber:in)
+              </span>
+              <span className="block truncate text-xs text-muted-foreground">
+                Covrly Copilot — dein Draht ins System
+              </span>
+            </span>
+          </button>
           {employees.map((e) => (
             <button
               key={e.id}
@@ -137,7 +173,7 @@ export function WhatsAppSimulator({
       </aside>
 
       {/* Chat pane */}
-      {selected ? (
+      {selected || isOwnerThread ? (
         <section className="flex min-w-0 flex-1 flex-col">
           {/* Header */}
           <header className="flex items-center gap-3 bg-[#008069] px-4 py-2.5 text-white">
@@ -145,8 +181,12 @@ export function WhatsAppSimulator({
               <Covrly size={34} />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold leading-tight">{selected.name}</p>
-              <p className="text-[11px] text-white/70">Covrly · online</p>
+              <p className="truncate text-sm font-semibold leading-tight">
+                {isOwnerThread ? "Covrly Copilot" : selected!.name}
+              </p>
+              <p className="text-[11px] text-white/70">
+                {isOwnerThread ? "führt dein Café mit dir · online" : "Covrly · online"}
+              </p>
             </div>
             <button
               onClick={reset}
@@ -165,8 +205,18 @@ export function WhatsAppSimulator({
           >
             {messages.length === 0 && !pending && (
               <div className="mx-auto mt-6 max-w-xs rounded-lg bg-[#ffeecd] px-4 py-3 text-center text-xs text-[#54656f] shadow-sm">
-                Schreib <strong>&quot;Hallo&quot;</strong> oder tippe unten auf einen Vorschlag, um mit dem
-                Covrly zu starten.
+                {isOwnerThread ? (
+                  <>
+                    Sag deinem Copilot, was zu tun ist — z.&nbsp;B.{" "}
+                    <strong>&quot;Wer arbeitet Freitag?&quot;</strong> oder{" "}
+                    <strong>&quot;Marco ist krank&quot;</strong>.
+                  </>
+                ) : (
+                  <>
+                    Schreib <strong>&quot;Hallo&quot;</strong> oder tippe unten auf einen Vorschlag, um
+                    mit dem Covrly zu starten.
+                  </>
+                )}
               </div>
             )}
             {messages.map((m) =>
@@ -217,12 +267,20 @@ export function WhatsAppSimulator({
           {/* Quick chips + composer */}
           <div className="border-t border-border bg-card">
             <div className="flex flex-wrap gap-1.5 px-3 pt-2">
-              {[
-                ["Meine Schichten", "meine Schichten"],
-                ["Freie Schichten", "frei"],
-                ["Krankmelden", "krank"],
-                ["Hilfe", "hallo"],
-              ].map(([label, cmd]) => (
+              {(isOwnerThread
+                ? [
+                    ["Wer arbeitet heute?", "Wer arbeitet diese Woche?"],
+                    ["Stunden-Check", "Wie sehen die Stunden diese Woche aus?"],
+                    ["Plan erstellen", "Erstell den Plan für nächste Woche"],
+                    ["Rückgängig", "undo"],
+                  ]
+                : [
+                    ["Meine Schichten", "meine Schichten"],
+                    ["Freie Schichten", "frei"],
+                    ["Krankmelden", "krank"],
+                    ["Hilfe", "hallo"],
+                  ]
+              ).map(([label, cmd]) => (
                 <button
                   key={label}
                   onClick={() => send(cmd)}

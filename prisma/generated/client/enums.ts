@@ -131,7 +131,18 @@ export type SwapRequestStatus = (typeof SwapRequestStatus)[keyof typeof SwapRequ
 
 export const ChatRole = {
   EMPLOYEE: 'EMPLOYEE',
-  AGENT: 'AGENT'
+  AGENT: 'AGENT',
+  OWNER: 'OWNER'
 } as const
 
 export type ChatRole = (typeof ChatRole)[keyof typeof ChatRole]
+
+
+export const AgentActionStatus = {
+  PENDING: 'PENDING',
+  EXECUTED: 'EXECUTED',
+  DECLINED: 'DECLINED',
+  UNDONE: 'UNDONE'
+} as const
+
+export type AgentActionStatus = (typeof AgentActionStatus)[keyof typeof AgentActionStatus]

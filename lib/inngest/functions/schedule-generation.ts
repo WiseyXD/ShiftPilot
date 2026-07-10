@@ -11,20 +11,27 @@ import { partitionSchedulable } from "@/lib/scheduling/deadline"
 import { generateToken } from "@/lib/tokens/generate"
 import { sendEmail } from "@/lib/email/send"
 import { ScheduleDraftEmail } from "@/lib/email/templates/schedule-draft"
+import { pushOwnerMessage } from "@/lib/agent/owner-thread"
 import * as React from "react"
 
 export const weeklyScheduleGeneration = inngest.createFunction(
   {
     id: "weekly-schedule-generation",
-    triggers: [{ cron: "0 7 * * *" }],
+    // Cron covers the weekly rhythm; the event covers "generate now" from the
+    // Pro button and the copilot's generate_schedule tool.
+    triggers: [{ cron: "0 7 * * *" }, { event: "schedule/manual-generate" }],
   },
-  async ({ step }) => {
+  async ({ event, step }) => {
     const today = new Date()
     const todayDow = today.getDay()
+    const manualLocationId =
+      event?.name === "schedule/manual-generate"
+        ? (event.data as { locationId: string }).locationId
+        : null
 
     const locations = await step.run("find-locations", () =>
       prisma.location.findMany({
-        where: { generationDayOfWeek: todayDow },
+        where: manualLocationId ? { id: manualLocationId } : { generationDayOfWeek: todayDow },
         include: {
           employees: true,
           shiftTemplates: true,
@@ -38,6 +45,13 @@ export const weeklyScheduleGeneration = inngest.createFunction(
     for (const location of locations) {
       await step.run(`generate-${location.id}`, async () => {
         const weekStart = nextMonday(today)
+
+        // Manual regeneration replaces any unapproved draft for that week.
+        if (manualLocationId) {
+          await prisma.schedule.deleteMany({
+            where: { locationId: location.id, weekStart, status: "DRAFT" },
+          })
+        }
 
         const availability = await getEffectiveAvailability(location.id, weekStart)
 
@@ -182,6 +196,13 @@ export const weeklyScheduleGeneration = inngest.createFunction(
             reviewUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/${location.id}/schedules/${schedule.id}`,
           }),
         })
+
+        // Copilot thread: the owner asked for this (or expects the weekly
+        // rhythm) — tell them the draft is ready, right where they work.
+        await pushOwnerMessage(
+          location.id,
+          `🛠️ Der Entwurf für die Woche ab ${weekStart.toLocaleDateString("de-DE")} ist fertig: ${assignments.filter((a) => a.filled).length}/${assignments.length} Schichten besetzt${unfilled.length > 0 ? `, ${unfilled.length} noch offen` : ""}${dropped.length > 0 ? ` (${dropped.map((e) => e.name).join(", ")} ohne Verfügbarkeits-Bestätigung ausgelassen)` : ""}. Sag *„veröffentlichen“*, wenn er passt.`
+        )
 
         generated++
       })

@@ -10,6 +10,7 @@ import {
 } from "@/lib/scheduling/shift-date"
 import { runOutreachLoop, buildShiftCandidates } from "../outreach-loop"
 import { canBackfill } from "@/lib/marketplace/roster"
+import { pushOwnerMessage } from "@/lib/agent/owner-thread"
 import * as React from "react"
 
 export const replacementEngine = inngest.createFunction(
@@ -116,6 +117,12 @@ export const replacementEngine = inngest.createFunction(
               outcome: "reassigned",
             },
           })
+
+          // The owner hears the outcome proactively in their copilot thread.
+          await pushOwnerMessage(
+            locationId,
+            `✅ Ersatz gefunden: *${candidate.name}* übernimmt die ${shift.shiftTemplate.name}-Schicht am ${dateLabel} (${shift.shiftTemplate.startTime}–${shift.shiftTemplate.endTime})${shift.employee ? ` für ${shift.employee.name}` : ""}.`
+          )
         })
         return { outcome: "completed" }
       },
@@ -148,6 +155,11 @@ export const replacementEngine = inngest.createFunction(
             outcome: "escalated",
           },
         })
+
+        await pushOwnerMessage(
+          locationId,
+          `⚠️ Für die ${shift.shiftTemplate.name}-Schicht am ${dateLabel} habe ich niemanden gefunden — ${result.candidatesTried} Personen gefragt, alle abgesagt oder keine Antwort. Sag mir, wer einspringen soll, dann trage ich es ein.`
+        )
       })
     }
 

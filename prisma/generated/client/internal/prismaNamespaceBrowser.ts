@@ -66,6 +66,7 @@ export const ModelName = {
   ActionToken: 'ActionToken',
   ManagerRule: 'ManagerRule',
   ChatMessage: 'ChatMessage',
+  AgentAction: 'AgentAction',
   SickCall: 'SickCall',
   Vacation: 'Vacation',
   FixedShift: 'FixedShift',
@@ -292,6 +293,7 @@ export const ChatMessageScalarFieldEnum = {
   id: 'id',
   locationId: 'locationId',
   employeeId: 'employeeId',
+  userId: 'userId',
   role: 'role',
   body: 'body',
   actions: 'actions',
@@ -299,6 +301,22 @@ export const ChatMessageScalarFieldEnum = {
 } as const
 
 export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
+
+
+export const AgentActionScalarFieldEnum = {
+  id: 'id',
+  locationId: 'locationId',
+  userId: 'userId',
+  tool: 'tool',
+  params: 'params',
+  preview: 'preview',
+  sourceText: 'sourceText',
+  status: 'status',
+  inverse: 'inverse',
+  createdAt: 'createdAt'
+} as const
+
+export type AgentActionScalarFieldEnum = (typeof AgentActionScalarFieldEnum)[keyof typeof AgentActionScalarFieldEnum]
 
 
 export const SickCallScalarFieldEnum = {

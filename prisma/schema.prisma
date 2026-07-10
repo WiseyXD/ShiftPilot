@@ -110,6 +110,8 @@ model User {
 
   locations    Location[]
   actionTokens ActionToken[]
+  chatMessages ChatMessage[]
+  agentActions AgentAction[]
 }
 
 // ─── Location (replaces Cafe) ─────────────────────────────────────────────────
@@ -145,6 +147,7 @@ model Location {
   sickCalls       SickCall[]
   managerRules    ManagerRule[]
   chatMessages    ChatMessage[]
+  agentActions    AgentAction[]
 
   @@index([ownerId])
 }
@@ -397,24 +400,60 @@ model ManagerRule {
 enum ChatRole {
   EMPLOYEE
   AGENT
+  OWNER
 }
 
-// One line in an employee ⇄ ShiftPilot-agent WhatsApp thread. The simulator's
-// transport; real actions still run through the normal engines.
+// One line in a WhatsApp thread with the agent. Employee threads use
+// employeeId; the owner's copilot thread uses userId (same nullable-both
+// pattern as ActionToken). The simulator's transport; real actions still run
+// through the normal engines.
 model ChatMessage {
   id         String   @id @default(cuid())
   locationId String
-  employeeId String
+  employeeId String?
+  userId     String?
   role       ChatRole
   body       String
   actions    Json? // [{ label, command }] — tappable reply buttons the agent offered
   createdAt  DateTime @default(now())
 
-  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
-  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  location Location  @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  employee Employee? @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  user     User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([locationId])
   @@index([employeeId, createdAt])
+  @@index([userId, createdAt])
+}
+
+// ─── Covrly Copilot (manager agent) ──────────────────────────────────────────
+
+enum AgentActionStatus {
+  PENDING // proposed, awaiting the owner's confirm/cancel
+  EXECUTED
+  DECLINED // owner cancelled the pending proposal
+  UNDONE // executed, then reversed via its inverse
+}
+
+// One tool call the copilot proposed or executed for an owner. PENDING rows
+// power confirm-first actions; the inverse descriptor on EXECUTED rows powers
+// "undo". The LLM never writes here directly — only the dispatcher does.
+model AgentAction {
+  id         String            @id @default(cuid())
+  locationId String
+  userId     String
+  tool       String
+  params     Json
+  preview    String // human-readable rendering of what the call will do
+  sourceText String // what the owner originally typed
+  status     AgentActionStatus
+  inverse    Json? // inverse tool call, set when executed and reversible
+  createdAt  DateTime          @default(now())
+
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, locationId, createdAt])
 }
 
 // ─── Sick calls ───────────────────────────────────────────────────────────────
