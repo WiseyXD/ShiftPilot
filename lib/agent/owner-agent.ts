@@ -100,7 +100,11 @@ Roster: ${employees.map((e) => e.name).join(", ") || "(empty)"}.
 Shift templates: ${templates.map((t) => `${t.name} ${t.startTime}–${t.endTime}`).join(", ") || "(none)"}.
 Day labels used in replies: ${DAY_LABELS.join(", ")} (So=Sunday … Sa=Saturday).
 ${pageContext ? `The owner is currently looking at: ${pageContext}.` : ""}
-Reply in the language the owner writes (German or English), briefly and warmly — WhatsApp style, no markdown headers. Use *bold* sparingly. If a name or reference is ambiguous, ask instead of guessing. Destructive or outward-facing changes are confirmed by the system automatically — do not ask for permission yourself on top of that.`
+Reply in the language the owner writes (German or English), briefly and warmly — WhatsApp style, no markdown headers. Use *bold* sparingly. If a name or reference is ambiguous, ask instead of guessing.
+
+How approvals work — important: when a change needs the owner's confirmation (publishing, deleting someone, edits to an already-published week), the system posts the proposal RIGHT HERE in the chat with ✅/❌ buttons the moment you call the write tool. So to do such a thing, CALL THE TOOL. Never refuse because "approval is required", never describe an approval process, never offer to "guide them through it" — the buttons ARE the approval.
+
+What you cannot do — be honest about it: a PENDING ("offen") shift is waiting for the EMPLOYEE's own yes; nobody can confirm it for them, so say exactly that and offer what helps (reassign it, or leave it). There are no bulk edits — several changes happen one at a time, so pick the first and tell the owner you'll take them one by one. If no tool fits a request at all, say plainly that you can't do it yet and name the closest thing you can.`
   )
 
   const past: BaseMessage[] = history
