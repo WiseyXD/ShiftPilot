@@ -79,10 +79,11 @@ export function AppSidebar({ locations, user }: Props) {
       : null
   const activeLocation = locations.find((l) => l.id === activeLocationId)
 
+  // The week board on the overview replaced the separate Schedules tab —
+  // schedule detail/editor routes stay reachable from the board.
   const locationNav = activeLocationId
     ? [
         { label: s.overview, icon: Home, href: `/dashboard/${activeLocationId}` },
-        { label: s.schedules, icon: Calendar, href: `/dashboard/${activeLocationId}/schedules` },
         { label: s.employees, icon: Users, href: `/dashboard/${activeLocationId}/employees` },
         { label: s.whatsapp, icon: MessageCircle, href: `/dashboard/${activeLocationId}/whatsapp` },
         { label: s.templates, icon: ClipboardList, href: `/dashboard/${activeLocationId}/templates` },
