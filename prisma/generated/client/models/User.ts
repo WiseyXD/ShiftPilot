@@ -32,6 +32,7 @@ export type UserMinAggregateOutputType = {
   stripeSubscriptionId: string | null
   stripePlan: $Enums.StripePlan | null
   trialEndsAt: Date | null
+  language: string | null
   createdAt: Date | null
 }
 
@@ -43,6 +44,7 @@ export type UserMaxAggregateOutputType = {
   stripeSubscriptionId: string | null
   stripePlan: $Enums.StripePlan | null
   trialEndsAt: Date | null
+  language: string | null
   createdAt: Date | null
 }
 
@@ -54,6 +56,7 @@ export type UserCountAggregateOutputType = {
   stripeSubscriptionId: number
   stripePlan: number
   trialEndsAt: number
+  language: number
   createdAt: number
   _all: number
 }
@@ -67,6 +70,7 @@ export type UserMinAggregateInputType = {
   stripeSubscriptionId?: true
   stripePlan?: true
   trialEndsAt?: true
+  language?: true
   createdAt?: true
 }
 
@@ -78,6 +82,7 @@ export type UserMaxAggregateInputType = {
   stripeSubscriptionId?: true
   stripePlan?: true
   trialEndsAt?: true
+  language?: true
   createdAt?: true
 }
 
@@ -89,6 +94,7 @@ export type UserCountAggregateInputType = {
   stripeSubscriptionId?: true
   stripePlan?: true
   trialEndsAt?: true
+  language?: true
   createdAt?: true
   _all?: true
 }
@@ -173,6 +179,7 @@ export type UserGroupByOutputType = {
   stripeSubscriptionId: string | null
   stripePlan: $Enums.StripePlan
   trialEndsAt: Date
+  language: string
   createdAt: Date
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
@@ -205,6 +212,7 @@ export type UserWhereInput = {
   stripeSubscriptionId?: Prisma.StringNullableFilter<"User"> | string | null
   stripePlan?: Prisma.EnumStripePlanFilter<"User"> | $Enums.StripePlan
   trialEndsAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  language?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   locations?: Prisma.LocationListRelationFilter
   actionTokens?: Prisma.ActionTokenListRelationFilter
@@ -220,6 +228,7 @@ export type UserOrderByWithRelationInput = {
   stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripePlan?: Prisma.SortOrder
   trialEndsAt?: Prisma.SortOrder
+  language?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   locations?: Prisma.LocationOrderByRelationAggregateInput
   actionTokens?: Prisma.ActionTokenOrderByRelationAggregateInput
@@ -238,6 +247,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   stripeSubscriptionId?: Prisma.StringNullableFilter<"User"> | string | null
   stripePlan?: Prisma.EnumStripePlanFilter<"User"> | $Enums.StripePlan
   trialEndsAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  language?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   locations?: Prisma.LocationListRelationFilter
   actionTokens?: Prisma.ActionTokenListRelationFilter
@@ -253,6 +263,7 @@ export type UserOrderByWithAggregationInput = {
   stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripePlan?: Prisma.SortOrder
   trialEndsAt?: Prisma.SortOrder
+  language?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -270,6 +281,7 @@ export type UserScalarWhereWithAggregatesInput = {
   stripeSubscriptionId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   stripePlan?: Prisma.EnumStripePlanWithAggregatesFilter<"User"> | $Enums.StripePlan
   trialEndsAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  language?: Prisma.StringWithAggregatesFilter<"User"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
 
@@ -281,6 +293,7 @@ export type UserCreateInput = {
   stripeSubscriptionId?: string | null
   stripePlan?: $Enums.StripePlan
   trialEndsAt: Date | string
+  language?: string
   createdAt?: Date | string
   locations?: Prisma.LocationCreateNestedManyWithoutOwnerInput
   actionTokens?: Prisma.ActionTokenCreateNestedManyWithoutUserInput
@@ -296,6 +309,7 @@ export type UserUncheckedCreateInput = {
   stripeSubscriptionId?: string | null
   stripePlan?: $Enums.StripePlan
   trialEndsAt: Date | string
+  language?: string
   createdAt?: Date | string
   locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOwnerInput
   actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutUserInput
@@ -311,6 +325,7 @@ export type UserUpdateInput = {
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePlan?: Prisma.EnumStripePlanFieldUpdateOperationsInput | $Enums.StripePlan
   trialEndsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   locations?: Prisma.LocationUpdateManyWithoutOwnerNestedInput
   actionTokens?: Prisma.ActionTokenUpdateManyWithoutUserNestedInput
@@ -326,6 +341,7 @@ export type UserUncheckedUpdateInput = {
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePlan?: Prisma.EnumStripePlanFieldUpdateOperationsInput | $Enums.StripePlan
   trialEndsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   locations?: Prisma.LocationUncheckedUpdateManyWithoutOwnerNestedInput
   actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -341,6 +357,7 @@ export type UserCreateManyInput = {
   stripeSubscriptionId?: string | null
   stripePlan?: $Enums.StripePlan
   trialEndsAt: Date | string
+  language?: string
   createdAt?: Date | string
 }
 
@@ -352,6 +369,7 @@ export type UserUpdateManyMutationInput = {
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePlan?: Prisma.EnumStripePlanFieldUpdateOperationsInput | $Enums.StripePlan
   trialEndsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -363,6 +381,7 @@ export type UserUncheckedUpdateManyInput = {
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePlan?: Prisma.EnumStripePlanFieldUpdateOperationsInput | $Enums.StripePlan
   trialEndsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -374,6 +393,7 @@ export type UserCountOrderByAggregateInput = {
   stripeSubscriptionId?: Prisma.SortOrder
   stripePlan?: Prisma.SortOrder
   trialEndsAt?: Prisma.SortOrder
+  language?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -385,6 +405,7 @@ export type UserMaxOrderByAggregateInput = {
   stripeSubscriptionId?: Prisma.SortOrder
   stripePlan?: Prisma.SortOrder
   trialEndsAt?: Prisma.SortOrder
+  language?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -396,6 +417,7 @@ export type UserMinOrderByAggregateInput = {
   stripeSubscriptionId?: Prisma.SortOrder
   stripePlan?: Prisma.SortOrder
   trialEndsAt?: Prisma.SortOrder
+  language?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -493,6 +515,7 @@ export type UserCreateWithoutLocationsInput = {
   stripeSubscriptionId?: string | null
   stripePlan?: $Enums.StripePlan
   trialEndsAt: Date | string
+  language?: string
   createdAt?: Date | string
   actionTokens?: Prisma.ActionTokenCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
@@ -507,6 +530,7 @@ export type UserUncheckedCreateWithoutLocationsInput = {
   stripeSubscriptionId?: string | null
   stripePlan?: $Enums.StripePlan
   trialEndsAt: Date | string
+  language?: string
   createdAt?: Date | string
   actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
@@ -537,6 +561,7 @@ export type UserUpdateWithoutLocationsInput = {
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePlan?: Prisma.EnumStripePlanFieldUpdateOperationsInput | $Enums.StripePlan
   trialEndsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actionTokens?: Prisma.ActionTokenUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
@@ -551,6 +576,7 @@ export type UserUncheckedUpdateWithoutLocationsInput = {
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePlan?: Prisma.EnumStripePlanFieldUpdateOperationsInput | $Enums.StripePlan
   trialEndsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
@@ -565,6 +591,7 @@ export type UserCreateWithoutActionTokensInput = {
   stripeSubscriptionId?: string | null
   stripePlan?: $Enums.StripePlan
   trialEndsAt: Date | string
+  language?: string
   createdAt?: Date | string
   locations?: Prisma.LocationCreateNestedManyWithoutOwnerInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
@@ -579,6 +606,7 @@ export type UserUncheckedCreateWithoutActionTokensInput = {
   stripeSubscriptionId?: string | null
   stripePlan?: $Enums.StripePlan
   trialEndsAt: Date | string
+  language?: string
   createdAt?: Date | string
   locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOwnerInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
@@ -609,6 +637,7 @@ export type UserUpdateWithoutActionTokensInput = {
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePlan?: Prisma.EnumStripePlanFieldUpdateOperationsInput | $Enums.StripePlan
   trialEndsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   locations?: Prisma.LocationUpdateManyWithoutOwnerNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
@@ -623,6 +652,7 @@ export type UserUncheckedUpdateWithoutActionTokensInput = {
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePlan?: Prisma.EnumStripePlanFieldUpdateOperationsInput | $Enums.StripePlan
   trialEndsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   locations?: Prisma.LocationUncheckedUpdateManyWithoutOwnerNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
@@ -637,6 +667,7 @@ export type UserCreateWithoutChatMessagesInput = {
   stripeSubscriptionId?: string | null
   stripePlan?: $Enums.StripePlan
   trialEndsAt: Date | string
+  language?: string
   createdAt?: Date | string
   locations?: Prisma.LocationCreateNestedManyWithoutOwnerInput
   actionTokens?: Prisma.ActionTokenCreateNestedManyWithoutUserInput
@@ -651,6 +682,7 @@ export type UserUncheckedCreateWithoutChatMessagesInput = {
   stripeSubscriptionId?: string | null
   stripePlan?: $Enums.StripePlan
   trialEndsAt: Date | string
+  language?: string
   createdAt?: Date | string
   locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOwnerInput
   actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutUserInput
@@ -681,6 +713,7 @@ export type UserUpdateWithoutChatMessagesInput = {
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePlan?: Prisma.EnumStripePlanFieldUpdateOperationsInput | $Enums.StripePlan
   trialEndsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   locations?: Prisma.LocationUpdateManyWithoutOwnerNestedInput
   actionTokens?: Prisma.ActionTokenUpdateManyWithoutUserNestedInput
@@ -695,6 +728,7 @@ export type UserUncheckedUpdateWithoutChatMessagesInput = {
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePlan?: Prisma.EnumStripePlanFieldUpdateOperationsInput | $Enums.StripePlan
   trialEndsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   locations?: Prisma.LocationUncheckedUpdateManyWithoutOwnerNestedInput
   actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -709,6 +743,7 @@ export type UserCreateWithoutAgentActionsInput = {
   stripeSubscriptionId?: string | null
   stripePlan?: $Enums.StripePlan
   trialEndsAt: Date | string
+  language?: string
   createdAt?: Date | string
   locations?: Prisma.LocationCreateNestedManyWithoutOwnerInput
   actionTokens?: Prisma.ActionTokenCreateNestedManyWithoutUserInput
@@ -723,6 +758,7 @@ export type UserUncheckedCreateWithoutAgentActionsInput = {
   stripeSubscriptionId?: string | null
   stripePlan?: $Enums.StripePlan
   trialEndsAt: Date | string
+  language?: string
   createdAt?: Date | string
   locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOwnerInput
   actionTokens?: Prisma.ActionTokenUncheckedCreateNestedManyWithoutUserInput
@@ -753,6 +789,7 @@ export type UserUpdateWithoutAgentActionsInput = {
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePlan?: Prisma.EnumStripePlanFieldUpdateOperationsInput | $Enums.StripePlan
   trialEndsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   locations?: Prisma.LocationUpdateManyWithoutOwnerNestedInput
   actionTokens?: Prisma.ActionTokenUpdateManyWithoutUserNestedInput
@@ -767,6 +804,7 @@ export type UserUncheckedUpdateWithoutAgentActionsInput = {
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePlan?: Prisma.EnumStripePlanFieldUpdateOperationsInput | $Enums.StripePlan
   trialEndsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   locations?: Prisma.LocationUncheckedUpdateManyWithoutOwnerNestedInput
   actionTokens?: Prisma.ActionTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -839,6 +877,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   stripeSubscriptionId?: boolean
   stripePlan?: boolean
   trialEndsAt?: boolean
+  language?: boolean
   createdAt?: boolean
   locations?: boolean | Prisma.User$locationsArgs<ExtArgs>
   actionTokens?: boolean | Prisma.User$actionTokensArgs<ExtArgs>
@@ -855,6 +894,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   stripeSubscriptionId?: boolean
   stripePlan?: boolean
   trialEndsAt?: boolean
+  language?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -866,6 +906,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   stripeSubscriptionId?: boolean
   stripePlan?: boolean
   trialEndsAt?: boolean
+  language?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -877,10 +918,11 @@ export type UserSelectScalar = {
   stripeSubscriptionId?: boolean
   stripePlan?: boolean
   trialEndsAt?: boolean
+  language?: boolean
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "stripeCustomerId" | "stripeSubscriptionId" | "stripePlan" | "trialEndsAt" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "stripeCustomerId" | "stripeSubscriptionId" | "stripePlan" | "trialEndsAt" | "language" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   locations?: boolean | Prisma.User$locationsArgs<ExtArgs>
   actionTokens?: boolean | Prisma.User$actionTokensArgs<ExtArgs>
@@ -907,6 +949,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     stripeSubscriptionId: string | null
     stripePlan: $Enums.StripePlan
     trialEndsAt: Date
+    language: string
     createdAt: Date
   }, ExtArgs["result"]["user"]>
   composites: {}
@@ -1342,6 +1385,7 @@ export interface UserFieldRefs {
   readonly stripeSubscriptionId: Prisma.FieldRef<"User", 'String'>
   readonly stripePlan: Prisma.FieldRef<"User", 'StripePlan'>
   readonly trialEndsAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly language: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     

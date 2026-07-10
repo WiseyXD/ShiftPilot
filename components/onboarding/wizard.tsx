@@ -8,7 +8,7 @@ import { completeOnboarding, type OnboardingTemplate, type OnboardingEmployee } 
 import { Plus, Trash2, Check, ArrowLeft, ArrowRight, Coffee, Clock, Users } from "lucide-react"
 
 const TIMEZONES = ["Europe/Berlin", "Europe/Vienna", "Europe/Zurich", "Europe/London", "Europe/Paris", "UTC"]
-const DAYS = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"]
+const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 const DAY_ORDER = [1, 2, 3, 4, 5, 6, 0]
 const ROLES = ["Barista", "Service", "Kitchen", "Bar", "Küche", "Theke", "Spüle"]
 

@@ -17,6 +17,8 @@ import {
   Store,
   MessageCircle,
   LogOut,
+  Languages,
+  Check,
 } from "lucide-react"
 import {
   Sidebar,
@@ -43,14 +45,27 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Covrly } from "@/components/covrly"
 import { Badge } from "@/components/ui/badge"
 import { logOut } from "@/app/actions/auth"
+import { setLanguage } from "@/app/actions/user"
+import { useRouter } from "next/navigation"
 
 interface Props {
   locations: { id: string; name: string }[]
-  user: { email: string; plan: string }
+  user: { email: string; plan: string; language: string }
 }
+
+const LANGUAGES = [
+  { code: "en", label: "English" },
+  { code: "de", label: "Deutsch" },
+]
 
 export function AppSidebar({ locations, user }: Props) {
   const pathname = usePathname()
+  const router = useRouter()
+
+  const pickLanguage = async (code: string) => {
+    await setLanguage(code)
+    router.refresh()
+  }
   const locationMatch = pathname.match(/^\/dashboard\/([^/]+)/)
   const activeLocationId =
     locationMatch &&
@@ -214,6 +229,19 @@ export function AppSidebar({ locations, user }: Props) {
                     Billing & plan
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel className="flex items-center gap-2 text-xs text-slate-500 font-normal">
+                  <Languages className="h-3.5 w-3.5" />
+                  Language
+                </DropdownMenuLabel>
+                {LANGUAGES.map(({ code, label }) => (
+                  <DropdownMenuItem key={code} onClick={() => pickLanguage(code)}>
+                    <span className="flex w-4 justify-center">
+                      {user.language === code && <Check className="h-4 w-4" />}
+                    </span>
+                    {label}
+                  </DropdownMenuItem>
+                ))}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild variant="destructive">
                   <form action={logOut}>

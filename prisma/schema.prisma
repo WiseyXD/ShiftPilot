@@ -106,6 +106,7 @@ model User {
   stripeSubscriptionId String?
   stripePlan           StripePlan @default(TRIAL)
   trialEndsAt          DateTime
+  language             String     @default("en") // "en" | "de" — copilot + UI copy preference
   createdAt            DateTime   @default(now())
 
   locations    Location[]

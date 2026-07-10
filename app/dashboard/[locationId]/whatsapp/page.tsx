@@ -13,15 +13,18 @@ export default async function WhatsAppPage({
   const session = await auth()
   if (!session) redirect("/login")
 
-  const location = await prisma.location.findFirst({
-    where: { id: locationId, ownerId: session.user.id },
-    include: {
-      employees: {
-        orderBy: { name: "asc" },
-        select: { id: true, name: true, roles: true, category: true, phone: true },
+  const [location, dbUser] = await Promise.all([
+    prisma.location.findFirst({
+      where: { id: locationId, ownerId: session.user.id },
+      include: {
+        employees: {
+          orderBy: { name: "asc" },
+          select: { id: true, name: true, roles: true, category: true, phone: true },
+        },
       },
-    },
-  })
+    }),
+    prisma.user.findUnique({ where: { id: session.user.id }, select: { language: true } }),
+  ])
   if (!location) notFound()
 
   return (
@@ -34,6 +37,7 @@ export default async function WhatsAppPage({
         locationId={location.id}
         locationName={location.name}
         employees={location.employees}
+        ownerLang={dbUser?.language === "de" ? "de" : "en"}
       />
     </div>
   )

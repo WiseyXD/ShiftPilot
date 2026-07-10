@@ -40,7 +40,31 @@ function formatBody(body: string): React.ReactNode[] {
   })
 }
 
-export function AgentChatPanel({ locations }: { locations: { id: string; name: string }[] }) {
+const COPY = {
+  en: {
+    undoTitle: "Undo the last action",
+    thinking: "thinking…",
+    placeholder: "What should I do?",
+    emptyLead: "Just tell me what you need — English or German. E.g. ",
+    examples: ['"Who works Friday?"', '"Create next week\'s schedule"', '"Marco is sick"'],
+  },
+  de: {
+    undoTitle: "Letzte Aktion rückgängig machen",
+    thinking: "denkt nach…",
+    placeholder: "Was soll ich tun?",
+    emptyLead: "Sag mir einfach, was du brauchst — Deutsch oder Englisch. Z. B. ",
+    examples: ["„Wer arbeitet Freitag?“", "„Erstell den Plan für nächste Woche“", "„Marco ist krank“"],
+  },
+}
+
+export function AgentChatPanel({
+  locations,
+  lang = "en",
+}: {
+  locations: { id: string; name: string }[]
+  lang?: "en" | "de"
+}) {
+  const copy = COPY[lang]
   const pathname = usePathname()
   const [open, setOpen] = React.useState(false)
   const [messages, setMessages] = React.useState<Message[]>([])
@@ -110,7 +134,7 @@ export function AgentChatPanel({ locations }: { locations: { id: string; name: s
             </div>
             <button
               onClick={() => send("undo")}
-              title="Undo the last action"
+              title={copy.undoTitle}
               className="rounded p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
             >
               <RotateCcw className="h-4 w-4" />
@@ -127,10 +151,9 @@ export function AgentChatPanel({ locations }: { locations: { id: string; name: s
           <div ref={scrollRef} className="flex-1 space-y-2 overflow-y-auto bg-background px-4 py-4">
             {messages.length === 0 && !pending && (
               <div className="mx-auto mt-8 max-w-xs rounded-lg border border-dashed border-border px-4 py-4 text-center text-xs text-muted-foreground">
-                Just tell me what you need — English or German. E.g.{" "}
-                <strong>&quot;Who works Friday?&quot;</strong>,{" "}
-                <strong>&quot;Create next week&apos;s schedule&quot;</strong> or{" "}
-                <strong>&quot;Marco is sick&quot;</strong>.
+                {copy.emptyLead}
+                <strong>{copy.examples[0]}</strong>, <strong>{copy.examples[1]}</strong>,{" "}
+                <strong>{copy.examples[2]}</strong>.
               </div>
             )}
             {messages.map((m) =>
@@ -177,7 +200,7 @@ export function AgentChatPanel({ locations }: { locations: { id: string; name: s
             )}
             {pending && (
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Covrly size={18} /> thinking…
+                <Covrly size={18} /> {copy.thinking}
               </div>
             )}
           </div>
@@ -193,7 +216,7 @@ export function AgentChatPanel({ locations }: { locations: { id: string; name: s
             <input
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder="What should I do?"
+              placeholder={copy.placeholder}
               className="flex-1 rounded-full border border-border bg-background px-4 py-2 text-sm outline-none focus:border-primary"
             />
             <button

@@ -7,9 +7,9 @@ import { prisma } from "@/prisma/client"
 import { detectLanguage, DEFAULT_LANG, type Lang } from "./i18n"
 import type { ChatAction } from "./types"
 
-// The thread's language: the most recent owner message we can classify wins;
-// a fresh thread defaults to English. Proactive pushes and button taps (which
-// carry no language themselves) use this.
+// The thread's language: the most recent owner message we can classify wins,
+// then the owner's language preference (the sidebar toggle), then English.
+// Proactive pushes and button taps (which carry no language) use this.
 export async function ownerThreadLanguage(locationId: string, userId?: string): Promise<Lang> {
   let ownerId = userId
   if (!ownerId) {
@@ -30,7 +30,11 @@ export async function ownerThreadLanguage(locationId: string, userId?: string): 
     const lang = detectLanguage(m.body)
     if (lang) return lang
   }
-  return DEFAULT_LANG
+  const user = await prisma.user.findUnique({
+    where: { id: ownerId },
+    select: { language: true },
+  })
+  return user?.language === "de" ? "de" : DEFAULT_LANG
 }
 
 export async function pushOwnerMessage(
