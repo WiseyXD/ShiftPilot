@@ -5,6 +5,8 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { PageHeader } from "@/components/dashboard/page-header"
+import { getUserLang } from "@/lib/i18n/server"
+import { ui } from "@/lib/i18n/dashboard"
 import { ChevronRight, Calendar } from "lucide-react"
 
 export default async function SchedulesPage({
@@ -22,9 +24,10 @@ export default async function SchedulesPage({
   })
   if (!location) notFound()
 
+  const tp = ui(await getUserLang()).pages
   return (
     <div className="space-y-6">
-      <PageHeader title="Schedules" description={location.name} />
+      <PageHeader title={tp.schedulesTitle} description={location.name} />
 
       {location.schedules.length === 0 ? (
         <Card className="border-dashed">

@@ -7,6 +7,8 @@ import { AuditLogEntry } from "./entry"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { PageHeader } from "@/components/dashboard/page-header"
+import { getUserLang } from "@/lib/i18n/server"
+import { ui } from "@/lib/i18n/dashboard"
 import { Activity } from "lucide-react"
 
 const PAGE_SIZE = 20
@@ -87,9 +89,10 @@ export default async function AuditLogPage({
     return `?${params}`
   }
 
+  const tp = ui(await getUserLang()).pages
   return (
     <div className="space-y-6">
-      <PageHeader title="Audit log" description={`AI decisions and actions at ${location.name}`} />
+      <PageHeader title={tp.auditTitle} description={tp.auditDesc(location.name)} />
 
       {!pro && (
         <Card className="bg-amber-50 border-amber-200">

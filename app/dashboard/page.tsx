@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { PageHeader } from "@/components/dashboard/page-header"
+import { getUserLang } from "@/lib/i18n/server"
+import { ui } from "@/lib/i18n/dashboard"
 import { isPro } from "@/lib/plan"
 import { Building2, ChevronRight, Plus, Sparkles, Users } from "lucide-react"
 
@@ -21,10 +23,11 @@ export default async function DashboardPage() {
 
   if (locations.length === 1) redirect(`/dashboard/${locations[0].id}`)
 
+  const tp = ui(await getUserLang()).pages
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Your locations"
+        title={tp.homeTitle}
         description={`Manage scheduling across ${locations.length || "all your"} location${locations.length === 1 ? "" : "s"}`}
         action={
           <Link href="/dashboard/locations/new">

@@ -18,6 +18,8 @@ import { RollupTable } from "./rollup-table"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { PageHeader } from "@/components/dashboard/page-header"
+import { getUserLang } from "@/lib/i18n/server"
+import { ui } from "@/lib/i18n/dashboard"
 import { Download } from "lucide-react"
 
 export default async function AnalyticsPage({
@@ -56,10 +58,11 @@ export default async function AnalyticsPage({
     pro ? getRollupAcceptanceRate(session.user.id) : Promise.resolve(null),
   ])
 
+  const tp = ui(await getUserLang()).pages
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Analytics"
+        title={tp.analyticsTitle}
         description={location.name}
         action={
           pro ? (

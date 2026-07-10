@@ -2,6 +2,8 @@ import { auth } from "@/auth"
 import { prisma } from "@/prisma/client"
 import { redirect, notFound } from "next/navigation"
 import { PageHeader } from "@/components/dashboard/page-header"
+import { getUserLang } from "@/lib/i18n/server"
+import { ui } from "@/lib/i18n/dashboard"
 import { WhatsAppSimulator } from "@/components/whatsapp/simulator"
 
 export default async function WhatsAppPage({
@@ -27,11 +29,12 @@ export default async function WhatsAppPage({
   ])
   if (!location) notFound()
 
+  const tp = ui(await getUserLang()).pages
   return (
     <div className="space-y-6">
       <PageHeader
-        title="WhatsApp"
-        description="How your team actually talks to Covrly — try it as one of your staff."
+        title={tp.whatsappTitle}
+        description={tp.whatsappDesc}
       />
       <WhatsAppSimulator
         locationId={location.id}

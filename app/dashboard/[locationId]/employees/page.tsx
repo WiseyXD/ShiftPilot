@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { useParams } from "next/navigation"
 import { PageHeader } from "@/components/dashboard/page-header"
+import { ui } from "@/lib/i18n/dashboard"
+import { useUiLang } from "@/lib/i18n/client"
 import { ageOn } from "@/lib/compliance/check"
 import { VacationsCard } from "@/components/dashboard/vacations-card"
 import { Trash2, Users, UserPlus } from "lucide-react"
@@ -149,6 +151,7 @@ function AddEmployeeForm({ locationId }: { locationId: string }) {
 export default function EmployeesPage() {
   const params = useParams<{ locationId: string }>()
   const locationId = params.locationId
+  const tp = ui(useUiLang()).pages
 
   const [employees, setEmployees] = useState<
     {
@@ -172,7 +175,7 @@ export default function EmployeesPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Employees" description="Manage your team and their working hours" />
+      <PageHeader title={tp.employeesTitle} description={tp.employeesDesc} />
       <AddEmployeeForm locationId={locationId} />
       <VacationsCard locationId={locationId} />
 

@@ -47,6 +47,7 @@ import { Badge } from "@/components/ui/badge"
 import { logOut } from "@/app/actions/auth"
 import { setLanguage } from "@/app/actions/user"
 import { useRouter } from "next/navigation"
+import { ui, type UiLang } from "@/lib/i18n/dashboard"
 
 interface Props {
   locations: { id: string; name: string }[]
@@ -61,6 +62,7 @@ const LANGUAGES = [
 export function AppSidebar({ locations, user }: Props) {
   const pathname = usePathname()
   const router = useRouter()
+  const s = ui(user.language as UiLang).sidebar
 
   const pickLanguage = async (code: string) => {
     await setLanguage(code)
@@ -79,13 +81,13 @@ export function AppSidebar({ locations, user }: Props) {
 
   const locationNav = activeLocationId
     ? [
-        { label: "Overview", icon: Home, href: `/dashboard/${activeLocationId}` },
-        { label: "Schedules", icon: Calendar, href: `/dashboard/${activeLocationId}/schedules` },
-        { label: "Employees", icon: Users, href: `/dashboard/${activeLocationId}/employees` },
-        { label: "WhatsApp", icon: MessageCircle, href: `/dashboard/${activeLocationId}/whatsapp` },
-        { label: "Templates", icon: ClipboardList, href: `/dashboard/${activeLocationId}/templates` },
-        { label: "Audit log", icon: Activity, href: `/dashboard/${activeLocationId}/audit-log` },
-        { label: "Analytics", icon: BarChart3, href: `/dashboard/${activeLocationId}/analytics` },
+        { label: s.overview, icon: Home, href: `/dashboard/${activeLocationId}` },
+        { label: s.schedules, icon: Calendar, href: `/dashboard/${activeLocationId}/schedules` },
+        { label: s.employees, icon: Users, href: `/dashboard/${activeLocationId}/employees` },
+        { label: s.whatsapp, icon: MessageCircle, href: `/dashboard/${activeLocationId}/whatsapp` },
+        { label: s.templates, icon: ClipboardList, href: `/dashboard/${activeLocationId}/templates` },
+        { label: s.auditLog, icon: Activity, href: `/dashboard/${activeLocationId}/audit-log` },
+        { label: s.analytics, icon: BarChart3, href: `/dashboard/${activeLocationId}/analytics` },
       ]
     : []
 
@@ -106,7 +108,7 @@ export function AppSidebar({ locations, user }: Props) {
           <Covrly size={32} className="shrink-0" />
           <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
             <span className="font-display text-lg font-semibold tracking-tight text-sidebar-foreground">Covrly</span>
-            <span className="text-xs text-sidebar-foreground/60 truncate">AI shift scheduling</span>
+            <span className="text-xs text-sidebar-foreground/60 truncate">{s.tagline}</span>
           </div>
         </div>
       </SidebarHeader>
@@ -114,7 +116,7 @@ export function AppSidebar({ locations, user }: Props) {
       <SidebarContent>
         {/* Locations */}
         <SidebarGroup>
-          <SidebarGroupLabel>Locations</SidebarGroupLabel>
+          <SidebarGroupLabel>{s.locations}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {locations.map((loc) => (
@@ -128,10 +130,10 @@ export function AppSidebar({ locations, user }: Props) {
                 </SidebarMenuItem>
               ))}
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Add location">
+                <SidebarMenuButton asChild tooltip={s.addLocation}>
                   <Link href="/dashboard/locations/new" className="text-sidebar-foreground/70">
                     <Plus />
-                    <span>Add location</span>
+                    <span>{s.addLocation}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -151,18 +153,18 @@ export function AppSidebar({ locations, user }: Props) {
 
         {/* Network */}
         <SidebarGroup>
-          <SidebarGroupLabel>Network</SidebarGroupLabel>
+          <SidebarGroupLabel>{s.network}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
                   isActive={isActive("/dashboard/marketplace")}
-                  tooltip="Staff marketplace"
+                  tooltip={s.marketplace}
                 >
                   <Link href="/dashboard/marketplace">
                     <Store />
-                    <span>Marketplace</span>
+                    <span>{s.marketplace}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -219,20 +221,20 @@ export function AppSidebar({ locations, user }: Props) {
                 sideOffset={8}
               >
                 <DropdownMenuLabel>
-                  <p className="text-xs text-slate-500 font-normal">Signed in as</p>
+                  <p className="text-xs text-slate-500 font-normal">{s.signedInAs}</p>
                   <p className="text-sm font-medium truncate">{user.email}</p>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/dashboard/billing">
                     <CreditCard />
-                    Billing & plan
+                    {s.billing}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuLabel className="flex items-center gap-2 text-xs text-slate-500 font-normal">
                   <Languages className="h-3.5 w-3.5" />
-                  Language
+                  {s.language}
                 </DropdownMenuLabel>
                 {LANGUAGES.map(({ code, label }) => (
                   <DropdownMenuItem key={code} onClick={() => pickLanguage(code)}>
@@ -247,7 +249,7 @@ export function AppSidebar({ locations, user }: Props) {
                   <form action={logOut}>
                     <button type="submit" className="w-full flex items-center gap-2">
                       <LogOut className="h-4 w-4" />
-                      Sign out
+                      {s.signOut}
                     </button>
                   </form>
                 </DropdownMenuItem>
