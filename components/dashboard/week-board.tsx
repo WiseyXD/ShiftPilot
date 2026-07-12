@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight, PencilLine, Check, Info } from "lucide-react"
 import { ui, uiDateLocale, type UiLang } from "@/lib/i18n/dashboard"
+import { CONTRACT, contractStyle } from "@/lib/contract"
 import { GenerateDraftButton, PublishButton } from "./week-board-actions"
 import { EditableCell } from "./editable-cell"
 import { AddShiftCell } from "./add-shift-cell"
@@ -19,6 +20,7 @@ export interface BoardShift {
   status: string
   employeeId: string | null
   employeeName: string | null
+  category: string | null
   templateId: string
 }
 
@@ -242,8 +244,10 @@ export function WeekBoard({
                           ) : (
                             <div
                               key={s.id}
-                              className="flex items-center gap-1.5 rounded-md border border-border bg-background px-1.5 py-1"
-                              title={s.status}
+                              className={`flex items-center gap-1.5 rounded-md border border-l-[3px] border-border bg-background px-1.5 py-1 ${
+                                contractStyle(s.category)?.borderL ?? "border-l-border"
+                              }`}
+                              title={`${s.status}${contractStyle(s.category) ? ` · ${contractStyle(s.category)!.label}` : ""}`}
                             >
                               <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${DOT[s.status] ?? "bg-slate-400"}`} />
                               <span className="truncate text-[11px] text-foreground">{s.employeeName}</span>
@@ -266,7 +270,7 @@ export function WeekBoard({
             </div>
             {/* Legend */}
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border px-4 py-3 text-[11px] text-muted-foreground">
-              <span className="font-semibold uppercase tracking-wider text-foreground/60">Key</span>
+              <span className="font-semibold uppercase tracking-wider text-foreground/60">Status</span>
               {LEGEND.map((l) => (
                 <span key={l.label} className="inline-flex items-center gap-1.5">
                   {l.dashed ? (
@@ -275,6 +279,14 @@ export function WeekBoard({
                     <span className={`h-2 w-2 rounded-full ${l.dot}`} />
                   )}
                   {l.label}
+                </span>
+              ))}
+              <span className="mx-1 h-3 w-px bg-border" />
+              <span className="font-semibold uppercase tracking-wider text-foreground/60">Contract</span>
+              {(Object.keys(CONTRACT) as (keyof typeof CONTRACT)[]).map((c) => (
+                <span key={c} className="inline-flex items-center gap-1.5">
+                  <span className={`h-3 w-1.5 rounded-sm ${CONTRACT[c].dot}`} />
+                  {CONTRACT[c].label}
                 </span>
               ))}
             </div>

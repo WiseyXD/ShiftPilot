@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { contractStyle } from "@/lib/contract"
 import { useParams } from "next/navigation"
 import { PageHeader } from "@/components/dashboard/page-header"
 import { ui } from "@/lib/i18n/dashboard"
@@ -203,13 +204,9 @@ export default function EmployeesPage() {
                         <span className="ml-2">
                           <Badge
                             variant="outline"
-                            className={
-                              emp.category === "TEILZEIT_FEST"
-                                ? "text-[10px] px-1.5 py-0 h-4 bg-blue-100 text-blue-700 border-blue-200"
-                                : "text-[10px] px-1.5 py-0 h-4 bg-slate-100 text-slate-600 border-slate-200"
-                            }
+                            className={`text-[10px] px-1.5 py-0 h-4 ${contractStyle(emp.category)?.badge ?? ""}`}
                           >
-                            {emp.category === "TEILZEIT_FEST" ? "Fest/Teilzeit" : "Minijob"}
+                            {contractStyle(emp.category)?.label ?? emp.category}
                           </Badge>
                           {emp.isWerkstudent && (
                             <Badge

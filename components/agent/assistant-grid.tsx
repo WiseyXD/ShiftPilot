@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Loader2, CalendarDays } from "lucide-react"
+import { CONTRACT, contractStyle } from "@/lib/contract"
 
 // Compact, read-only schedule grid rendered inline in the chat after the
 // copilot edits a week. Fetches live state so it always reflects the edit.
@@ -11,7 +12,7 @@ interface GridData {
   range: string
   status: string | null
   templates: { id: string; name: string; startTime: string; endTime: string }[]
-  shifts: { dayOfWeek: number; templateId: string; status: string; employeeName: string | null }[]
+  shifts: { dayOfWeek: number; templateId: string; status: string; employeeName: string | null; category: string | null }[]
 }
 
 const WEEK_DAYS = [1, 2, 3, 4, 5, 6, 0]
@@ -118,7 +119,13 @@ export function AssistantGrid({
                             s.status === "UNASSIGNED" || !s.employeeName ? (
                               <span key={i} className="rounded border border-dashed border-yellow-400/70 bg-yellow-50/60 px-1 py-0.5 text-[10px] font-medium text-yellow-800">Open</span>
                             ) : (
-                              <span key={i} className="inline-flex items-center gap-1 rounded bg-muted px-1 py-0.5 text-[10px] text-foreground/80" title={s.status}>
+                              <span
+                                key={i}
+                                className={`inline-flex items-center gap-1 rounded border-l-2 bg-muted px-1 py-0.5 text-[10px] text-foreground/80 ${
+                                  contractStyle(s.category)?.borderL ?? "border-l-transparent"
+                                }`}
+                                title={`${s.status}${contractStyle(s.category) ? ` · ${contractStyle(s.category)!.label}` : ""}`}
+                              >
                                 <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${DOT[s.status] ?? "bg-slate-400"}`} />
                                 <span className="truncate">{firstName(s.employeeName)}</span>
                               </span>
@@ -143,6 +150,13 @@ export function AssistantGrid({
               <span className={`h-1.5 w-1.5 rounded-full ${l.dot}`} />
             )}
             {l.label}
+          </span>
+        ))}
+        <span className="mx-0.5 h-3 w-px bg-border" />
+        {(Object.keys(CONTRACT) as (keyof typeof CONTRACT)[]).map((c) => (
+          <span key={c} className="inline-flex items-center gap-1">
+            <span className={`h-2.5 w-1 rounded-sm ${CONTRACT[c].dot}`} />
+            {CONTRACT[c].label}
           </span>
         ))}
       </div>

@@ -14,6 +14,7 @@ import { ChevronRight, ArrowRight, Siren, TriangleAlert, CheckCircle2, Circle, C
 import { Covrly } from "@/components/covrly"
 import { WeekBoard, type BoardShift } from "@/components/dashboard/week-board"
 import { FirstRunOverlay } from "@/components/dashboard/first-run-overlay"
+import { contractStyle } from "@/lib/contract"
 import { KpiTiles } from "@/components/dashboard/kpi-tiles"
 import { CoverageChart, ResponseChart, type CoveragePoint, type ResponsePoint } from "@/components/dashboard/dash-charts"
 import { getWeatherToday } from "@/lib/weather/client"
@@ -124,7 +125,7 @@ export default async function LocationPage({
       orderBy: { createdAt: "desc" },
       include: {
         shifts: {
-          include: { employee: { select: { name: true } }, shiftTemplate: true },
+          include: { employee: { select: { name: true, category: true } }, shiftTemplate: true },
         },
       },
     })
@@ -200,6 +201,7 @@ export default async function LocationPage({
     status: s.status,
     employeeId: s.employeeId,
     employeeName: s.employee?.name ?? null,
+    category: s.employee?.category ?? null,
     templateId: s.shiftTemplateId,
   }))
   const generationDayLabel = new Date(2024, 0, 7 + location.generationDayOfWeek)
@@ -421,9 +423,15 @@ export default async function LocationPage({
             <ul className="divide-y divide-slate-100">
               {location.employees.slice(0, 6).map((emp) => (
                 <li key={emp.id} className="flex items-center justify-between px-4 py-3">
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-slate-900 truncate">{emp.name}</p>
-                    <p className="text-xs text-slate-500 truncate">{emp.email}</p>
+                  <div className="flex min-w-0 items-center gap-2.5">
+                    <span
+                      className={`h-7 w-1.5 shrink-0 rounded-full ${contractStyle(emp.category)?.dot ?? "bg-slate-300"}`}
+                      title={contractStyle(emp.category)?.label ?? undefined}
+                    />
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-slate-900 truncate">{emp.name}</p>
+                      <p className="text-xs text-slate-500 truncate">{emp.email}</p>
+                    </div>
                   </div>
                   <div className="flex gap-1 flex-wrap justify-end">
                     {emp.roles.map((r) => (

@@ -5,6 +5,7 @@ import { sendChatMessage, clearChatThread, resetDemo } from "@/app/actions/whats
 import { sendOwnerMessage, clearOwnerThread } from "@/app/actions/agent"
 import { Send, Check, CheckCheck, MoreVertical, Search, Phone, Sparkles, RotateCcw } from "lucide-react"
 import { Covrly } from "@/components/covrly"
+import { contractStyle } from "@/lib/contract"
 
 // Sentinel id for the owner ⇄ copilot thread pinned above the team chats.
 const OWNER_THREAD = "__owner__"
@@ -230,8 +231,11 @@ export function WhatsAppSimulator({
               </span>
               <span className="min-w-0">
                 <span className="block truncate text-sm font-medium text-foreground">{e.name}</span>
-                <span className="block truncate text-xs text-muted-foreground">
-                  {e.roles.join(", ") || (e.category === "TEILZEIT_FEST" ? "Festangestellt" : "Minijob")}
+                <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  {contractStyle(e.category) && (
+                    <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${contractStyle(e.category)!.dot}`} title={contractStyle(e.category)!.label} />
+                  )}
+                  <span className="truncate">{e.roles.join(", ") || contractStyle(e.category)?.label || "—"}</span>
                 </span>
               </span>
             </button>

@@ -38,7 +38,7 @@ export async function GET(
           dayOfWeek: true,
           status: true,
           shiftTemplateId: true,
-          employee: { select: { name: true } },
+          employee: { select: { name: true, category: true } },
         },
       },
     },
@@ -57,6 +57,7 @@ export async function GET(
       templateId: s.shiftTemplateId,
       status: s.status,
       employeeName: s.employee?.name ?? null,
+      category: s.employee?.category ?? null,
     })),
   })
 }

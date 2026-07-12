@@ -4,6 +4,7 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { Covrly } from "@/components/covrly"
 import { publishFirstWeek, applyDemoSickReplacement, type SeedAssignment } from "@/app/actions/first-run"
+import { contractStyle } from "@/lib/contract"
 import {
   Sparkles, Play, Pause, CheckCheck, Phone, PartyPopper, ArrowRight, Loader2,
   Check, Pencil, Megaphone, HeartPulse, CalendarCheck,
@@ -82,13 +83,16 @@ const MeBubble = ({ children }: { children: React.ReactNode }) => (
     <span className="mt-0.5 flex items-center justify-end gap-1 text-[10px] text-[#667781]"><CheckCheck className="h-3 w-3 text-[#53bdeb]" /></span>
   </div>
 )
-const ThreadShell = ({ name, sub, replied, children }: { name: string; sub: string; replied?: boolean; children: React.ReactNode }) => (
+const ThreadShell = ({ name, sub, category, replied, children }: { name: string; sub: string; category?: string | null; replied?: boolean; children: React.ReactNode }) => (
   <div className={`flex flex-col overflow-hidden rounded-xl border shadow-sm transition-all ${replied ? "border-primary/40" : "border-border"}`}>
     <div className="flex items-center gap-2 bg-[#008069] px-3 py-2 text-white">
       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-xs font-semibold">{initials(name)}</span>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium leading-tight">{firstName(name)}</p>
-        <p className="text-[10px] text-white/70">{sub}</p>
+        <p className="flex items-center gap-1 text-[10px] text-white/70">
+          {contractStyle(category) && <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${contractStyle(category)!.dot}`} />}
+          {sub}
+        </p>
       </div>
       {replied && <CheckCheck className="h-4 w-4 text-[#8fe6ff]" />}
     </div>
@@ -294,7 +298,7 @@ export function LiveDemo({
               const r = replyOf(e)
               const hasReplied = i < repliedCount
               return (
-                <ThreadShell key={e.id} name={e.name} sub={catSub(e)} replied={scene === "availability" ? hasReplied : true}>
+                <ThreadShell key={e.id} name={e.name} sub={catSub(e)} category={e.category} replied={scene === "availability" ? hasReplied : true}>
                   {scene === "availability" ? (
                     <>
                       {asked ? (
@@ -448,12 +452,12 @@ function SickScene({ sickEmp, coverEmp, tmpl, catSub, step }: { sickEmp: Employe
         <strong>The morning before the shift</strong> — {firstName(sickEmp.name)} wakes up ill. Watch Covrly handle it, no manager needed.
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <ThreadShell name={sickEmp.name} sub={catSub(sickEmp)} replied={step >= 1}>
+        <ThreadShell name={sickEmp.name} sub={catSub(sickEmp)} category={sickEmp.category} replied={step >= 1}>
           {step >= 1 && <Appear><MeBubble>{fmt(`🤒 I can't make it tomorrow — I'm sick 😷`)}</MeBubble></Appear>}
           {step >= 1 && <Appear delay={250}><AgentBubble>{fmt(`Get well soon! 🤒 I've told your manager and I'm finding cover right now. 🔎`)}</AgentBubble></Appear>}
           {step < 1 && <p className="m-auto text-center text-xs text-[#54656f]/70">Waiting…</p>}
         </ThreadShell>
-        <ThreadShell name={coverEmp.name} sub={catSub(coverEmp)} replied={step >= 3}>
+        <ThreadShell name={coverEmp.name} sub={catSub(coverEmp)} category={coverEmp.category} replied={step >= 3}>
           {step >= 2 && <Appear><AgentBubble>{fmt(`🔔 Can you cover the *${tmpl.name}* (${tmpl.startTime}–${tmpl.endTime}) tomorrow for ${firstName(sickEmp.name)}?`)}</AgentBubble></Appear>}
           {step >= 3 && <Appear><MeBubble>🙋 Yes, I can</MeBubble></Appear>}
           {step >= 3 && <Appear delay={250}><AgentBubble>{fmt(`✅ You're covering the *${tmpl.name}* tomorrow. Thanks for stepping in! ☕`)}</AgentBubble></Appear>}
