@@ -87,6 +87,9 @@ const en = {
     `⚠️ ${warning} — assign ${name} anyway (${label})?`,
   reassigned: (name: string, label: string, prev: string | null) =>
     `✅ ${name} takes over: ${label}${prev ? ` (instead of ${prev})` : ""}. Notifications are out.`,
+  askToCover: (name: string, label: string) => `Ask ${name} to cover ${label}?`,
+  coverRequested: (name: string, label: string) =>
+    `I've asked *${name}* to cover ${label} on WhatsApp — I'll put them on the moment they say yes. 🙋`,
   shiftNotAssigned: "That shift isn't assigned to anyone.",
   takeOffShift: (name: string, label: string) => `Take ${name} off the shift: ${label}`,
   unassigned: (name: string) =>
@@ -163,6 +166,8 @@ const en = {
     `⚠️ I couldn't find anyone for the ${shift} shift on ${date} — asked ${tried} people, all declined or didn't answer. Tell me who should step in and I'll book it.`,
   sickCallPush: (name: string, shift: string, date: string) =>
     `🤒 *${name}* called in sick (${shift} on ${date}). I'm already looking for cover — please confirm the sick call in the dashboard or by email.`,
+  collectingAvailability: (date: string, waitingOn: number) =>
+    `📣 Asking your team what they can't work the week of ${date}${waitingOn > 0 ? ` — waiting on ${waitingOn} to reply` : ""}. I'll build the draft automatically once they're in.`,
 }
 
 // Same shape as `en`, enforced by the type — adding a string in one language
@@ -206,6 +211,9 @@ const de: typeof en = {
   overrideAnyway: (warning, name, label) => `⚠️ ${warning} — ${name} trotzdem zuweisen (${label})?`,
   reassigned: (name, label, prev) =>
     `✅ ${name} übernimmt: ${label}${prev ? ` (statt ${prev})` : ""}. Die Benachrichtigungen sind raus.`,
+  askToCover: (name, label) => `${name} fragen, ob sie ${label} übernimmt?`,
+  coverRequested: (name, label) =>
+    `Ich habe *${name}* per WhatsApp gefragt, ob sie ${label} übernimmt — sobald sie zusagt, trage ich sie ein. 🙋`,
   shiftNotAssigned: "Diese Schicht ist gar nicht besetzt.",
   takeOffShift: (name, label) => `${name} von der Schicht nehmen: ${label}`,
   unassigned: (name) =>
@@ -274,6 +282,8 @@ const de: typeof en = {
     `⚠️ Für die ${shift}-Schicht am ${date} habe ich niemanden gefunden — ${tried} Personen gefragt, alle abgesagt oder keine Antwort. Sag mir, wer einspringen soll, dann trage ich es ein.`,
   sickCallPush: (name, shift, date) =>
     `🤒 *${name}* hat sich krankgemeldet (${shift} am ${date}). Ich suche bereits Ersatz — bitte bestätige die Krankmeldung im Dashboard oder per E-Mail.`,
+  collectingAvailability: (date, waitingOn) =>
+    `📣 Ich frage dein Team, was es in der Woche ab ${date} nicht arbeiten kann${waitingOn > 0 ? ` — warte noch auf ${waitingOn} Rückmeldung(en)` : ""}. Sobald alle da sind, baue ich den Entwurf automatisch.`,
 }
 
 const CATALOG: Record<Lang, typeof en> = { en, de }

@@ -7,6 +7,8 @@
 import * as React from "react"
 import { usePathname } from "next/navigation"
 import { sendOwnerMessage } from "@/app/actions/agent"
+import { parseGridMarker } from "@/lib/agent/grid-marker"
+import { AssistantGrid } from "./assistant-grid"
 import { Send, X, Sparkles, RotateCcw } from "lucide-react"
 import { Covrly } from "@/components/covrly"
 
@@ -159,12 +161,24 @@ export function AgentChatPanel({
             {messages.map((m) =>
               m.role === "AGENT" ? (
                 <div key={m.id} className="flex flex-col items-start">
-                  <div className="max-w-[85%] rounded-xl rounded-tl-sm border border-border bg-card px-3 py-2 text-sm text-foreground">
-                    <p className="whitespace-pre-wrap leading-snug">{formatBody(m.body)}</p>
-                    <span className="mt-1 block text-right text-[10px] text-muted-foreground">
-                      {time(m.createdAt)}
-                    </span>
-                  </div>
+                  {(() => {
+                    const { text, gridWeek, highlight } = parseGridMarker(m.body)
+                    return (
+                      <>
+                        <div className="max-w-[85%] rounded-xl rounded-tl-sm border border-border bg-card px-3 py-2 text-sm text-foreground">
+                          {text && <p className="whitespace-pre-wrap leading-snug">{formatBody(text)}</p>}
+                          <span className="mt-1 block text-right text-[10px] text-muted-foreground">
+                            {time(m.createdAt)}
+                          </span>
+                        </div>
+                        {gridWeek !== null && (
+                          <div className="mt-1 w-full">
+                            <AssistantGrid locationId={location.id} weekOffset={gridWeek} highlight={highlight} />
+                          </div>
+                        )}
+                      </>
+                    )
+                  })()}
                   {m.actions && m.actions.length > 0 && (
                     <div className="mt-1 flex w-[85%] flex-col overflow-hidden rounded-xl border border-border bg-card">
                       {m.actions.map((a) => (

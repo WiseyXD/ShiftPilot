@@ -16,6 +16,7 @@ import { approveSchedule, manualGenerateSchedule } from "@/app/actions/schedule"
 import { parseManagerRule, saveManagerRule, deleteManagerRule, type RuleDraft } from "@/app/actions/manager-rules"
 import { createVacation, deleteVacation } from "@/app/actions/vacation"
 import { createEmployee, updateEmployee, deleteEmployee } from "@/app/actions/employee"
+import { requestManagerCover } from "@/lib/whatsapp-sim/handler"
 import { weekStartFor, currentMonday, resolveShift, shiftLabel, chronologicalDay, type ResolvableShift } from "./resolve"
 import { buildInverse } from "./undo"
 import { t, fmtDate, fmtDay, type Lang } from "./i18n"
@@ -41,7 +42,8 @@ export type ExecuteResult =
   | { error: string }
   // a soft conflict surfaced mid-execution → becomes a confirm-first proposal
   | { confirmFirst: { preview: string; execParams: Record<string, unknown> } }
-  | { reply: string; inverse: InverseCall | null }
+  // grid = weekOffset whose schedule grid should be shown back in the chat
+  | { reply: string; inverse: InverseCall | null; grid?: number }
 
 export interface WriteTool {
   kind: "write"
@@ -146,10 +148,26 @@ const dayParam = z
 const getSchedule: ReadTool = {
   kind: "read",
   description:
-    "Show the schedule for a week: every shift with day, time, assigned employee and status. Use this to answer who works when, or what's still open.",
-  schema: z.object({ weekOffset: weekOffsetParam }),
-  async run(ctx, params: { weekOffset: number }) {
+    "Show the schedule for a week: every shift with day, time, assigned employee and status. Use this to answer who works when, or what's still open. When the owner asks about ONE specific shift (e.g. 'who works Friday evening'), ALSO pass highlightDay and highlightTemplateName so that shift is highlighted in the grid.",
+  schema: z.object({
+    weekOffset: weekOffsetParam,
+    highlightDay: dayParam.optional().describe("Day of a specific shift the owner asked about, to highlight"),
+    highlightTemplateName: z.string().optional().describe("Template name of that shift, e.g. 'evening' / 'Abend'"),
+  }),
+  async run(ctx, params: { weekOffset: number; highlightDay?: number; highlightTemplateName?: string }) {
     const weekStart = weekStartFor(params.weekOffset)
+    // Always show the week's grid back in the chat, highlighting the asked-about
+    // shift when the owner named one.
+    ctx.gridHint = { weekOffset: params.weekOffset }
+    if (params.highlightDay != null && params.highlightTemplateName) {
+      const q = params.highlightTemplateName.toLowerCase()
+      const templates = await prisma.shiftTemplate.findMany({
+        where: { locationId: ctx.locationId },
+        select: { id: true, name: true },
+      })
+      const tmpl = templates.find((t) => t.name.toLowerCase().includes(q) || q.includes(t.name.toLowerCase()))
+      if (tmpl) ctx.gridHint.highlight = { dayOfWeek: params.highlightDay, templateId: tmpl.id }
+    }
     const loaded = await loadWeekShifts(ctx.locationId, weekStart)
     if (!loaded) return `There is no schedule for the week starting ${fmtDateEn(weekStart)}.`
     const lines = [...loaded.shifts]
@@ -187,6 +205,7 @@ const getOpenShifts: ReadTool = {
   schema: z.object({ weekOffset: weekOffsetParam }),
   async run(ctx, params: { weekOffset: number }) {
     const weekStart = weekStartFor(params.weekOffset)
+    ctx.gridHint = { weekOffset: params.weekOffset }
     const loaded = await loadWeekShifts(ctx.locationId, weekStart)
     if (!loaded) return `There is no schedule for the week starting ${fmtDateEn(weekStart)}.`
     const open = loaded.shifts.filter((s) => s.status === "UNASSIGNED")
@@ -361,10 +380,16 @@ async function resolveTargetShift(
   return { weekStart, scheduleStatus: loaded.schedule.status, shift: result.shift }
 }
 
+// weekOffset (−1/0/1) of a schedule's week — so a schedule edit can show the
+// right week's grid back in the chat.
+function weekOffsetOf(weekStart: Date): number {
+  return Math.round((weekStart.getTime() - currentMonday().getTime()) / (7 * 86400000))
+}
+
 const reassignShiftTool: WriteTool = {
   kind: "write",
   description:
-    "Assign an employee to a shift (an open one, or replacing whoever holds it). Identify the shift by day of week, shift/template name and — when replacing someone — the current holder's name. Legal violations are hard-blocked; other conflicts ask the owner to override.",
+    "FORCE-assign an employee to a shift immediately, WITHOUT asking them first — the schedule changes right away and they're only notified. Use this ONLY when the owner explicitly says to force it / put them on directly / skip asking. For the normal 'replace X with Y', 'ask Y to cover', or 'put Y on Friday', use request_cover instead. Identify the shift by day of week, shift/template name and — when replacing someone — the current holder's name. Legal violations are hard-blocked; other conflicts ask the owner to override.",
   schema: z.object({
     employeeName: z.string().describe("Who should work the shift"),
     dayOfWeek: dayParam,
@@ -429,7 +454,41 @@ const reassignShiftTool: WriteTool = {
     return {
       reply: tr.reassigned(employee.name, label, prior.employeeName),
       inverse: buildInverse({ tool: "reassign_shift", params: { shiftId, employeeId }, prior }, ctx.lang),
+      grid: weekOffsetOf(new Date(shift.schedule.weekStart)),
     }
+  },
+}
+
+// Consent-first counterpart to reassign: ask the employee on WhatsApp; the
+// schedule only changes when they tap Yes (handled in the WhatsApp handler,
+// which then posts the updated grid back to the owner). The DEFAULT for
+// "replace X with Y" / "ask Y to cover".
+const requestCoverTool: WriteTool = {
+  kind: "write",
+  description:
+    "Ask an employee to cover / take a shift. They get a WhatsApp Yes/No — the schedule only changes if they accept, and the owner is notified either way. THIS IS THE DEFAULT for 'replace X with Y', 'ask Y to cover', 'put Y on Friday', 'find someone for the open Saturday shift'. Identify the shift by day of week, shift/template name and — when replacing someone — the current holder's name.",
+  schema: z.object({
+    employeeName: z.string().describe("Who to ask to cover the shift"),
+    dayOfWeek: dayParam,
+    templateName: z.string().optional().describe("Shift template name, e.g. 'Früh' or 'Abend'"),
+    currentEmployeeName: z.string().optional().describe("Who currently holds the shift, when replacing"),
+    weekOffset: weekOffsetParam,
+  }),
+  async prepare(ctx, params: { employeeName: string; dayOfWeek: number; templateName?: string; currentEmployeeName?: string; weekOffset: number }) {
+    const emp = await findEmployeeByName(ctx.locationId, params.employeeName)
+    if (emp.error !== undefined) return { error: emp.error }
+    const target = await resolveTargetShift(ctx, { ...params, preferUnassigned: true })
+    if (target.error !== undefined) return { error: target.error }
+    return {
+      preview: t(ctx.lang).askToCover(emp.name, realShiftLabel(ctx.lang, target.weekStart, target.shift)),
+      execParams: { shiftId: target.shift.id, employeeId: emp.id },
+    }
+  },
+  async execute(ctx, execParams) {
+    const { shiftId, employeeId } = execParams as { shiftId: string; employeeId: string }
+    const res = await requestManagerCover(ctx.locationId, shiftId, employeeId)
+    if ("error" in res) return { error: res.error }
+    return { reply: t(ctx.lang).coverRequested(res.employeeName, res.shiftLabel), inverse: null }
   },
 }
 
@@ -476,6 +535,7 @@ const unassignShiftTool: WriteTool = {
     return {
       reply: tr.unassigned(prior.employeeName ?? tr.somebody),
       inverse: buildInverse({ tool: "unassign_shift", params: { shiftId }, prior }, ctx.lang),
+      grid: weekOffsetOf(new Date(shift.schedule.weekStart)),
     }
   },
 }
@@ -530,7 +590,7 @@ const publishScheduleTool: WriteTool = {
     if (!after || after.status === "DRAFT") {
       return { error: t(ctx.lang).publishFailed }
     }
-    return { reply: t(ctx.lang).published(fmtDate(ctx.lang, after.weekStart)), inverse: null }
+    return { reply: t(ctx.lang).published(fmtDate(ctx.lang, after.weekStart)), inverse: null, grid: weekOffsetOf(after.weekStart) }
   },
 }
 
@@ -1029,6 +1089,7 @@ export const TOOLS: Record<string, AgentTool> = {
   list_vacations: listVacations,
   list_employees: listEmployees,
   reassign_shift: reassignShiftTool,
+  request_cover: requestCoverTool,
   unassign_shift: unassignShiftTool,
   generate_schedule: generateScheduleTool,
   publish_schedule: publishScheduleTool,

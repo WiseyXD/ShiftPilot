@@ -116,28 +116,28 @@ export const shiftNotifications = inngest.createFunction(
         const planLines = shifts
           .map((s) => {
             const start = getShiftStart(new Date(schedule.weekStart), s.dayOfWeek, s.shiftTemplate.startTime)
-            const date = start.toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "short" })
+            const date = start.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })
             return `${date} · *${s.shiftTemplate.name}* ${s.shiftTemplate.startTime}–${s.shiftTemplate.endTime}`
           })
           .join("\n")
         await pushAgentMessage(
           schedule.locationId,
           employee.id,
-          `📋 Dein Plan für ${weekLabel} bei ${schedule.location.name}:\n\n${planLines}${
-            mode === "INFO_CHANGE_REQUEST" ? "\n\nDiese Schichten stehen fest." : ""
+          `📋 Your plan for ${weekLabel} at ${schedule.location.name}:\n\n${planLines}${
+            mode === "INFO_CHANGE_REQUEST" ? "\n\nThese shifts are fixed." : ""
           }`
         )
         if (mode === "ACCEPT_DECLINE") {
           for (const s of shifts) {
             const start = getShiftStart(new Date(schedule.weekStart), s.dayOfWeek, s.shiftTemplate.startTime)
-            const date = start.toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "short" })
+            const date = start.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })
             await pushAgentMessage(
               schedule.locationId,
               employee.id,
-              `${date} · ${s.shiftTemplate.name} ${s.shiftTemplate.startTime}–${s.shiftTemplate.endTime} — zusagen?`,
+              `${date} · ${s.shiftTemplate.name} ${s.shiftTemplate.startTime}–${s.shiftTemplate.endTime} — accept?`,
               [
-                { label: "✅ Zusagen", command: `ACCEPT:${s.id}` },
-                { label: "❌ Absagen", command: `DECLINE:${s.id}` },
+                { label: "✅ Accept", command: `ACCEPT:${s.id}` },
+                { label: "❌ Decline", command: `DECLINE:${s.id}` },
               ]
             )
           }
@@ -194,6 +194,13 @@ export const shiftReminders = inngest.createFunction(
             }
           ),
         })
+
+        // Simulator: same nudge in the employee's WhatsApp thread.
+        await pushAgentMessage(
+          shift.schedule.locationId,
+          shift.employee.id,
+          `⏰ Reminder: tomorrow you're on the *${shift.shiftTemplate.name}* shift (${shift.shiftTemplate.startTime}–${shift.shiftTemplate.endTime}) at ${shift.schedule.location.name}. See you then! ☕`
+        )
       }
     })
 

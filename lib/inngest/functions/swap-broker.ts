@@ -12,6 +12,7 @@ import {
 } from "@/lib/scheduling/shift-date"
 import { runOutreachLoop, buildShiftCandidates } from "../outreach-loop"
 import { canBackfill } from "@/lib/marketplace/roster"
+import { pushAgentMessage } from "@/lib/whatsapp-sim/handler"
 import * as React from "react"
 
 export const swapBroker = inngest.createFunction(
@@ -116,6 +117,18 @@ export const swapBroker = inngest.createFunction(
         }),
       })
 
+      // Simulator: confirm both sides in their WhatsApp threads.
+      await pushAgentMessage(
+        locationId,
+        requester.id,
+        `✅ Swap confirmed: *${candidateName}* is covering your *${shift.shiftTemplate.name}* shift on ${dateLabel} (${shift.shiftTemplate.startTime}–${shift.shiftTemplate.endTime}). All set!`
+      )
+      await pushAgentMessage(
+        locationId,
+        candidateEmployeeId,
+        `🙌 You're covering the *${shift.shiftTemplate.name}* shift on ${dateLabel} (${shift.shiftTemplate.startTime}–${shift.shiftTemplate.endTime}) for ${requester.name}. Thanks for stepping in!`
+      )
+
       await prisma.auditLog.create({
         data: {
           locationId,
@@ -141,6 +154,7 @@ export const swapBroker = inngest.createFunction(
       timeoutHours: shift.schedule.location.escalationTimeoutHours,
       outreachAction: "SWAP_OUTREACH",
       declinedAction: "SWAP_MANAGER_REJECTED",
+      chatMessage: `🔁 *${requester.name}* needs a swap for the *${shift.shiftTemplate.name}* shift on ${dateLabel} (${shift.shiftTemplate.startTime}–${shift.shiftTemplate.endTime}). Can you cover it?`,
       buildOutreach: async (candidate, urls) => {
         // Side effect inside step.run: also update the proposed employee on the
         // swap request so the audit log entries refer to the right candidate.

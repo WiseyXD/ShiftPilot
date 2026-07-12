@@ -10,6 +10,9 @@ export interface AgentContext {
   locationId: string
   sourceText: string // what the owner originally typed — lands in the audit log
   lang: Lang // detected from the owner's message (thread fallback, default en)
+  // Set by schedule-read tools so the turn's final answer carries a grid to show
+  // (optionally highlighting one shift). Mutated in place during a turn.
+  gridHint?: { weekOffset: number; highlight?: { dayOfWeek: number; templateId: string } }
 }
 
 export interface ChatAction {

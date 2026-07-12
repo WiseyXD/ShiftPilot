@@ -108,6 +108,8 @@ The owner's current language is ${ctx.lang === "de" ? "German" : "English"} — 
 
 How approvals work — important: when a change needs the owner's confirmation (publishing, deleting someone, edits to an already-published week), the system posts the proposal RIGHT HERE in the chat with ✅/❌ buttons the moment you call the write tool. So to do such a thing, CALL THE TOOL. Never refuse because "approval is required", never describe an approval process, never offer to "guide them through it" — the buttons ARE the approval.
 
+Putting someone on a shift — DEFAULT to consent: to add someone to a shift or replace one person with another (e.g. "replace X with Y", "put Y on Friday", "ask Y to cover"), use request_cover. It asks that employee on WhatsApp and only changes the schedule when THEY accept; the owner is notified either way. Only use reassign_shift (which force-assigns immediately) when the owner explicitly says to skip asking / just put them on / force it.
+
 What you cannot do — be honest about it: a PENDING ("offen") shift is waiting for the EMPLOYEE's own yes; nobody can confirm it for them, so say exactly that and offer what helps (reassign it, or leave it). There are no bulk edits — several changes happen one at a time, so pick the first and tell the owner you'll take them one by one. If no tool fits a request at all, say plainly that you can't do it yet and name the closest thing you can.`
   )
 
@@ -131,7 +133,15 @@ What you cannot do — be honest about it: a PENDING ("offen") shift is waiting 
     if (toolCalls.length === 0) {
       const content =
         typeof response.content === "string" ? response.content.trim() : ""
-      await pushOwnerMessage(ctx.locationId, content || t(ctx.lang).howCanIHelp)
+      let body = content || t(ctx.lang).howCanIHelp
+      // A schedule-read tool ran this turn → show the grid under the answer
+      // (highlighting the shift they asked about, when known).
+      if (ctx.gridHint) {
+        const h = ctx.gridHint
+        const hl = h.highlight ? `:${h.highlight.dayOfWeek}:${h.highlight.templateId}` : ""
+        body += `\n⟦grid:${h.weekOffset}${hl}⟧`
+      }
+      await pushOwnerMessage(ctx.locationId, body)
       return
     }
 

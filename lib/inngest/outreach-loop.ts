@@ -139,9 +139,15 @@ export async function runOutreachLoop(config: OutreachConfig): Promise<OutreachR
       await sendEmail({ to: candidate.email, subject: outreach.subject, react: outreach.react })
 
       if (config.chatMessage) {
+        // A swap resolves by swapRequestId; a plain replacement by shiftId.
+        // The Yes button must carry whichever key this loop waits on.
+        const yesCommand =
+          matchKey === "data.swapRequestId"
+            ? `COVER_SWAP:${extraTokenPayload.swapRequestId}`
+            : `COVER:${shiftId}`
         await pushAgentMessage(locationId, candidate.employeeId, config.chatMessage, [
-          { label: "🙋 Ja, klar", command: `COVER:${shiftId}` },
-          { label: "Nein", command: `NOCOVER:${shiftId}` },
+          { label: "🙋 Yes, I can", command: yesCommand },
+          { label: "No", command: `NOCOVER:${shiftId}` },
         ])
       }
 

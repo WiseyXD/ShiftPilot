@@ -10,6 +10,7 @@ import {
 } from "@/lib/scheduling/shift-date"
 import { runOutreachLoop, buildShiftCandidates } from "../outreach-loop"
 import { canBackfill } from "@/lib/marketplace/roster"
+import { pushAgentMessage } from "@/lib/whatsapp-sim/handler"
 import { pushOwnerMessage, ownerThreadLanguage } from "@/lib/agent/owner-thread"
 import { t, fmtDay } from "@/lib/agent/i18n"
 import * as React from "react"
@@ -71,7 +72,7 @@ export const replacementEngine = inngest.createFunction(
       timeoutHours: shift.schedule.location.escalationTimeoutHours,
       outreachAction: "REPLACEMENT_OUTREACH",
       declinedAction: "REPLACEMENT_DECLINED",
-      chatMessage: `🔔 Kann jemand einspringen? Die *${shift.shiftTemplate.name}*-Schicht am ${dateLabel} (${shift.shiftTemplate.startTime}–${shift.shiftTemplate.endTime}) ist gerade frei geworden.`,
+      chatMessage: `🔔 Can anyone cover? The *${shift.shiftTemplate.name}* shift on ${dateLabel} (${shift.shiftTemplate.startTime}–${shift.shiftTemplate.endTime}) just opened up.`,
       buildOutreach: (candidate, urls) => ({
         subject: `Can you cover a shift at ${shift.schedule.location.name} on ${dateLabel}?`,
         react: React.createElement(NotificationEmail, {
@@ -108,6 +109,13 @@ export const replacementEngine = inngest.createFunction(
               ctaUrl: calendarUrl,
             }),
           })
+
+          // Simulator: confirm the cover in the candidate's WhatsApp thread.
+          await pushAgentMessage(
+            locationId,
+            candidate.employeeId,
+            `✅ You're covering the *${shift.shiftTemplate.name}* shift on ${dateLabel} (${shift.shiftTemplate.startTime}–${shift.shiftTemplate.endTime}). Thanks for stepping in! ☕`
+          )
 
           await prisma.auditLog.create({
             data: {

@@ -93,3 +93,25 @@ describe("solver hierarchy (doc §3): lower levels never override higher ones", 
     expect(conflicts.some((c) => c.toLowerCase().includes("availability"))).toBe(true)
   })
 })
+
+describe("headcount: a shift's minHeadcount is honoured, not just one person", () => {
+  const two = { ...day, id: "two", name: "two", minHeadcount: 2 }
+
+  it("fills minHeadcount DISTINCT employees for every slot when staff allow", () => {
+    const { assignments } = fallbackAssign([two], [emp("a"), emp("b"), emp("c")], [])
+    for (let d = 0; d < 7; d++) {
+      const filled = assignments.filter((x) => x.dayOfWeek === d && x.filled)
+      expect(filled.length).toBe(2)
+      expect(new Set(filled.map((x) => x.employeeId)).size).toBe(2) // two different people
+    }
+  })
+
+  it("emits one open seat (never a duplicate) when there aren't enough staff", () => {
+    const { assignments, conflicts } = fallbackAssign([two], [emp("solo")], [])
+    const mon = assignments.filter((x) => x.dayOfWeek === 1)
+    expect(mon.length).toBe(2) // two seats emitted
+    expect(mon.filter((x) => x.filled).length).toBe(1)
+    expect(mon.filter((x) => x.employeeId === null).length).toBe(1)
+    expect(conflicts.some((c) => c.includes("1/2 filled"))).toBe(true)
+  })
+})

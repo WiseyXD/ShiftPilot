@@ -46,6 +46,16 @@ const SCHEDULE_BADGE: Record<string, string> = {
   DRAFT: "bg-amber-100 text-amber-800 border-amber-200",
 }
 
+// Bottom-of-grid key so the colour dots read at a glance.
+const LEGEND: { label: string; dot?: string; dashed?: boolean }[] = [
+  { label: "Confirmed", dot: "bg-green-500" },
+  { label: "Awaiting reply", dot: "bg-slate-400" },
+  { label: "Open", dashed: true },
+  { label: "Covered", dot: "bg-blue-500" },
+  { label: "Declined", dot: "bg-red-500" },
+  { label: "Lent out", dot: "bg-purple-500" },
+]
+
 // Monday-start chronological order of Shift.dayOfWeek values.
 const WEEK_DAYS = [1, 2, 3, 4, 5, 6, 0]
 
@@ -252,6 +262,20 @@ export function WeekBoard({
                     )
                   })}
                 </div>
+              ))}
+            </div>
+            {/* Legend */}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border px-4 py-3 text-[11px] text-muted-foreground">
+              <span className="font-semibold uppercase tracking-wider text-foreground/60">Key</span>
+              {LEGEND.map((l) => (
+                <span key={l.label} className="inline-flex items-center gap-1.5">
+                  {l.dashed ? (
+                    <span className="h-2.5 w-2.5 rounded-[3px] border border-dashed border-yellow-400/80 bg-yellow-50" />
+                  ) : (
+                    <span className={`h-2 w-2 rounded-full ${l.dot}`} />
+                  )}
+                  {l.label}
+                </span>
               ))}
             </div>
           </div>

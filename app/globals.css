@@ -205,3 +205,41 @@
 @media (prefers-reduced-motion: reduce) {
   .rise { animation: none; }
 }
+
+/* First-run lock: every dashboard section is frosted and stamped "Locked" until
+   the guided flow creates the first schedule. Not just a single blur. */
+.first-run-locked .rise {
+  position: relative;
+  pointer-events: none;
+  user-select: none;
+}
+.first-run-locked .rise::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: 1rem;
+  background: color-mix(in oklab, var(--card) 45%, transparent);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+.first-run-locked .rise::before {
+  content: "🔒  Locked";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  box-shadow: 0 6px 16px -8px rgb(0 0 0 / 0.3);
+}

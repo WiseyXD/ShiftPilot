@@ -198,13 +198,17 @@ export function fallbackAssign(
   for (const tmpl of templates) {
     const hours = shiftHours(tmpl)
     for (let day = 0; day < 7; day++) {
+      const need = Math.max(1, tmpl.minHeadcount)
+      const slot = slotShift(day, tmpl)
+      const takenThisSlot = new Set<string>()
+
+      // A pin claims one of the slot's seats (its hours were booked in seedPins).
       const pinned = pinnedBySlot.get(slotKey(tmpl.id, day))
       if (pinned) {
         results.push({ shiftTemplateId: tmpl.id, dayOfWeek: day, employeeId: pinned, filled: true })
-        continue
+        takenThisSlot.add(pinned)
       }
 
-      const slot = slotShift(day, tmpl)
       // First blocking level per employee — doubles as the unfilled-slot
       // explanation (hierarchy levels, doc §3).
       const blockingReason = (emp: Employee): string | null => {
@@ -229,44 +233,62 @@ export function fallbackAssign(
         return null
       }
 
-      const reasons = new Map<string, string>()
-      const eligible = employees.filter((emp) => {
-        const reason = blockingReason(emp)
-        if (reason) reasons.set(emp.id, reason)
-        return reason === null
-      })
-
-      if (eligible.length === 0) {
-        if (employees.length > 0) {
-          const counts = new Map<string, number>()
-          for (const r of reasons.values()) counts.set(r, (counts.get(r) ?? 0) + 1)
-          const summary = [...counts.entries()].map(([r, n]) => `${r}×${n}`).join(", ")
-          conflicts.push(`${tmpl.name} day ${day} unfilled — blocked by: ${summary}`)
+      // Fill each seat (up to minHeadcount) with a distinct eligible employee.
+      let lastReasons: Map<string, string> | null = null
+      while (takenThisSlot.size < need) {
+        const reasons = new Map<string, string>()
+        const eligible = employees.filter((emp) => {
+          if (takenThisSlot.has(emp.id)) return false // never twice in the same slot
+          const reason = blockingReason(emp)
+          if (reason) reasons.set(emp.id, reason)
+          return reason === null
+        })
+        if (eligible.length === 0) {
+          lastReasons = reasons
+          break
         }
-        results.push({ shiftTemplateId: tmpl.id, dayOfWeek: day, employeeId: null, filled: false })
-        continue
+
+        // Selection order (levels 4 → 6 → fairness): furthest below contract
+        // minimum first, then strongest wish for this slot, then fewest hours.
+        eligible.sort((a, b) => {
+          const deficitA = Math.max(0, a.minHours - (assignedHours[a.id] ?? 0))
+          const deficitB = Math.max(0, b.minHours - (assignedHours[b.id] ?? 0))
+          if (deficitB !== deficitA) return deficitB - deficitA
+          // Level 5: manager day preferences outrank wishes.
+          const prefA = dayPreference(managerRules, a.id, day)
+          const prefB = dayPreference(managerRules, b.id, day)
+          if (prefB !== prefA) return prefB - prefA
+          const wishA = availSet.has(`${a.id}:${tmpl.id}:${day}`) ? WISH_SCORE[a.wishWeight ?? "MEDIUM"] : -1
+          const wishB = availSet.has(`${b.id}:${tmpl.id}:${day}`) ? WISH_SCORE[b.wishWeight ?? "MEDIUM"] : -1
+          if (wishB !== wishA) return wishB - wishA
+          return (assignedHours[a.id] ?? 0) - (assignedHours[b.id] ?? 0)
+        })
+        const chosen = eligible[0]
+        assignedHours[chosen.id] = (assignedHours[chosen.id] ?? 0) + hours
+        assignmentCounts[chosen.id] = (assignmentCounts[chosen.id] ?? 0) + 1
+        ;(assignedShifts[chosen.id] ??= []).push(slot)
+        results.push({ shiftTemplateId: tmpl.id, dayOfWeek: day, employeeId: chosen.id, filled: true })
+        takenThisSlot.add(chosen.id)
       }
 
-      // Selection order (levels 4 → 6 → fairness): furthest below contract
-      // minimum first, then strongest wish for this slot, then fewest hours.
-      eligible.sort((a, b) => {
-        const deficitA = Math.max(0, a.minHours - (assignedHours[a.id] ?? 0))
-        const deficitB = Math.max(0, b.minHours - (assignedHours[b.id] ?? 0))
-        if (deficitB !== deficitA) return deficitB - deficitA
-        // Level 5: manager day preferences outrank wishes.
-        const prefA = dayPreference(managerRules, a.id, day)
-        const prefB = dayPreference(managerRules, b.id, day)
-        if (prefB !== prefA) return prefB - prefA
-        const wishA = availSet.has(`${a.id}:${tmpl.id}:${day}`) ? WISH_SCORE[a.wishWeight ?? "MEDIUM"] : -1
-        const wishB = availSet.has(`${b.id}:${tmpl.id}:${day}`) ? WISH_SCORE[b.wishWeight ?? "MEDIUM"] : -1
-        if (wishB !== wishA) return wishB - wishA
-        return (assignedHours[a.id] ?? 0) - (assignedHours[b.id] ?? 0)
-      })
-      const chosen = eligible[0]
-      assignedHours[chosen.id] = (assignedHours[chosen.id] ?? 0) + hours
-      assignmentCounts[chosen.id] = (assignmentCounts[chosen.id] ?? 0) + 1
-      ;(assignedShifts[chosen.id] ??= []).push(slot)
-      results.push({ shiftTemplateId: tmpl.id, dayOfWeek: day, employeeId: chosen.id, filled: true })
+      // Any seats we couldn't fill become open shifts, with one conflict note.
+      const missing = need - takenThisSlot.size
+      if (missing > 0) {
+        if (employees.length > 0 && lastReasons) {
+          const counts = new Map<string, number>()
+          for (const r of lastReasons.values()) counts.set(r, (counts.get(r) ?? 0) + 1)
+          const summary = [...counts.entries()].map(([r, n]) => `${r}×${n}`).join(", ")
+          const label = need > 1 ? `${takenThisSlot.size}/${need} filled` : "unfilled"
+          conflicts.push(
+            summary
+              ? `${tmpl.name} day ${day} ${label} — blocked by: ${summary}`
+              : `${tmpl.name} day ${day} ${label} — not enough staff`
+          )
+        }
+        for (let i = 0; i < missing; i++) {
+          results.push({ shiftTemplateId: tmpl.id, dayOfWeek: day, employeeId: null, filled: false })
+        }
+      }
     }
   }
 
@@ -315,7 +337,7 @@ You are a shift scheduler. Generate a weekly schedule that:
 2. Respects each employee's min/max weekly hours
 3. Only assigns employees who have the required role for the shift
 4. Aims each employee at their minHours contract target; break ties by preferring slots the employee listed in availableSlots, weighted by wishWeight (HIGH > MEDIUM > LOW), then balance hours fairly
-5. Fills every shift template for every day of the week (days 0-6, 0=Sunday)
+5. Fills every shift template for every day of the week (days 0-6, 0=Sunday). Each template has a minHeadcount — that many DIFFERENT employees must be assigned to that shift on that day (emit one assignment per person)
 6. German working-time law applies: at most ${rules.arbzg.maxDailyHours}h net per day and ${rules.arbzg.maxWeeklyHours}h net per week per employee (minors 15-17: ${rules.jarbschg.maxDailyHours}h/${rules.jarbschg.maxWeeklyHours}h, no Sundays, done by ${rules.jarbschg.nightEndGastro16Plus}), and at least ${rules.arbzg.minRestHours}h rest between shifts on consecutive days. Violations will be voided by the system.
 7. PINNED slots (templateId:dayN → employeeId) MUST be assigned exactly as given: ${JSON.stringify(pins.map((p) => `${p.shiftTemplateId}:day${p.dayOfWeek}→${p.employeeId}`))}
 8. BLOCKED (employee never works these): ${JSON.stringify(blocks.map((b) => `${b.employeeId}@${b.shiftTemplateId ?? "any"}:day${b.dayOfWeek}`))}
@@ -326,8 +348,7 @@ ${JSON.stringify(templates, null, 2)}
 Employees (with availability slots as "templateId:dayN"):
 ${JSON.stringify(availMatrix, null, 2)}
 
-Return one assignment per (shiftTemplateId, dayOfWeek) combination (${templates.length * 7} total).
-Set employeeId to null if no eligible employee is available.
+Return one assignment per person per (shiftTemplateId, dayOfWeek): a shift with minHeadcount N needs N assignments that day, each a different employee. Set employeeId to null for any seat with no eligible employee.
 `)
 
     // Deterministic repair: the LLM proposes, code guarantees. Pins are forced
@@ -398,12 +419,62 @@ Set employeeId to null if no eligible employee is available.
       return { shiftTemplateId: a.shiftTemplateId, dayOfWeek: a.dayOfWeek, employeeId, filled: employeeId !== null }
     })
 
+    // Headcount: the LLM tends to emit ~one per slot. Rebuild to exactly
+    // minHeadcount seats per (template, day), topping up any missing seats with
+    // distinct, compliance-checked employees (or leaving them open).
+    const filledBySlot = new Map<string, string[]>()
+    for (const a of assignments) {
+      if (!a.employeeId) continue
+      const k = slotKey(a.shiftTemplateId, a.dayOfWeek)
+      const arr = filledBySlot.get(k) ?? []
+      if (!arr.includes(a.employeeId)) arr.push(a.employeeId)
+      filledBySlot.set(k, arr)
+    }
+    const finalAssignments: GeneratedAssignment[] = []
+    for (const tmpl of templates) {
+      for (let day = 0; day < 7; day++) {
+        const need = Math.max(1, tmpl.minHeadcount)
+        const taken = new Set(filledBySlot.get(slotKey(tmpl.id, day)) ?? [])
+        for (const empId of taken) {
+          finalAssignments.push({ shiftTemplateId: tmpl.id, dayOfWeek: day, employeeId: empId, filled: true })
+        }
+        while (taken.size < need) {
+          const slot = slotShift(day, tmpl)
+          const candidate = employees
+            .filter((emp) => {
+              if (taken.has(emp.id)) return false
+              if (isBlocked(blocks, emp.id, tmpl.id, day)) return false
+              if (onVacationForSlot(options, emp.id, day, tmpl)) return false
+              if (!isAssignable(emp.category, availSet.has(`${emp.id}:${tmpl.id}:${day}`))) return false
+              if (tmpl.requiredRoles.length > 0 && !tmpl.requiredRoles.some((r) => emp.roles.includes(r))) return false
+              if (neverTogetherViolated(managerRules, emp.id, slot, acceptedShifts)) return false
+              if (maxShiftsReached(managerRules, emp.id, repairCounts)) return false
+              return !checkEmployeeAssignment(emp, slot, acceptedShifts[emp.id] ?? [], rules, {
+                monthNetHoursBeforeWeek: monthHours[emp.id] ?? 0,
+              })
+            })
+            .sort((a, b) => (acceptedShifts[a.id]?.length ?? 0) - (acceptedShifts[b.id]?.length ?? 0))[0]
+          if (!candidate) break
+          ;(acceptedShifts[candidate.id] ??= []).push(slot)
+          repairCounts[candidate.id] = (repairCounts[candidate.id] ?? 0) + 1
+          taken.add(candidate.id)
+          finalAssignments.push({ shiftTemplateId: tmpl.id, dayOfWeek: day, employeeId: candidate.id, filled: true })
+        }
+        if (taken.size < need) {
+          if (need > 1) voided.push(`${tmpl.name} day ${day}: only ${taken.size}/${need} seats filled`)
+          for (let i = taken.size; i < need; i++) {
+            finalAssignments.push({ shiftTemplateId: tmpl.id, dayOfWeek: day, employeeId: null, filled: false })
+          }
+        }
+      }
+    }
+
     const reasoning =
       voided.length > 0
         ? `${result.reasoning}\n[compliance] ${voided.length} note(s): ${voided.join("; ")}`
         : result.reasoning
 
-    return { assignments, reasoning }
+    return { assignments: finalAssignments, reasoning }
   } catch {
     // Fallback to deterministic algorithm if LLM fails
     const { assignments, conflicts } = fallbackAssign(templates, employees, availability, options)

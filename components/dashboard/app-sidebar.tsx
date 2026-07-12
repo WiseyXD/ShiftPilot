@@ -16,6 +16,7 @@ import {
   Building2,
   Store,
   MessageCircle,
+  Bot,
   LogOut,
   Languages,
   Check,
@@ -84,11 +85,9 @@ export function AppSidebar({ locations, user }: Props) {
   const locationNav = activeLocationId
     ? [
         { label: s.overview, icon: Home, href: `/dashboard/${activeLocationId}` },
+        { label: s.assistant, icon: Bot, href: `/dashboard/${activeLocationId}/assistant` },
         { label: s.employees, icon: Users, href: `/dashboard/${activeLocationId}/employees` },
         { label: s.whatsapp, icon: MessageCircle, href: `/dashboard/${activeLocationId}/whatsapp` },
-        { label: s.templates, icon: ClipboardList, href: `/dashboard/${activeLocationId}/templates` },
-        { label: s.auditLog, icon: Activity, href: `/dashboard/${activeLocationId}/audit-log` },
-        { label: s.analytics, icon: BarChart3, href: `/dashboard/${activeLocationId}/analytics` },
       ]
     : []
 
@@ -225,6 +224,29 @@ export function AppSidebar({ locations, user }: Props) {
                   <p className="text-xs text-slate-500 font-normal">{s.signedInAs}</p>
                   <p className="text-sm font-medium truncate">{user.email}</p>
                 </DropdownMenuLabel>
+                {activeLocationId && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href={`/dashboard/${activeLocationId}/templates`}>
+                        <ClipboardList />
+                        {s.templates}
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href={`/dashboard/${activeLocationId}/audit-log`}>
+                        <Activity />
+                        {s.auditLog}
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href={`/dashboard/${activeLocationId}/analytics`}>
+                        <BarChart3 />
+                        {s.analytics}
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/dashboard/billing">

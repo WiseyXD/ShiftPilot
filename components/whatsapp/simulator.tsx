@@ -1,9 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { sendChatMessage, clearChatThread } from "@/app/actions/whatsapp-sim"
+import { sendChatMessage, clearChatThread, resetDemo } from "@/app/actions/whatsapp-sim"
 import { sendOwnerMessage, clearOwnerThread } from "@/app/actions/agent"
-import { Send, Check, CheckCheck, MoreVertical, Search, Phone, Sparkles } from "lucide-react"
+import { Send, Check, CheckCheck, MoreVertical, Search, Phone, Sparkles, RotateCcw } from "lucide-react"
 import { Covrly } from "@/components/covrly"
 
 // Sentinel id for the owner ⇄ copilot thread pinned above the team chats.
@@ -110,6 +110,7 @@ export function WhatsAppSimulator({
   const [messages, setMessages] = React.useState<Message[]>([])
   const [draft, setDraft] = React.useState("")
   const [pending, setPending] = React.useState<string | null>(null)
+  const [resetting, setResetting] = React.useState(false)
   const scrollRef = React.useRef<HTMLDivElement>(null)
 
   const isOwnerThread = selectedId === OWNER_THREAD
@@ -158,6 +159,21 @@ export function WhatsAppSimulator({
     await loadThread(selectedId)
   }
 
+  // Full demo reset: wipe schedules, chats, availability replies & sick calls so
+  // the whole generate → publish → swap loop can be run again from scratch.
+  const runResetDemo = async () => {
+    if (
+      !window.confirm(
+        "Reset the demo?\n\nThis clears every schedule, chat thread, availability reply and sick call for this location. Employees, shift templates and their usual availability are kept."
+      )
+    )
+      return
+    setResetting(true)
+    await resetDemo(locationId)
+    await loadThread(selectedId ?? OWNER_THREAD)
+    setResetting(false)
+  }
+
   return (
     <div className="rise flex h-[calc(100svh-11rem)] min-h-[32rem] overflow-hidden rounded-2xl border border-border shadow-lg">
       {/* Chat list rail */}
@@ -166,9 +182,20 @@ export function WhatsAppSimulator({
           <Phone className="h-4 w-4" />
           <span className="font-display font-semibold tracking-tight">{locationName}</span>
         </div>
-        <div className="flex items-center gap-2 border-b border-border px-3 py-2 text-muted-foreground">
-          <Search className="h-3.5 w-3.5" />
-          <span className="text-xs">Your team — tap to open a chat</span>
+        <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2 text-muted-foreground">
+          <span className="flex items-center gap-2">
+            <Search className="h-3.5 w-3.5" />
+            <span className="text-xs">Your team — tap to open a chat</span>
+          </span>
+          <button
+            onClick={runResetDemo}
+            disabled={resetting}
+            title="Reset demo — clear all schedules, chats, availability replies & sick calls"
+            className="flex shrink-0 items-center gap-1 rounded px-1.5 py-1 text-[11px] font-medium hover:text-red-600 disabled:opacity-50"
+          >
+            <RotateCcw className={`h-3.5 w-3.5 ${resetting ? "animate-spin" : ""}`} />
+            {resetting ? "Resetting…" : "Reset demo"}
+          </button>
         </div>
         <div className="flex-1 overflow-y-auto">
           {/* Owner ⇄ copilot thread, pinned above the team */}
@@ -249,8 +276,8 @@ export function WhatsAppSimulator({
                   ownerCopy.empty
                 ) : (
                   <>
-                    Schreib <strong>&quot;Hallo&quot;</strong> oder tippe unten auf einen Vorschlag, um
-                    mit dem Covrly zu starten.
+                    Text <strong>&quot;Hi&quot;</strong> or tap a suggestion below to start
+                    chatting with Covrly.
                   </>
                 )}
               </div>
@@ -306,10 +333,10 @@ export function WhatsAppSimulator({
               {(isOwnerThread
                 ? ownerCopy.chips
                 : [
-                    ["Meine Schichten", "meine Schichten"],
-                    ["Freie Schichten", "frei"],
-                    ["Krankmelden", "krank"],
-                    ["Hilfe", "hallo"],
+                    ["My shifts", "my shifts"],
+                    ["Open shifts", "open"],
+                    ["Call in sick", "sick"],
+                    ["Help", "hi"],
                   ]
               ).map(([label, cmd]) => (
                 <button
@@ -331,7 +358,7 @@ export function WhatsAppSimulator({
               <input
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
-                placeholder="Nachricht schreiben…"
+                placeholder="Type a message…"
                 className="flex-1 rounded-full border border-border bg-background px-4 py-2 text-sm outline-none focus:border-[#008069]"
               />
               <button

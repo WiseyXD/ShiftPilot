@@ -111,7 +111,10 @@ async function executeWrite(
     },
   })
 
-  return { kind: "done", reply: { body: result.reply } }
+  // A schedule-mutating tool tags the affected week so the chat can show its
+  // grid: the UI parses the ⟦grid:N⟧ marker, renders the grid, strips the text.
+  const body = result.grid != null ? `${result.reply}\n⟦grid:${result.grid}⟧` : result.reply
+  return { kind: "done", reply: { body } }
 }
 
 export async function dispatchToolCall(

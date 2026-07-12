@@ -9,6 +9,8 @@ import { inngest } from "@/lib/inngest/client"
 import { getShiftStart, getShiftEnd, formatShiftDate } from "@/lib/scheduling/shift-date"
 import { checkEmployeeAssignment } from "@/lib/compliance/check"
 import { loadRules } from "@/lib/compliance/load"
+import { needsAvailability } from "@/lib/scheduling/categories"
+import { pushOwnerMessage } from "@/lib/agent/owner-thread"
 import { routeMessage } from "./agent"
 
 export interface ChatAction {
@@ -72,6 +74,66 @@ async function pushEmployeeMessage(locationId: string, employeeId: string, body:
   })
 }
 
+// ── Manager cover request (consent flow) ─────────────────────────────────────
+// The copilot's request_cover tool calls this: instead of force-assigning, it
+// asks the target employee on WhatsApp. Only when they tap Yes (MGRCOVER_YES)
+// does the schedule change. Hard-legal-blocked before we even ask.
+export async function requestManagerCover(
+  locationId: string,
+  shiftId: string,
+  targetEmployeeId: string
+): Promise<{ error: string } | { ok: true; employeeName: string; shiftLabel: string }> {
+  const shift = await prisma.shift.findFirst({
+    where: { id: shiftId, schedule: { locationId } },
+    include: {
+      shiftTemplate: true,
+      employee: { select: { name: true } },
+      schedule: { select: { weekStart: true } },
+    },
+  })
+  if (!shift) return { error: "That shift no longer exists." }
+  if (shift.status === "LENT_OUT") return { error: "That shift is lent out to another venue — resolve the loan first." }
+
+  const employee = await prisma.employee.findFirst({ where: { id: targetEmployeeId, locationId } })
+  if (!employee) return { error: "That employee isn't at this location." }
+
+  const weekStart = new Date(shift.schedule.weekStart)
+  const start = getShiftStart(weekStart, shift.dayOfWeek, shift.shiftTemplate.startTime)
+  const end = getShiftEnd(weekStart, shift.dayOfWeek, shift.shiftTemplate.endTime)
+  const shiftLabel = `${shift.shiftTemplate.name} on ${formatShiftDate(start)}`
+
+  // Hard legal wall — never ask someone to work an illegal shift.
+  const rules = await loadRules(weekStart)
+  const otherShifts = (await prisma.shift.findMany({
+    where: {
+      employeeId: employee.id,
+      scheduleId: shift.scheduleId,
+      id: { not: shiftId },
+      status: { notIn: ["DECLINED", "UNASSIGNED"] },
+    },
+    include: { shiftTemplate: { select: { startTime: true, endTime: true } } },
+  })) as { dayOfWeek: number; shiftTemplate: { startTime: string; endTime: string } }[]
+  const existing = otherShifts.map((s) => ({
+    start: getShiftStart(weekStart, s.dayOfWeek, s.shiftTemplate.startTime),
+    end: getShiftEnd(weekStart, s.dayOfWeek, s.shiftTemplate.endTime),
+  }))
+  const violation = checkEmployeeAssignment(employee, { start, end }, existing, rules)
+  if (violation) return { error: `That would break ${violation.rule}: ${violation.detail}.` }
+
+  await pushAgentMessage(
+    locationId,
+    employee.id,
+    `🙋 Your manager would like you to cover the *${shift.shiftTemplate.name}* shift on ${formatShiftDate(start)} (${shift.shiftTemplate.startTime}–${shift.shiftTemplate.endTime})${
+      shift.employee ? ` — currently ${shift.employee.name}'s` : ""
+    }. Can you take it?`,
+    [
+      { label: "🙋 Yes, I can", command: `MGRCOVER_YES:${shiftId}` },
+      { label: "No", command: `MGRCOVER_NO:${shiftId}` },
+    ]
+  )
+  return { ok: true, employeeName: employee.name, shiftLabel }
+}
+
 // ── Entry point ──────────────────────────────────────────────────────────────
 
 export async function handleEmployeeMessage(employeeId: string, text: string) {
@@ -81,6 +143,18 @@ export async function handleEmployeeMessage(employeeId: string, text: string) {
   await pushEmployeeMessage(employee.locationId, employeeId, text)
 
   let intent = routeMessage(text)
+
+  // While a weekly availability ask is open, a free-form sentence (or an
+  // ambiguous "can't"/"sick" line) is almost certainly them answering it —
+  // parse it as unavailability before falling through to sick/help routing.
+  // Tapped buttons (COMMAND) always run as-is.
+  if (intent.kind !== "COMMAND" && (intent.kind === "UNKNOWN" || intent.kind === "SICK")) {
+    const pendingWeek = await pendingAvailabilityWeek(employeeId)
+    if (pendingWeek) {
+      await handleAvailabilityText(employee.locationId, employeeId, text, pendingWeek)
+      return
+    }
+  }
 
   // Free-form → let the LLM map it onto a known intent (never mutate directly).
   if (intent.kind === "UNKNOWN") {
@@ -122,25 +196,30 @@ async function loadEmployeeShifts(employeeId: string, statuses: string[]) {
 async function replyMyShifts(locationId: string, employeeId: string) {
   const shifts = await loadEmployeeShifts(employeeId, ["PENDING", "ACCEPTED", "REASSIGNED"])
   if (shifts.length === 0) {
-    await pushAgentMessage(locationId, employeeId, "Du hast aktuell keine Schichten eingeplant. 🌿")
+    await pushAgentMessage(locationId, employeeId, "You have no shifts scheduled right now. 🌿")
     return
   }
-  const pending = shifts.filter((s) => s.status === "PENDING")
   const lines = shifts.map((s) => {
-    const mark = s.status === "PENDING" ? "🕓 offen" : s.status === "REASSIGNED" ? "🔁 übernommen" : "✅ bestätigt"
+    const mark = s.status === "PENDING" ? "🕓 pending" : s.status === "REASSIGNED" ? "🔁 covered" : "✅ confirmed"
     return `${shiftLine(s)} — ${mark}`
   })
   await pushAgentMessage(
     locationId,
     employeeId,
-    `Deine Schichten:\n\n${lines.join("\n")}`
+    `Your shifts:\n\n${lines.join("\n")}`
   )
-  // One follow-up per pending shift with tappable accept/decline.
-  for (const s of pending) {
-    await pushAgentMessage(locationId, employeeId, `${shiftLine(s)} — zusagen?`, [
-      { label: "✅ Zusagen", command: `ACCEPT:${s.id}` },
-      { label: "❌ Absagen", command: `DECLINE:${s.id}` },
-    ])
+  // One follow-up per shift: pending gets accept/decline, everything gets a
+  // swap option so they can hand a shift off to a coworker.
+  for (const s of shifts) {
+    const actions: ChatAction[] =
+      s.status === "PENDING"
+        ? [
+            { label: "✅ Accept", command: `ACCEPT:${s.id}` },
+            { label: "❌ Decline", command: `DECLINE:${s.id}` },
+            { label: "🔁 Swap", command: `SWAP:${s.id}` },
+          ]
+        : [{ label: "🔁 Swap", command: `SWAP:${s.id}` }]
+    await pushAgentMessage(locationId, employeeId, `${shiftLine(s)}`, actions)
   }
 }
 
@@ -158,13 +237,13 @@ async function replyOpenShifts(locationId: string, employeeId: string) {
   })
 
   if (eligible.length === 0) {
-    await pushAgentMessage(locationId, employeeId, "Gerade sind keine freien Schichten für dich verfügbar. Ich melde mich, sobald etwas frei wird! 👍")
+    await pushAgentMessage(locationId, employeeId, "No open shifts for you right now. I'll ping you as soon as one frees up! 👍")
     return
   }
-  await pushAgentMessage(locationId, employeeId, "Diese Schichten sind noch frei — tippe zum Übernehmen:")
+  await pushAgentMessage(locationId, employeeId, "These shifts are still open — tap to take one:")
   for (const s of eligible) {
     await pushAgentMessage(locationId, employeeId, shiftLine(s), [
-      { label: "🙋 Übernehmen", command: `TAKE:${s.id}` },
+      { label: "🙋 Take it", command: `TAKE:${s.id}` },
     ])
   }
 }
@@ -172,13 +251,13 @@ async function replyOpenShifts(locationId: string, employeeId: string) {
 async function replySickPicker(locationId: string, employeeId: string) {
   const shifts = await loadEmployeeShifts(employeeId, ["PENDING", "ACCEPTED"])
   if (shifts.length === 0) {
-    await pushAgentMessage(locationId, employeeId, "Du hast keine anstehenden Schichten zum Absagen. Gute Besserung trotzdem! 🍵")
+    await pushAgentMessage(locationId, employeeId, "You have no upcoming shifts to cancel. Get well soon anyway! 🍵")
     return
   }
-  await pushAgentMessage(locationId, employeeId, "Für welche Schicht meldest du dich krank?")
+  await pushAgentMessage(locationId, employeeId, "Which shift are you calling in sick for?")
   for (const s of shifts) {
     await pushAgentMessage(locationId, employeeId, shiftLine(s), [
-      { label: "🤒 Krankmelden", command: `SICK:${s.id}` },
+      { label: "🤒 Call in sick", command: `SICK:${s.id}` },
     ])
   }
 }
@@ -187,11 +266,11 @@ async function replyHelp(locationId: string, employeeId: string, name: string) {
   await pushAgentMessage(
     locationId,
     employeeId,
-    `Hallo ${name.split(" ")[0]}! 👋 Ich bin Covrly, dein Schicht-Assistent. Ich kann:\n\n• *"meine Schichten"* — deinen Plan zeigen\n• *"frei"* — freie Schichten zum Übernehmen\n• *"krank"* — dich krankmelden\n\nSchreib einfach, was du brauchst.`,
+    `Hi ${name.split(" ")[0]}! 👋 I'm Covrly, your shift assistant. I can:\n\n• *"my shifts"* — show your schedule\n• *"open"* — open shifts to pick up\n• *"sick"* — call in sick\n\nJust tell me what you need.`,
     [
-      { label: "📋 Meine Schichten", command: "MENU:MY_SHIFTS" },
-      { label: "🙋 Freie Schichten", command: "MENU:OPEN_SHIFTS" },
-      { label: "🤒 Krankmelden", command: "MENU:SICK" },
+      { label: "📋 My shifts", command: "MENU:MY_SHIFTS" },
+      { label: "🙋 Open shifts", command: "MENU:OPEN_SHIFTS" },
+      { label: "🤒 Call in sick", command: "MENU:SICK" },
     ]
   )
 }
@@ -213,7 +292,7 @@ async function runCommand(locationId: string, employeeId: string, command: strin
       if (shift.status !== "PENDING") return alreadyHandled(locationId, employeeId, shift.status)
       await prisma.shift.update({ where: { id: arg }, data: { status: "ACCEPTED" } })
       await audit(locationId, "SHIFT_ACCEPTED", `Shift ${arg} accepted via WhatsApp`)
-      await pushAgentMessage(locationId, employeeId, `✅ Bestätigt! ${shiftLine(shift)}. Bis dann! ☕`)
+      await pushAgentMessage(locationId, employeeId, `✅ Confirmed! ${shiftLine(shift)}. See you then! ☕`)
       return
     }
 
@@ -224,7 +303,7 @@ async function runCommand(locationId: string, employeeId: string, command: strin
       await prisma.shift.update({ where: { id: arg }, data: { status: "DECLINED" } })
       await safeSend({ name: "shift/declined", data: { shiftId: arg } })
       await audit(locationId, "SHIFT_DECLINED", `Shift ${arg} declined via WhatsApp — replacement triggered`)
-      await pushAgentMessage(locationId, employeeId, `Alles klar, ich hab die Schicht abgesagt und suche direkt Ersatz. 🔎`)
+      await pushAgentMessage(locationId, employeeId, `Got it — I've cancelled the shift and I'm finding cover right away. 🔎`)
       return
     }
 
@@ -241,7 +320,7 @@ async function runCommand(locationId: string, employeeId: string, command: strin
       await pushAgentMessage(
         locationId,
         employeeId,
-        `Gute Besserung! 🤒 Ich hab deiner Managerin Bescheid gegeben und suche schon nach Ersatz. Bitte informier sie auch kurz persönlich.`
+        `Get well soon! 🤒 I've let your manager know and I'm already looking for cover. Please also give them a quick personal heads-up.`
       )
       return
     }
@@ -282,7 +361,7 @@ async function runCommand(locationId: string, employeeId: string, command: strin
         await pushAgentMessage(
           locationId,
           employeeId,
-          `Das geht leider nicht — ${violation.detail}. (Arbeitszeitgesetz)`
+          `That won't work — ${violation.detail}. (working-time law)`
         )
         return
       }
@@ -293,23 +372,166 @@ async function runCommand(locationId: string, employeeId: string, command: strin
       })
       if (count === 0) return alreadyHandled(locationId, employeeId, "ACCEPTED")
       await audit(locationId, "SHIFT_ACCEPTED", `Open shift ${arg} taken via WhatsApp`)
-      await pushAgentMessage(locationId, employeeId, `🙌 Super, die Schicht gehört dir: ${shiftLine(shift)}. Danke fürs Einspringen!`)
+      await pushAgentMessage(locationId, employeeId, `🙌 It's yours: ${shiftLine(shift)}. Thanks for stepping in!`)
       return
     }
 
     case "COVER": {
       // Yes to a cover request — resolve the replacement engine's wait.
       await safeSend({ name: "swap/response", data: { shiftId: arg, response: "ACCEPT_SWAP" } })
-      await pushAgentMessage(locationId, employeeId, `🙌 Danke! Ich bestätige die Übernahme gleich.`)
+      await pushAgentMessage(locationId, employeeId, `🙌 Thanks! I'll confirm the cover shortly.`)
       return
     }
 
     case "NOCOVER":
-      await pushAgentMessage(locationId, employeeId, `Kein Problem, danke für die Rückmeldung. 👍`)
+      await pushAgentMessage(locationId, employeeId, `No problem, thanks for letting me know. 👍`)
       return
 
+    case "COVER_SWAP": {
+      // Yes to a swap request — resolve the swap broker's wait (matched by
+      // swapRequestId, unlike a plain replacement which matches shiftId).
+      await safeSend({ name: "swap/response", data: { swapRequestId: arg, response: "ACCEPT_SWAP" } })
+      await pushAgentMessage(locationId, employeeId, `🙌 Thanks! I'll confirm the swap shortly.`)
+      return
+    }
+
+    case "SWAP": {
+      const shift = await getOwnShift(arg, employeeId)
+      if (!shift) return notYours(locationId, employeeId)
+      if (shift.status === "LENT_OUT") return notYours(locationId, employeeId)
+      if (!["PENDING", "ACCEPTED", "REASSIGNED"].includes(shift.status))
+        return alreadyHandled(locationId, employeeId, shift.status)
+      const swapRequest = await prisma.swapRequest.create({
+        data: { shiftId: arg, requesterId: employeeId },
+      })
+      await safeSend({ name: "swap/requested", data: { swapRequestId: swapRequest.id } })
+      await audit(locationId, "SWAP_REQUESTED", `Swap requested for shift ${arg} via WhatsApp`)
+      await pushAgentMessage(
+        locationId,
+        employeeId,
+        `Got it — I'll ask the team who can take the *${shift.shiftTemplate.name}* shift. 🔁`
+      )
+      return
+    }
+
+    case "MGRCOVER_NO": {
+      await pushAgentMessage(locationId, employeeId, `No problem — thanks for the quick reply. 👍`)
+      const shift = await prisma.shift.findUnique({
+        where: { id: arg },
+        include: { shiftTemplate: true, employee: { select: { name: true } }, schedule: { select: { weekStart: true } } },
+      })
+      const me = await prisma.employee.findUnique({ where: { id: employeeId }, select: { name: true } })
+      if (shift) {
+        const start = getShiftStart(new Date(shift.schedule.weekStart), shift.dayOfWeek, shift.shiftTemplate.startTime)
+        await pushOwnerMessage(
+          locationId,
+          `🙅 ${me?.name ?? "They"} can't cover the *${shift.shiftTemplate.name}* shift on ${formatShiftDate(start)}${
+            shift.employee ? ` — it stays with ${shift.employee.name}` : " — it's still open"
+          }.`
+        )
+      }
+      return
+    }
+
+    case "MGRCOVER_YES": {
+      const shift = await prisma.shift.findFirst({
+        where: { id: arg, schedule: { locationId } },
+        include: {
+          shiftTemplate: true,
+          employee: { select: { id: true, name: true } },
+          schedule: { select: { weekStart: true, locationId: true } },
+        },
+      })
+      if (!shift) return notYours(locationId, employeeId)
+      if (shift.status === "LENT_OUT") return notYours(locationId, employeeId)
+
+      // Same compliance wall as the scheduler — never book an illegal shift.
+      const employee = await prisma.employee.findUnique({ where: { id: employeeId } })
+      const weekStart = new Date(shift.schedule.weekStart)
+      const rules = await loadRules(weekStart)
+      const otherShifts = (await prisma.shift.findMany({
+        where: {
+          employeeId,
+          scheduleId: shift.scheduleId,
+          id: { not: arg },
+          status: { notIn: ["DECLINED", "UNASSIGNED"] },
+        },
+        include: { shiftTemplate: { select: { startTime: true, endTime: true } } },
+      })) as { dayOfWeek: number; shiftTemplate: { startTime: string; endTime: string } }[]
+      const existing = otherShifts.map((s) => ({
+        start: getShiftStart(weekStart, s.dayOfWeek, s.shiftTemplate.startTime),
+        end: getShiftEnd(weekStart, s.dayOfWeek, s.shiftTemplate.endTime),
+      }))
+      const candidate = {
+        start: getShiftStart(weekStart, shift.dayOfWeek, shift.shiftTemplate.startTime),
+        end: getShiftEnd(weekStart, shift.dayOfWeek, shift.shiftTemplate.endTime),
+      }
+      const violation = employee ? checkEmployeeAssignment(employee, candidate, existing, rules) : null
+      const start = getShiftStart(weekStart, shift.dayOfWeek, shift.shiftTemplate.startTime)
+      if (violation) {
+        await pushAgentMessage(
+          locationId,
+          employeeId,
+          `Ah — that would break the rules (${violation.detail}). I've let your manager know.`
+        )
+        await pushOwnerMessage(
+          locationId,
+          `⚠️ ${employee?.name ?? "Someone"} offered to cover the *${shift.shiftTemplate.name}* shift on ${formatShiftDate(start)}, but it's blocked: ${violation.detail}.`
+        )
+        return
+      }
+
+      const previous = shift.employee
+      await prisma.shift.update({ where: { id: arg }, data: { employeeId, status: "REASSIGNED" } })
+      await audit(locationId, "SHIFT_REASSIGNED", `Manager cover accepted: shift ${arg} → ${employeeId} via WhatsApp`)
+      await pushAgentMessage(
+        locationId,
+        employeeId,
+        `✅ Confirmed — you're covering the *${shift.shiftTemplate.name}* shift on ${formatShiftDate(start)} (${shift.shiftTemplate.startTime}–${shift.shiftTemplate.endTime}). Thanks for stepping in! ☕`
+      )
+      if (previous && previous.id !== employeeId) {
+        await pushAgentMessage(
+          locationId,
+          previous.id,
+          `Heads up: your *${shift.shiftTemplate.name}* shift on ${formatShiftDate(start)} has been reassigned to a colleague.`
+        )
+      }
+      const me = await prisma.employee.findUnique({ where: { id: employeeId }, select: { name: true } })
+      const weekOffset = Math.round((weekStart.getTime() - currentMonday().getTime()) / (7 * 86400000))
+      await pushOwnerMessage(
+        locationId,
+        `✅ *${me?.name ?? "They"}* accepted — now covering the ${shift.shiftTemplate.name} shift on ${formatShiftDate(start)}${
+          previous ? ` (was ${previous.name})` : ""
+        }.\n⟦grid:${weekOffset}⟧`
+      )
+      return
+    }
+
+    case "AVAIL_OK": {
+      const weekStart = new Date(Number(arg))
+      await confirmAvailability(employeeId, weekStart)
+      await pushAgentMessage(locationId, employeeId, `Great, I'll schedule you as usual. Thanks! 🙌`)
+      await maybeFireGenerate(locationId, weekStart)
+      return
+    }
+
+    case "AVAIL_NO": {
+      const [templateId, dayStr, msStr] = arg.split(":")
+      const weekStart = new Date(Number(msStr))
+      const day = parseInt(dayStr)
+      await markUnavailable(employeeId, templateId, day, weekStart)
+      const tmpl = await prisma.shiftTemplate.findUnique({ where: { id: templateId }, select: { name: true } })
+      await pushAgentMessage(
+        locationId,
+        employeeId,
+        `Noted — I'll leave you off the *${tmpl?.name ?? "that"}* shift next week. Mark more if you like, and tap "All good" when you're done.`,
+        [{ label: "✅ All good", command: `AVAIL_OK:${msStr}` }]
+      )
+      return
+    }
+
     default:
-      await pushAgentMessage(locationId, employeeId, "Das hab ich nicht verstanden — schreib *Hilfe* für die Optionen.")
+      await pushAgentMessage(locationId, employeeId, "I didn't catch that — text *help* for the options.")
   }
 }
 
@@ -325,23 +547,182 @@ async function getOwnShift(shiftId: string, employeeId: string) {
 }
 
 async function notYours(locationId: string, employeeId: string) {
-  await pushAgentMessage(locationId, employeeId, "Diese Schicht gehört nicht (mehr) zu dir.")
+  await pushAgentMessage(locationId, employeeId, "That shift isn't yours (anymore).")
 }
 
 async function alreadyHandled(locationId: string, employeeId: string, status: string) {
   const map: Record<string, string> = {
-    ACCEPTED: "Die hast du schon zugesagt. ✅",
-    DECLINED: "Die hast du schon abgesagt.",
-    REASSIGNED: "Die wurde schon anderweitig vergeben.",
-    UNASSIGNED: "Die ist gerade nicht dir zugewiesen.",
+    ACCEPTED: "You already accepted that one. ✅",
+    DECLINED: "You already declined that one.",
+    REASSIGNED: "That one's already been covered by someone else.",
+    UNASSIGNED: "That one isn't assigned to you right now.",
   }
-  await pushAgentMessage(locationId, employeeId, map[status] ?? "Das ist nicht mehr möglich.")
+  await pushAgentMessage(locationId, employeeId, map[status] ?? "That's no longer possible.")
 }
 
 async function audit(locationId: string, action: string, outcome: string) {
   await prisma.auditLog.create({
     data: { locationId, action, aiReasoning: "", candidatesConsidered: [], outcome },
   })
+}
+
+// ── Weekly availability collection ───────────────────────────────────────────
+
+// The real date of a slot: weekStart is a Monday, dayOfWeek is 0=Sun..6=Sat.
+// Offset so the resulting date's getDay() equals dayOfWeek (matches how
+// getEffectiveAvailability maps overrides back by date.getDay()).
+function unavailabilityDate(weekStart: Date, dayOfWeek: number): Date {
+  const d = new Date(weekStart)
+  d.setDate(d.getDate() + ((dayOfWeek - 1 + 7) % 7))
+  d.setHours(0, 0, 0, 0)
+  return d
+}
+
+// Is a weekly "what can't you work?" ask still open for this employee? Returns
+// the target weekStart if the newest ask hasn't been answered (no confirmation
+// yet), else null — so free text only counts as an answer while one is pending.
+async function pendingAvailabilityWeek(employeeId: string): Promise<Date | null> {
+  const recent = await prisma.chatMessage.findMany({
+    where: { employeeId, role: "AGENT" },
+    orderBy: { createdAt: "desc" },
+    take: 12,
+    select: { actions: true },
+  })
+  for (const m of recent) {
+    const acts = (m.actions as ChatAction[] | null) ?? []
+    const ok = acts.find((a) => a.command?.startsWith("AVAIL_OK:"))
+    if (!ok) continue
+    const weekStart = new Date(Number(ok.command.split(":")[1]))
+    const already = await prisma.availabilityConfirmation.findUnique({
+      where: { employeeId_weekStart: { employeeId, weekStart } },
+    })
+    return already ? null : weekStart
+  }
+  return null
+}
+
+// "I'm done — nothing (else) changed." Marks the employee as having responded.
+async function confirmAvailability(employeeId: string, weekStart: Date) {
+  await prisma.availabilityConfirmation.upsert({
+    where: { employeeId_weekStart: { employeeId, weekStart } },
+    update: {},
+    create: { employeeId, weekStart },
+  })
+}
+
+// One slot off next week — an override the generator honours. Incremental: does
+// NOT confirm on its own, so they can mark several then tap "All good".
+async function markUnavailable(employeeId: string, shiftTemplateId: string, dayOfWeek: number, weekStart: Date) {
+  const date = unavailabilityDate(weekStart, dayOfWeek)
+  await prisma.availabilityOverride.upsert({
+    where: { employeeId_shiftTemplateId_date: { employeeId, shiftTemplateId, date } },
+    update: { available: false },
+    create: { employeeId, shiftTemplateId, date, available: false },
+  })
+}
+
+// Once every gated (category-A) employee has confirmed, build the draft now —
+// fire generation directly rather than depending on a background wait staying
+// alive. Guarded so we never generate twice for the same week (the last
+// confirmer is the only reply that sees the gate satisfied, but a draft may
+// already exist from an earlier run).
+async function maybeFireGenerate(locationId: string, weekStart: Date) {
+  const employees = await prisma.employee.findMany({
+    where: { locationId },
+    select: { id: true, category: true },
+  })
+  const gated = employees.filter((e) => needsAvailability(e.category)).map((e) => e.id)
+  // Note: no early return when gated is empty — a team with no category-A staff
+  // has nothing to wait on, so the first "All good" should build the draft.
+  const confirmed = await prisma.availabilityConfirmation.findMany({
+    where: { weekStart, employeeId: { in: gated } },
+    select: { employeeId: true },
+  })
+  const confirmedIds = new Set(confirmed.map((c) => c.employeeId))
+  if (!gated.every((id) => confirmedIds.has(id))) return
+
+  const existing = await prisma.schedule.count({ where: { locationId, weekStart } })
+  if (existing > 0) return
+  await safeSend({ name: "schedule/manual-generate", data: { locationId } })
+}
+
+// Free-text answer to the ask, e.g. "Mittwoch Abend geht nicht". The LLM maps
+// it onto the employee's known slots; we write the overrides and confirm (a
+// typed sentence is a complete answer). Falls back to a nudge if unparseable.
+async function handleAvailabilityText(locationId: string, employeeId: string, text: string, weekStart: Date) {
+  const slots = await prisma.recurringAvailability.findMany({
+    where: { employeeId },
+    include: { shiftTemplate: { select: { name: true, startTime: true, endTime: true } } },
+  })
+  const off = await parseUnavailabilityWithLLM(text, slots)
+
+  if (off.length === 0) {
+    await pushAgentMessage(
+      locationId,
+      employeeId,
+      `I didn't quite catch which shift you mean. Tap "📋 My shifts" or one of the shift buttons above — or "✅ All good" if nothing changes.`,
+      [{ label: "✅ All good", command: `AVAIL_OK:${weekStart.getTime()}` }]
+    )
+    return
+  }
+
+  const names: string[] = []
+  for (const s of off) {
+    await markUnavailable(employeeId, s.shiftTemplateId, s.dayOfWeek, weekStart)
+    names.push(s.label)
+  }
+  await confirmAvailability(employeeId, weekStart)
+  await pushAgentMessage(
+    locationId,
+    employeeId,
+    `Noted — off next week: ${names.join(", ")}. Thanks, I'll schedule everything else as usual! 🙌`
+  )
+  await maybeFireGenerate(locationId, weekStart)
+}
+
+type RecurringSlot = {
+  shiftTemplateId: string
+  dayOfWeek: number
+  shiftTemplate: { name: string; startTime: string; endTime: string }
+}
+
+async function parseUnavailabilityWithLLM(
+  text: string,
+  slots: RecurringSlot[]
+): Promise<{ shiftTemplateId: string; dayOfWeek: number; label: string }[]> {
+  if (slots.length === 0) return []
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+  const catalog = slots.map((s, i) => ({
+    index: i,
+    day: dayNames[s.dayOfWeek],
+    shift: s.shiftTemplate.name,
+    time: `${s.shiftTemplate.startTime}-${s.shiftTemplate.endTime}`,
+  }))
+  try {
+    const { ChatOpenAI } = await import("@langchain/openai")
+    const { z } = await import("zod")
+    const model = new ChatOpenAI({ model: "gpt-4o", temperature: 0 })
+    const out = await model
+      .withStructuredOutput(z.object({ unavailableIndexes: z.array(z.number().int()) }))
+      .invoke(
+        `A café employee (German or English) is telling their scheduler which of their usual shifts they CANNOT work next week. Return the indexes of the slots they can't work. If none clearly match, return an empty array.\n\nTheir usual slots:\n${JSON.stringify(catalog)}\n\nMessage: "${text}"`
+      )
+    const seen = new Set<number>()
+    const result: { shiftTemplateId: string; dayOfWeek: number; label: string }[] = []
+    for (const i of out.unavailableIndexes) {
+      if (i < 0 || i >= slots.length || seen.has(i)) continue
+      seen.add(i)
+      const s = slots[i]
+      result.push({
+        shiftTemplateId: s.shiftTemplateId,
+        dayOfWeek: s.dayOfWeek,
+        label: `${dayNames[s.dayOfWeek]} ${s.shiftTemplate.name}`,
+      })
+    }
+    return result
+  } catch {
+    return []
+  }
 }
 
 // ── LLM fallback ─────────────────────────────────────────────────────────────

@@ -46,6 +46,29 @@ export async function manualGenerateSchedule(locationId: string) {
     return { error: "Manual schedule generation is a Pro feature." }
   }
 
+  // Phase 1: ask the team what they can't work next week. The collection
+  // workflow generates the draft automatically once everyone has replied
+  // (or after its timeout).
+  await inngest.send({
+    name: "schedule/collect-availability",
+    data: { locationId },
+  })
+
+  revalidatePath(`/dashboard/${locationId}`)
+  return { ok: true }
+}
+
+// Escape hatch: build the draft right now, skipping the availability ask. Used
+// by the "Build it now" affordance so a demo can't get stuck waiting on replies.
+// Whoever has already confirmed is included; anyone who hasn't is dropped as usual.
+export async function generateDraftNow(locationId: string) {
+  const session = await auth()
+  if (!session) redirect("/login")
+
+  if (!isPro(session.user.stripePlan)) {
+    return { error: "Manual schedule generation is a Pro feature." }
+  }
+
   await inngest.send({
     name: "schedule/manual-generate",
     data: { locationId },
