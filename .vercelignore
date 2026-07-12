@@ -1,0 +1,12 @@
+# Local env files must never ship to Vercel.
+#
+# The Vercel CLI does NOT honour .gitignore when uploading, so `vercel --prod`
+# was bundling .env into the deployment. Next then loads it at runtime, where it
+# fills in any var Vercel itself doesn't define — which silently forced
+# INNGEST_DEV=1 in production and pinned the whole app to Inngest dev mode
+# (has_signing_key: true, but mode: "dev", and no workflow ever ran).
+#
+# Production env lives in the Vercel project settings. Nowhere else.
+.env
+.env.*
+!.env.example

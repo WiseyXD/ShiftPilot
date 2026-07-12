@@ -6,6 +6,7 @@
 
 import { prisma } from "@/prisma/client"
 import { inngest } from "@/lib/inngest/client"
+import { sendWhatsApp, whatsappEnabled } from "@/lib/whatsapp/cloud"
 import { getShiftStart, getShiftEnd, formatShiftDate } from "@/lib/scheduling/shift-date"
 import { checkEmployeeAssignment } from "@/lib/compliance/check"
 import { loadRules } from "@/lib/compliance/load"
@@ -66,12 +67,40 @@ export async function pushAgentMessage(
       actions: actions ? (actions as unknown as object[]) : undefined,
     },
   })
+
+  // Mirror to the real WhatsApp number when the channel is on. Best-effort:
+  // sendWhatsApp never throws, so a Meta outage can't fail the Inngest step
+  // this runs inside.
+  if (whatsappEnabled()) {
+    const e = await prisma.employee.findUnique({
+      where: { id: employeeId },
+      select: { phone: true },
+    })
+    await sendWhatsApp(e?.phone, body, actions)
+  }
 }
 
-async function pushEmployeeMessage(locationId: string, employeeId: string, body: string) {
-  await prisma.chatMessage.create({
-    data: { locationId, employeeId, role: "EMPLOYEE", body },
-  })
+// Returns false if this is a duplicate delivery of a WhatsApp message we've
+// already processed (Meta retries until it sees a 200). The unique index on
+// waMessageId is the guard — without it a retried "SICK:" would kick off the
+// replacement engine twice.
+async function pushEmployeeMessage(
+  locationId: string,
+  employeeId: string,
+  body: string,
+  waMessageId?: string
+): Promise<boolean> {
+  try {
+    await prisma.chatMessage.create({
+      data: { locationId, employeeId, role: "EMPLOYEE", body, waMessageId },
+    })
+    return true
+  } catch (err) {
+    // P2002 = unique violation on waMessageId: Meta re-delivered a message we
+    // already handled. Anything else is a real failure and must surface.
+    if (waMessageId && (err as { code?: string } | null)?.code === "P2002") return false
+    throw err
+  }
 }
 
 // ── Manager cover request (consent flow) ─────────────────────────────────────
@@ -136,11 +165,32 @@ export async function requestManagerCover(
 
 // ── Entry point ──────────────────────────────────────────────────────────────
 
-export async function handleEmployeeMessage(employeeId: string, text: string) {
+/**
+ * The single front door for anything an employee says — the in-app simulator
+ * and the real WhatsApp webhook both land here, so there is exactly one set of
+ * guards.
+ *
+ * `text` is what gets routed (for a tapped button that's the raw command, e.g.
+ * "SICK:ckabc"). `display` is what gets written to the thread — WhatsApp gives
+ * us the button's human title alongside its id, so the transcript on the
+ * projector reads "🤒 Call in sick" instead of "SICK:cmg1x7…".
+ * `waMessageId` dedupes Meta's retried deliveries.
+ */
+export async function handleEmployeeMessage(
+  employeeId: string,
+  text: string,
+  opts?: { display?: string; waMessageId?: string }
+) {
   const employee = await prisma.employee.findUnique({ where: { id: employeeId } })
   if (!employee) return
 
-  await pushEmployeeMessage(employee.locationId, employeeId, text)
+  const fresh = await pushEmployeeMessage(
+    employee.locationId,
+    employeeId,
+    opts?.display ?? text,
+    opts?.waMessageId
+  )
+  if (!fresh) return // already processed this WhatsApp message
 
   let intent = routeMessage(text)
 
@@ -182,7 +232,7 @@ export async function handleEmployeeMessage(employeeId: string, text: string) {
 // ── Intent replies ───────────────────────────────────────────────────────────
 
 async function loadEmployeeShifts(employeeId: string, statuses: string[]) {
-  return (await prisma.shift.findMany({
+  const shifts = (await prisma.shift.findMany({
     where: {
       employeeId,
       status: { in: statuses as never },
@@ -191,6 +241,22 @@ async function loadEmployeeShifts(employeeId: string, statuses: string[]) {
     include: { shiftTemplate: true, schedule: { select: { weekStart: true, locationId: true } } },
     orderBy: [{ schedule: { weekStart: "asc" } }, { dayOfWeek: "asc" }],
   })) as unknown as ShiftWithCtx[]
+
+  // weekStart >= this Monday still includes days of THIS week that have already
+  // been and gone — you cannot call in sick for last Tuesday. Filter on the
+  // shift's real start, which only weekStart + dayOfWeek + startTime can give us.
+  const now = new Date()
+  return shifts.filter(
+    (s) => getShiftStart(new Date(s.schedule.weekStart), s.dayOfWeek, s.shiftTemplate.startTime) > now
+  )
+}
+
+// "Tue 14 Jul · Abend" — fits WhatsApp's 24-char list-row title, and reads
+// naturally in German ("Abendschicht" → "Abend").
+const shortShiftLabel = (s: ShiftWithCtx) => {
+  const start = getShiftStart(new Date(s.schedule.weekStart), s.dayOfWeek, s.shiftTemplate.startTime)
+  const when = start.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })
+  return `${when} · ${s.shiftTemplate.name.replace(/schicht$/i, "")}`
 }
 
 async function replyMyShifts(locationId: string, employeeId: string) {
@@ -240,12 +306,12 @@ async function replyOpenShifts(locationId: string, employeeId: string) {
     await pushAgentMessage(locationId, employeeId, "No open shifts for you right now. I'll ping you as soon as one frees up! 👍")
     return
   }
-  await pushAgentMessage(locationId, employeeId, "These shifts are still open — tap to take one:")
-  for (const s of eligible) {
-    await pushAgentMessage(locationId, employeeId, shiftLine(s), [
-      { label: "🙋 Take it", command: `TAKE:${s.id}` },
-    ])
-  }
+  await pushAgentMessage(
+    locationId,
+    employeeId,
+    `These shifts are still open — tap to take one:\n\n${eligible.map((s) => shiftLine(s)).join("\n")}`,
+    eligible.map((s) => ({ label: shortShiftLabel(s), command: `TAKE:${s.id}` }))
+  )
 }
 
 async function replySickPicker(locationId: string, employeeId: string) {
@@ -254,12 +320,15 @@ async function replySickPicker(locationId: string, employeeId: string) {
     await pushAgentMessage(locationId, employeeId, "You have no upcoming shifts to cancel. Get well soon anyway! 🍵")
     return
   }
-  await pushAgentMessage(locationId, employeeId, "Which shift are you calling in sick for?")
-  for (const s of shifts) {
-    await pushAgentMessage(locationId, employeeId, shiftLine(s), [
-      { label: "🤒 Call in sick", command: `SICK:${s.id}` },
-    ])
-  }
+  // One message, one option per shift — not a message per shift. Past three
+  // options this becomes a WhatsApp list (see buildPayload), which keeps the
+  // thread readable instead of a wall of near-identical bubbles.
+  await pushAgentMessage(
+    locationId,
+    employeeId,
+    `Which shift are you calling in sick for?\n\n${shifts.map((s) => shiftLine(s)).join("\n")}`,
+    shifts.map((s) => ({ label: shortShiftLabel(s), command: `SICK:${s.id}` }))
+  )
 }
 
 async function replyHelp(locationId: string, employeeId: string, name: string) {

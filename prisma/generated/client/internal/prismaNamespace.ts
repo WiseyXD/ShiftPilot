@@ -2299,6 +2299,7 @@ export const ChatMessageScalarFieldEnum = {
   role: 'role',
   body: 'body',
   actions: 'actions',
+  waMessageId: 'waMessageId',
   createdAt: 'createdAt'
 } as const
 

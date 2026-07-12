@@ -409,14 +409,15 @@ enum ChatRole {
 // pattern as ActionToken). The simulator's transport; real actions still run
 // through the normal engines.
 model ChatMessage {
-  id         String   @id @default(cuid())
-  locationId String
-  employeeId String?
-  userId     String?
-  role       ChatRole
-  body       String
-  actions    Json? // [{ label, command }] — tappable reply buttons the agent offered
-  createdAt  DateTime @default(now())
+  id          String   @id @default(cuid())
+  locationId  String
+  employeeId  String?
+  userId      String?
+  role        ChatRole
+  body        String
+  actions     Json? // [{ label, command }] — tappable reply buttons the agent offered
+  waMessageId String?  @unique // Meta's message id — dedupes retried webhook deliveries
+  createdAt   DateTime @default(now())
 
   location Location  @relation(fields: [locationId], references: [id], onDelete: Cascade)
   employee Employee? @relation(fields: [employeeId], references: [id], onDelete: Cascade)
