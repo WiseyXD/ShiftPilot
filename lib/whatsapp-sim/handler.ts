@@ -251,12 +251,13 @@ async function loadEmployeeShifts(employeeId: string, statuses: string[]) {
   )
 }
 
-// "Tue 14 Jul · Abend" — fits WhatsApp's 24-char list-row title, and reads
-// naturally in German ("Abendschicht" → "Abend").
+// "Tue 14 Jul · Evening" — fits WhatsApp's 24-char list-row title. Drops the
+// generic suffix either language spells it with ("Abendschicht" → "Abend",
+// "Evening Shift" → "Evening"); templates named neither way pass through.
 const shortShiftLabel = (s: ShiftWithCtx) => {
   const start = getShiftStart(new Date(s.schedule.weekStart), s.dayOfWeek, s.shiftTemplate.startTime)
   const when = start.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })
-  return `${when} · ${s.shiftTemplate.name.replace(/schicht$/i, "")}`
+  return `${when} · ${s.shiftTemplate.name.replace(/(schicht|\s+shift)$/i, "")}`
 }
 
 async function replyMyShifts(locationId: string, employeeId: string) {

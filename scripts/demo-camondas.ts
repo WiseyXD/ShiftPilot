@@ -4,7 +4,7 @@
 //   bun scripts/demo-camondas.ts
 //
 // The story it stages: Niko calls in sick from a REAL phone for next Tuesday's
-// Abendschicht (17:00–22:00). Covrly looks for cover and refuses three people
+// Evening Shift (17:00–22:00). Covrly looks for cover and refuses three people
 // — each for a different named law — before asking the one person who may
 // legally take it:
 //
@@ -50,7 +50,7 @@ const monday = (offsetWeeks = 0) => {
 const MON = 1, TUE = 2, WED = 3, THU = 4, FRI = 5
 
 // Age 15 on the demo date — a 16-year-old would be LEGAL until 22:00 in
-// gastronomy (nightEndGastro16Plus), and the Abendschicht ends exactly at
+// gastronomy (nightEndGastro16Plus), and the Evening Shift ends exactly at
 // 22:00, so only a 15-year-old is genuinely blocked by the night rule.
 const birthdayForAge = (years: number) => {
   const d = new Date()
@@ -92,14 +92,14 @@ async function main() {
   })
 
   // ── Shift templates ────────────────────────────────────────────────────────
-  const frueh = await prisma.shiftTemplate.create({
-    data: { locationId: loc.id, name: "Frühschicht", startTime: "07:00", endTime: "13:00", minHeadcount: 2, requiredRoles: ["Barista", "Service"] },
+  const morning = await prisma.shiftTemplate.create({
+    data: { locationId: loc.id, name: "Morning Shift", startTime: "07:00", endTime: "13:00", minHeadcount: 2, requiredRoles: ["Barista", "Service"] },
   })
-  const mittag = await prisma.shiftTemplate.create({
-    data: { locationId: loc.id, name: "Mittagsschicht", startTime: "12:00", endTime: "17:00", minHeadcount: 1, requiredRoles: ["Service"] },
+  const midday = await prisma.shiftTemplate.create({
+    data: { locationId: loc.id, name: "Midday Shift", startTime: "12:00", endTime: "17:00", minHeadcount: 1, requiredRoles: ["Service"] },
   })
-  const abend = await prisma.shiftTemplate.create({
-    data: { locationId: loc.id, name: "Abendschicht", startTime: "17:00", endTime: "22:00", minHeadcount: 2, requiredRoles: ["Service", "Kitchen"] },
+  const evening = await prisma.shiftTemplate.create({
+    data: { locationId: loc.id, name: "Evening Shift", startTime: "17:00", endTime: "22:00", minHeadcount: 2, requiredRoles: ["Service", "Kitchen"] },
   })
 
   // ── The cast ───────────────────────────────────────────────────────────────
@@ -153,55 +153,55 @@ async function main() {
   ]
   for (const a of avail)
     for (const d of a.days)
-      for (const t of [frueh, mittag, abend])
+      for (const t of [morning, midday, evening])
         await prisma.recurringAvailability.create({
           data: { employeeId: a.emp, shiftTemplateId: t.id, dayOfWeek: d },
         })
 
   // ── The week grids ────────────────────────────────────────────────────────
   // Hand-built rather than generated, because the rest rules make this a real
-  // puzzle: an Abendschicht ends at 22:00 and a Frühschicht starts at 07:00 —
+  // puzzle: an Evening Shift ends at 22:00 and a Morning Shift starts at 07:00 —
   // only 9 h apart, under the 10 h ArbZG floor. Nobody works a morning after an
   // evening here. Vedika in particular must stay legal for the Tuesday cover.
   //
-  // CRITICAL: Niko has exactly ONE upcoming shift — the Tuesday Abendschicht of
+  // CRITICAL: Niko has exactly ONE upcoming shift — the Tuesday Evening Shift of
   // the demo week. The sick-call picker offers every future shift, so if he had
   // others he could tap the wrong one on stage and the whole refusal story
   // collapses (a different day means different people are legal). He appears in
   // LAST week for history, and not at all in the current week.
   type Row = { t: string; day: number; who: (string | null)[] }
-  const F = frueh.id, M = mittag.id, A = abend.id
+  const AM = morning.id, MID = midday.id, PM = evening.id
 
   const demoWeek: Row[] = [
-    { t: F, day: MON, who: [julia.id, lina.id] },
-    { t: M, day: MON, who: [marco.id] },
-    { t: A, day: MON, who: [vedika.id, tim.id] },
+    { t: AM, day: MON, who: [julia.id, lina.id] },
+    { t: MID, day: MON, who: [marco.id] },
+    { t: PM, day: MON, who: [vedika.id, tim.id] },
 
-    { t: F, day: TUE, who: [marco.id, null] }, // open seat → the "open shifts" story
-    { t: M, day: TUE, who: [null] },
-    { t: A, day: TUE, who: [niko.id, julia.id] }, // ← THE SICK SHIFT (Niko's seat)
+    { t: AM, day: TUE, who: [marco.id, null] }, // open seat → the "open shifts" story
+    { t: MID, day: TUE, who: [null] },
+    { t: PM, day: TUE, who: [niko.id, julia.id] }, // ← THE SICK SHIFT (Niko's seat)
 
-    { t: F, day: WED, who: [lina.id, marco.id] },
-    { t: M, day: WED, who: [null] },
-    { t: A, day: WED, who: [vedika.id, julia.id] },
+    { t: AM, day: WED, who: [lina.id, marco.id] },
+    { t: MID, day: WED, who: [null] },
+    { t: PM, day: WED, who: [vedika.id, julia.id] },
 
-    { t: F, day: THU, who: [tim.id, lina.id] },
-    { t: M, day: THU, who: [marco.id] },
-    { t: A, day: THU, who: [vedika.id, julia.id] },
+    { t: AM, day: THU, who: [tim.id, lina.id] },
+    { t: MID, day: THU, who: [marco.id] },
+    { t: PM, day: THU, who: [vedika.id, julia.id] },
 
-    { t: F, day: FRI, who: [tim.id, lina.id] },
-    { t: M, day: FRI, who: [marco.id] },
-    { t: A, day: FRI, who: [vedika.id, julia.id] },
+    { t: AM, day: FRI, who: [tim.id, lina.id] },
+    { t: MID, day: FRI, who: [marco.id] },
+    { t: PM, day: FRI, who: [vedika.id, julia.id] },
   ]
 
   // Current week — deliberately WITHOUT Niko, so his only future shift stays the
   // demo one. Gives the dashboard something to show.
   const thisWeekRows: Row[] = [
-    { t: F, day: MON, who: [julia.id, lina.id] },
-    { t: F, day: WED, who: [tim.id, lina.id] },
-    { t: A, day: WED, who: [vedika.id, julia.id] },
-    { t: M, day: FRI, who: [marco.id] },
-    { t: A, day: FRI, who: [vedika.id, julia.id] },
+    { t: AM, day: MON, who: [julia.id, lina.id] },
+    { t: AM, day: WED, who: [tim.id, lina.id] },
+    { t: PM, day: WED, who: [vedika.id, julia.id] },
+    { t: MID, day: FRI, who: [marco.id] },
+    { t: PM, day: FRI, who: [vedika.id, julia.id] },
   ]
 
   // Last week — fully in the past, so it never pollutes the sick-call picker.
@@ -209,10 +209,10 @@ async function main() {
   // Minijob cap (amber warning) and a 5 h cover would tip him over it. That's
   // what makes his refusal real rather than staged.
   const lastWeekRows: Row[] = [
-    { t: A, day: MON, who: [niko.id, vedika.id] },
-    { t: M, day: WED, who: [marco.id] },
-    { t: A, day: WED, who: [niko.id, julia.id] },
-    { t: A, day: FRI, who: [niko.id, vedika.id] },
+    { t: PM, day: MON, who: [niko.id, vedika.id] },
+    { t: MID, day: WED, who: [marco.id] },
+    { t: PM, day: WED, who: [niko.id, julia.id] },
+    { t: PM, day: FRI, who: [niko.id, vedika.id] },
   ]
 
   const buildWeek = async (weekStart: Date, rows: Row[]) => {
@@ -249,7 +249,7 @@ async function main() {
   // Runs exactly the check the replacement engine runs. If this doesn't print
   // three refusals and one ask, the demo is broken — find out now, not on stage.
   const sickShift = await prisma.shift.findFirst({
-    where: { scheduleId: demo.id, shiftTemplateId: abend.id, dayOfWeek: TUE, employeeId: niko.id },
+    where: { scheduleId: demo.id, shiftTemplateId: evening.id, dayOfWeek: TUE, employeeId: niko.id },
     include: { shiftTemplate: true },
   })
   if (!sickShift) throw new Error("sick shift not found — grid is wrong")
