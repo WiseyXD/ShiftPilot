@@ -14,7 +14,6 @@ import {
   Plus,
   Sparkles,
   Building2,
-  Store,
   MessageCircle,
   Bot,
   LogOut,
@@ -147,27 +146,6 @@ export function AppSidebar({ locations, user }: Props) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* Network */}
-        <SidebarGroup>
-          <SidebarGroupLabel>{s.network}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={isActive("/dashboard/marketplace")}
-                  tooltip={s.marketplace}
-                >
-                  <Link href="/dashboard/marketplace">
-                    <Store />
-                    <span>{s.marketplace}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
