@@ -1,7 +1,7 @@
-// Demo-day seed for Camondas (aryan.s.nag@gmail.com). Re-runnable: wipes the
+// Demo-day seed for Grünmond (aryan.s.nag@gmail.com). Re-runnable: wipes the
 // café's child data and rebuilds the exact stage the pitch needs.
 //
-//   bun scripts/demo-camondas.ts
+//   bun scripts/demo-gruenmond.ts
 //
 // The story it stages: Niko calls in sick from a REAL phone for next Tuesday's
 // Evening Shift (17:00–22:00). Covrly looks for cover and refuses three people
@@ -24,7 +24,7 @@ import { loadRules } from "../lib/compliance/load"
 import { loadMonthNetHoursBeforeWeek } from "../lib/compliance/hours"
 import { getShiftStart, getShiftEnd } from "../lib/scheduling/shift-date"
 
-const LOCATION = "Camondas"
+const LOCATION = "Grünmond"
 
 // The phone that plays the employee calling in sick. Override with
 // COVRLY_SICK_PHONE=… ; add COVRLY_COVER_PHONE=… for a second real handset so

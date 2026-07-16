@@ -249,7 +249,7 @@ export function WhatsAppSimulator({
           {/* Header */}
           <header className="flex items-center gap-3 bg-[#008069] px-4 py-2.5 text-white">
             <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white">
-              <Covrly size={34} />
+              <Covrly size={28} />
             </span>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-semibold leading-tight">

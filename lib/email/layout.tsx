@@ -37,13 +37,13 @@ export function BaseLayout({ preview, children }: BaseLayoutProps) {
 }
 
 const body = {
-  backgroundColor: "#f6f9fc",
+  backgroundColor: "#f4f1e8",
   fontFamily:
     '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
 }
 
 const container = {
-  backgroundColor: "#ffffff",
+  backgroundColor: "#fffcf7",
   margin: "0 auto",
   padding: "0",
   maxWidth: "560px",
@@ -52,7 +52,7 @@ const container = {
 }
 
 const header = {
-  backgroundColor: "#0f172a",
+  backgroundColor: "#0e5f56",
   padding: "20px 32px",
 }
 
@@ -68,12 +68,12 @@ const content = {
 }
 
 const footer = {
-  borderTop: "1px solid #e2e8f0",
+  borderTop: "1px solid #e6e2d5",
   padding: "20px 32px",
 }
 
 const footerText = {
-  color: "#94a3b8",
+  color: "#6b6a60",
   fontSize: "12px",
   margin: "0",
 }

@@ -1,8 +1,9 @@
 import * as React from "react"
 import { Covrly } from "@/components/covrly"
 
-// Dark Roast auth shell: espresso brand panel on the left, cream form paper
-// on the right. Server-safe — pages drop their forms into <AuthPanel/>.
+// Auth shell: warm-white brand panel on the left (the mascot sits directly
+// on it — no backing chip), cream form paper on the right. Server-safe —
+// pages drop their forms into <AuthPanel/>.
 
 const PROOF_LINES = [
   ["Plans itself", "availability in, legal weekly plan out — you just approve"],
@@ -13,15 +14,15 @@ const PROOF_LINES = [
 export function AuthShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen grid lg:grid-cols-[1.1fr_1fr]">
-      {/* Espresso panel */}
+      {/* Warm-white brand panel */}
       <div className="relative hidden lg:flex flex-col justify-between overflow-hidden bg-sidebar text-sidebar-foreground p-12">
-        {/* warmth pooling in the corner + a coffee ring breaking the frame */}
+        {/* mint pooling in the corner + rings echoing the mascot's C */}
         <div
           aria-hidden
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(52rem 40rem at 8% 110%, oklch(0.55 0.13 45 / 0.32), transparent 60%), radial-gradient(38rem 30rem at 105% -5%, oklch(0.68 0.13 48 / 0.14), transparent 55%)",
+              "radial-gradient(52rem 40rem at 8% 110%, rgba(143, 214, 201, 0.22), transparent 60%), radial-gradient(38rem 30rem at 105% -5%, rgba(37, 211, 102, 0.10), transparent 55%)",
           }}
         />
         <div

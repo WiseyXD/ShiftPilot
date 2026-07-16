@@ -467,7 +467,7 @@ function SickScene({ sickEmp, coverEmp, tmpl, catSub, step }: { sickEmp: Employe
       {step >= 3 && (
         <Appear>
           <div className="flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/[0.05] px-4 py-3">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#008069]"><Covrly size={28} /></span>
+            <Covrly size={32} className="shrink-0" />
             <p className="text-sm text-foreground"><strong>Covered.</strong> {firstName(coverEmp.name)} is taking {firstName(sickEmp.name)}&rsquo;s {tmpl.name} — logged, and your manager was notified. You did nothing. ✨</p>
           </div>
         </Appear>
@@ -490,7 +490,7 @@ function Confetti() {
         left: hash(i, 1) * 100,
         delay: hash(i, 2) * 0.5,
         dur: 2.4 + hash(i, 3) * 1.8,
-        color: ["#C9724A", "#008069", "#F4EAD8", "#3B2A20", "#e0b24a"][i % 5],
+        color: ["#0f7267", "#8fd6c9", "#25d366", "#fffcf7", "#c9483f"][i % 5],
         w: 6 + hash(i, 4) * 6,
         rot: hash(i, 5) * 360,
       })),

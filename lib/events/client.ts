@@ -17,7 +17,7 @@ export interface NearbyEvent {
 }
 
 // Real listings for Thursday 16 July 2026, all within the 5 km radius of
-// Camondas (Zellescher Weg 41) — the Semperoper and WEINsommer entries were
+// Grünmond (Zellescher Weg 41) — the Semperoper and WEINsommer entries were
 // checked against the venues' own calendars, YETI Demo Day is our own.
 //
 // ⚠️  Two caveats, both deliberate:

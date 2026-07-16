@@ -2,8 +2,8 @@
 
 // Dashboard charts. Coverage is real data from the shown week; the response
 // trend is SAMPLE DATA until response timestamps are tracked (#43 follow-up).
-// Colors: chart-1 terracotta + neutral remainder for the stacked coverage bar;
-// chart-2 olive for the single-series trend line (validated palette).
+// Colors: chart-1 brand green + neutral remainder for the stacked coverage bar;
+// chart-2 WhatsApp green for the single-series response trend line.
 
 import {
   ResponsiveContainer,
@@ -107,13 +107,28 @@ export function CoverageChart({ lang, data }: { lang: UiLang; data: CoveragePoin
   )
 }
 
-export function ResponseChart({ lang, data }: { lang: UiLang; data: ResponsePoint[] }) {
+export function ResponseChart({
+  lang,
+  data,
+  headline,
+}: {
+  lang: UiLang
+  data: ResponsePoint[]
+  headline?: string
+}) {
   const d = ui(lang).dash
   return (
     <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-base">{d.chartResponse}</CardTitle>
-        <CardDescription className="text-xs">{d.chartResponseSub}</CardDescription>
+      <CardHeader className="flex flex-row items-start justify-between pb-2">
+        <div>
+          <CardTitle className="text-base">{d.chartResponse}</CardTitle>
+          <CardDescription className="text-xs">{d.chartResponseSub}</CardDescription>
+        </div>
+        {headline && (
+          <p className="font-display text-2xl font-semibold leading-none text-foreground">
+            {headline}
+          </p>
+        )}
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={200}>

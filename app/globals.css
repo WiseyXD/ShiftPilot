@@ -11,19 +11,20 @@
   --font-mono: var(--font-geist-mono);
   --font-display: var(--font-display);
   --font-heading: var(--font-display);
-  /* Dark Roast: the whole app was written in slate-* — remap the scale to
-     warm coffee grays so every page drinks the theme without being touched. */
-  --color-slate-50: oklch(0.976 0.006 84);
-  --color-slate-100: oklch(0.948 0.01 80);
-  --color-slate-200: oklch(0.9 0.013 78);
-  --color-slate-300: oklch(0.835 0.016 75);
-  --color-slate-400: oklch(0.685 0.022 66);
-  --color-slate-500: oklch(0.555 0.028 58);
-  --color-slate-600: oklch(0.465 0.032 52);
-  --color-slate-700: oklch(0.385 0.032 48);
-  --color-slate-800: oklch(0.305 0.028 44);
-  --color-slate-900: oklch(0.24 0.024 40);
-  --color-slate-950: oklch(0.185 0.02 38);
+  /* Deck neutrals: the whole app was written in slate-* — remap the scale to
+     the deck's warm stone grays (#1b1a17 / #6b6a60 / #e6e2d5 family) so every
+     page drinks the theme without being touched. */
+  --color-slate-50: oklch(0.976 0.005 100);
+  --color-slate-100: oklch(0.948 0.008 100);
+  --color-slate-200: oklch(0.9 0.01 100);
+  --color-slate-300: oklch(0.835 0.012 100);
+  --color-slate-400: oklch(0.685 0.014 102);
+  --color-slate-500: oklch(0.555 0.016 104);
+  --color-slate-600: oklch(0.465 0.016 104);
+  --color-slate-700: oklch(0.385 0.014 106);
+  --color-slate-800: oklch(0.305 0.012 106);
+  --color-slate-900: oklch(0.24 0.01 108);
+  --color-slate-950: oklch(0.185 0.009 108);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -93,40 +94,41 @@
 }
 
 :root {
-  /* Dark Roast: cream paper, espresso ink, terracotta heat */
-  --background: oklch(0.972 0.009 84);
-  --foreground: oklch(0.25 0.024 42);
-  --card: oklch(0.992 0.005 88);
-  --card-foreground: oklch(0.25 0.024 42);
-  --popover: oklch(0.992 0.005 88);
-  --popover-foreground: oklch(0.25 0.024 42);
-  --primary: oklch(0.55 0.13 45);
-  --primary-foreground: oklch(0.977 0.008 84);
-  --secondary: oklch(0.943 0.013 80);
-  --secondary-foreground: oklch(0.3 0.028 44);
-  --muted: oklch(0.943 0.013 80);
-  --muted-foreground: oklch(0.52 0.028 55);
-  --accent: oklch(0.93 0.024 72);
-  --accent-foreground: oklch(0.3 0.028 44);
-  --destructive: oklch(0.55 0.19 27);
-  --border: oklch(0.892 0.014 76);
-  --input: oklch(0.892 0.014 76);
-  --ring: oklch(0.65 0.11 48);
-  --chart-1: oklch(0.55 0.13 45);
-  --chart-2: oklch(0.55 0.125 135);
-  --chart-3: oklch(0.5 0.07 60);
-  --chart-4: oklch(0.72 0.1 75);
-  --chart-5: oklch(0.4 0.05 35);
+  /* Deck palette: cream paper, ink text, brand greens, mint accent, alert red.
+     Hexes come straight from the designer's PPT scheme. */
+  --background: #f4f1e8;
+  --foreground: #1b1a17;
+  --card: #fffcf7;
+  --card-foreground: #1b1a17;
+  --popover: #fffcf7;
+  --popover-foreground: #1b1a17;
+  --primary: #0f7267;
+  --primary-foreground: #fffcf7;
+  --secondary: #ede9dc;
+  --secondary-foreground: #1b1a17;
+  --muted: #ede9dc;
+  --muted-foreground: #6b6a60;
+  --accent: #ddefe9;
+  --accent-foreground: #0e5f56;
+  --destructive: #c9483f;
+  --border: #e6e2d5;
+  --input: #e6e2d5;
+  --ring: #0f7267;
+  --chart-1: #0f7267;
+  --chart-2: #25d366;
+  --chart-3: #8fd6c9;
+  --chart-4: #6b6a60;
+  --chart-5: #c9483f;
   --radius: 0.75rem;
-  /* the dark-roast rail */
-  --sidebar: oklch(0.245 0.024 40);
-  --sidebar-foreground: oklch(0.9 0.015 80);
-  --sidebar-primary: oklch(0.68 0.13 48);
-  --sidebar-primary-foreground: oklch(0.977 0.008 84);
-  --sidebar-accent: oklch(0.31 0.028 43);
-  --sidebar-accent-foreground: oklch(0.955 0.01 82);
-  --sidebar-border: oklch(0.31 0.024 43);
-  --sidebar-ring: oklch(0.68 0.13 48);
+  /* the rail: warm white so the mascot sits directly on it, green accents */
+  --sidebar: #fffcf7;
+  --sidebar-foreground: #1b1a17;
+  --sidebar-primary: #0f7267;
+  --sidebar-primary-foreground: #fffcf7;
+  --sidebar-accent: #ddefe9;
+  --sidebar-accent-foreground: #0e5f56;
+  --sidebar-border: #e6e2d5;
+  --sidebar-ring: #0f7267;
 }
 
 .dark {
@@ -180,7 +182,24 @@
   }
 }
 
-/* Dark Roast entrance: one staggered reveal beats scattered micro-motion */
+/* Covrly wave: the deck mascot has no arm, so `wave` is a gentle rock —
+   calm by design, from the ground shadow up */
+@keyframes covrly-wave {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-4deg); }
+  65% { transform: rotate(3deg); }
+}
+
+.covrly-wave {
+  transform-origin: 50% 92%;
+  animation: covrly-wave 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .covrly-wave { animation: none; }
+}
+
+/* Entrance: one staggered reveal beats scattered micro-motion */
 @keyframes rise-in {
   from {
     opacity: 0;

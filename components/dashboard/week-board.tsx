@@ -31,6 +31,16 @@ export interface BoardTemplate {
   endTime: string
 }
 
+// The week's vitals, shown as a slim strip on the board itself — coverage,
+// open shifts and planned hours are facts about this board, not separate KPIs.
+export interface BoardPulse {
+  coveragePct: number
+  filled: number
+  total: number
+  open: number
+  hours: number
+}
+
 // Status ink: same palette the schedule pages use.
 const DOT: Record<string, string> = {
   PENDING: "bg-slate-400",
@@ -73,6 +83,7 @@ export function WeekBoard({
   employees = [],
   droppedNames = [],
   availabilityHint = null,
+  pulse = null,
 }: {
   locationId: string
   lang: UiLang
@@ -85,6 +96,7 @@ export function WeekBoard({
   employees?: { id: string; name: string }[]
   droppedNames?: string[]
   availabilityHint?: string | null
+  pulse?: BoardPulse | null
 }) {
   const d = ui(lang).dash
   const locale = uiDateLocale(lang)
@@ -162,8 +174,37 @@ export function WeekBoard({
       </CardHeader>
 
       <CardContent className="p-0">
+        {schedule && pulse && (
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-border bg-secondary/40 px-4 py-2.5">
+            <div className="flex items-center gap-2.5">
+              <span className="relative h-1.5 w-24 overflow-hidden rounded-full bg-border">
+                <span
+                  className="absolute inset-y-0 left-0 rounded-full bg-primary"
+                  style={{ width: `${pulse.coveragePct}%` }}
+                />
+              </span>
+              <span className="text-sm font-semibold text-foreground">{pulse.coveragePct}%</span>
+              <span className="text-xs text-muted-foreground">
+                {d.kpiCoverageSub(pulse.filled, pulse.total)}
+              </span>
+            </div>
+            <div className="flex items-baseline gap-1.5">
+              <span className={`text-sm font-semibold ${pulse.open > 0 ? "text-amber-700" : "text-foreground"}`}>
+                {pulse.open}
+              </span>
+              <span className="text-xs text-muted-foreground">{d.kpiOpen}</span>
+            </div>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-sm font-semibold text-foreground">
+                {Math.round(pulse.hours)}
+                {d.hoursUnit}
+              </span>
+              <span className="text-xs text-muted-foreground">{d.kpiHoursSub}</span>
+            </div>
+          </div>
+        )}
         {droppedNames.length > 0 && (
-          <div className="mx-4 mb-3 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+          <div className="mx-4 my-3 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
             <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
             {d.droppedNote(droppedNames.join(", "))}
           </div>

@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-// Dark Roast type pairing: Fraunces carries the hospitality voice (headings,
-// wordmark), Karla does the quiet everyday work.
+// Type pairing: Fraunces carries the hospitality voice (headings, wordmark),
+// Karla does the quiet everyday work.
 const karla = Karla({ subsets: ["latin"], variable: "--font-sans" });
 
 const fraunces = Fraunces({

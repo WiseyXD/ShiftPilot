@@ -1,8 +1,9 @@
 import * as React from "react"
 
-// Covrly — the brand mascot. A friendly café cup who "covers" your shifts.
-// Pure inline SVG so it's crisp at any size, themeable, and never a network
-// request. Calm by design: it guides and reacts, it never pops up on its own.
+// Covrly — the brand mascot from the design deck (covrly2.svg): a brand-green
+// "C" ring hugging a mint face, closing on a check badge — every shift covered.
+// Pure inline SVG so it's crisp at any size and never a network request.
+// Calm by design: it guides and reacts, it never pops up on its own.
 
 interface CovrlyProps {
   size?: number
@@ -11,86 +12,70 @@ interface CovrlyProps {
   title?: string
 }
 
-const CREAM = "#F4EAD8"
-const ESPRESSO = "#3B2A20"
-const TERRA = "#C9724A"
-const COFFEE = "#4A2E20"
+// Deck palette
+const RING_LIGHT = "#12857a"
+const RING_DARK = "#0e5f56"
+const MINT = "#8fd6c9"
+const WARM_WHITE = "#fffcf7"
+const INK = "#1b1a17"
 
 export function Covrly({ size = 96, wave = false, className, title = "Covrly" }: CovrlyProps) {
+  // Unique gradient id — the mascot renders several times per page
+  const gradientId = React.useId()
+
   return (
     <svg
       width={size}
-      height={size}
-      viewBox="0 0 100 100"
+      height={size * 1.1}
+      viewBox="0 0 200 220"
       fill="none"
       role="img"
       aria-label={title}
-      className={className}
+      className={[wave ? "covrly-wave" : null, className].filter(Boolean).join(" ") || undefined}
     >
-      {/* steam */}
-      <g stroke={ESPRESSO} strokeWidth={2.4} strokeLinecap="round" opacity={0.28} fill="none">
-        <path d="M43 26 q-4 -5 0 -10 q4 -5 0 -10" />
-        <path d="M57 26 q4 -5 0 -10 q-4 -5 0 -10" />
-      </g>
+      <defs>
+        <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor={RING_LIGHT} />
+          <stop offset="1" stopColor={RING_DARK} />
+        </linearGradient>
+      </defs>
 
-      {/* saucer */}
-      <ellipse cx="50" cy="90" rx="30" ry="5.5" fill={ESPRESSO} opacity={0.12} />
+      {/* ground shadow */}
+      <ellipse cx="100" cy="205" rx="58" ry="9" fill={INK} opacity="0.08" />
 
-      {/* handle */}
+      {/* the C ring */}
       <path
-        d="M72 50 q15 1 15 15 q0 13 -15 13"
-        stroke={ESPRESSO}
-        strokeWidth={5.5}
+        d="M 152 78 A 62 62 0 1 0 152 162"
+        stroke={`url(#${gradientId})`}
+        strokeWidth="44"
         fill="none"
         strokeLinecap="round"
       />
 
-      {/* cup body */}
+      {/* face */}
+      <circle cx="100" cy="120" r="42" fill={MINT} />
+      <circle cx="86" cy="112" r="9" fill={WARM_WHITE} />
+      <circle cx="116" cy="112" r="9" fill={WARM_WHITE} />
+      <circle cx="88" cy="113" r="4.5" fill={INK} />
+      <circle cx="118" cy="113" r="4.5" fill={INK} />
       <path
-        d="M27 37 L73 37 L68 80 Q67 88 58 88 L42 88 Q33 88 32 80 Z"
-        fill={CREAM}
-        stroke={ESPRESSO}
-        strokeWidth={3}
+        d="M 90 138 Q 101 148 112 138"
+        stroke={RING_DARK}
+        strokeWidth="6"
+        fill="none"
+        strokeLinecap="round"
+      />
+
+      {/* check badge — the C closes on a "covered" tick */}
+      <circle cx="152" cy="78" r="14" fill={MINT} />
+      <path
+        d="M 147 78 l 4 4 l 7 -7"
+        stroke={RING_DARK}
+        strokeWidth="4"
+        fill="none"
+        strokeLinecap="round"
         strokeLinejoin="round"
       />
-
-      {/* terracotta sleeve */}
-      <path d="M30.5 58 L69.5 58 L67.8 70 L32.2 70 Z" fill={TERRA} opacity={0.92} />
-      <path
-        d="M30.5 58 L69.5 58 M32.2 70 L67.8 70"
-        stroke={ESPRESSO}
-        strokeWidth={1.4}
-        opacity={0.25}
-      />
-
-      {/* coffee surface */}
-      <ellipse cx="50" cy="37" rx="23" ry="6" fill={CREAM} stroke={ESPRESSO} strokeWidth={3} />
-      <ellipse cx="50" cy="37" rx="17" ry="4" fill={COFFEE} />
-
-      {/* face */}
-      <g>
-        <circle cx="43" cy="50" r="3.4" fill={ESPRESSO} />
-        <circle cx="57" cy="50" r="3.4" fill={ESPRESSO} />
-        <circle cx="44.1" cy="48.9" r="1" fill="#fff" />
-        <circle cx="58.1" cy="48.9" r="1" fill="#fff" />
-        <circle cx="39" cy="54" r="2.6" fill={TERRA} opacity={0.45} />
-        <circle cx="61" cy="54" r="2.6" fill={TERRA} opacity={0.45} />
-        <path
-          d="M45 54 Q50 58.5 55 54"
-          stroke={ESPRESSO}
-          strokeWidth={2.4}
-          fill="none"
-          strokeLinecap="round"
-        />
-      </g>
-
-      {/* waving arm */}
-      {wave && (
-        <g stroke={TERRA} strokeWidth={5} strokeLinecap="round" fill={TERRA}>
-          <path d="M28 62 q-11 -1 -15 -13" fill="none" />
-          <circle cx="12" cy="47" r="4.5" stroke="none" />
-        </g>
-      )}
     </svg>
   )
 }

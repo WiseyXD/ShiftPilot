@@ -9,12 +9,11 @@ import { PageHeader } from "@/components/dashboard/page-header"
 import { confirmSickCall } from "@/app/actions/sick"
 import { getShiftStart, formatShiftDate } from "@/lib/scheduling/shift-date"
 import { RulesCard } from "@/components/dashboard/rules-card"
-import { ChevronRight, ArrowRight, Siren, TriangleAlert, CheckCircle2, Circle, CalendarCheck, Clock, Timer } from "lucide-react"
+import { ChevronRight, ArrowRight, Siren, CheckCircle2, Circle } from "lucide-react"
 import { Covrly } from "@/components/covrly"
 import { WeekBoard, type BoardShift } from "@/components/dashboard/week-board"
 import { FirstRunOverlay } from "@/components/dashboard/first-run-overlay"
 import { contractStyle } from "@/lib/contract"
-import { KpiTiles } from "@/components/dashboard/kpi-tiles"
 import { CoverageChart, ResponseChart, type CoveragePoint, type ResponsePoint } from "@/components/dashboard/dash-charts"
 import { getWeatherToday } from "@/lib/weather/client"
 import { getNearbyEventsToday } from "@/lib/events/client"
@@ -220,6 +219,32 @@ export default async function LocationPage({
     <div className={`relative space-y-6${firstRunLocked ? " first-run-locked" : ""}`}>
       <PageHeader title={location.name} description={location.timezone} />
 
+      {/* Urgent: unconfirmed sick calls outrank everything else on the page */}
+      {sickDetails.length > 0 && (
+        <Card className="border-red-300 bg-red-50">
+          <CardContent className="py-4 space-y-3">
+            <div className="flex items-center gap-2 text-red-800 font-semibold">
+              <Siren className="h-4 w-4" />
+              {o.sickBanner(sickDetails.length)}
+            </div>
+            <ul className="space-y-2">
+              {sickDetails.map((call) => (
+                <li key={call.id} className="flex items-center justify-between gap-3 text-sm text-red-900">
+                  <span>
+                    <strong>{call.employeeName}</strong> — {call.label}. {o.replacementRunning}
+                  </span>
+                  <form action={confirmSickCall.bind(null, call.id)}>
+                    <Button type="submit" size="sm" variant="outline" className="border-red-300 text-red-700 hover:bg-red-100">
+                      {o.confirm}
+                    </Button>
+                  </form>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
+
       {location.schedules.length === 0 && !setupComplete && (() => {
         const steps = [
           { done: location.shiftTemplates.length > 0, label: o.stepShifts, href: `/dashboard/${locationId}/templates` },
@@ -262,31 +287,6 @@ export default async function LocationPage({
         )
       })()}
 
-      {sickDetails.length > 0 && (
-        <Card className="border-red-300 bg-red-50">
-          <CardContent className="py-4 space-y-3">
-            <div className="flex items-center gap-2 text-red-800 font-semibold">
-              <Siren className="h-4 w-4" />
-              {o.sickBanner(sickDetails.length)}
-            </div>
-            <ul className="space-y-2">
-              {sickDetails.map((call) => (
-                <li key={call.id} className="flex items-center justify-between gap-3 text-sm text-red-900">
-                  <span>
-                    <strong>{call.employeeName}</strong> — {call.label}. {o.replacementRunning}
-                  </span>
-                  <form action={confirmSickCall.bind(null, call.id)}>
-                    <Button type="submit" size="sm" variant="outline" className="border-red-300 text-red-700 hover:bg-red-100">
-                      {o.confirm}
-                    </Button>
-                  </form>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      )}
-
       <div className="rise rise-1">
         <TodayPanel
           hasLocationCoords={hasLocationCoords}
@@ -298,37 +298,9 @@ export default async function LocationPage({
         />
       </div>
 
-      {/* Pulse */}
+      {/* The week board — scheduling happens here, right under Today. Its
+          vitals (coverage, open, hours) live on the board as a pulse strip. */}
       <div className="rise rise-2">
-        <KpiTiles
-          tiles={[
-            {
-              label: d.kpiCoverage,
-              value: `${coveragePct}%`,
-              sub: d.kpiCoverageSub(filledCount, featuredShifts.length),
-              icon: CalendarCheck,
-            },
-            {
-              label: d.kpiOpen,
-              value: String(openCount),
-              sub: d.kpiOpenSub,
-              icon: TriangleAlert,
-              tone: openCount > 0 ? "warn" : "default",
-            },
-            {
-              label: d.kpiHours,
-              value: `${Math.round(plannedHours)}${d.hoursUnit}`,
-              sub: d.kpiHoursSub,
-              icon: Clock,
-            },
-            // SAMPLE value — see responseData note above
-            { label: d.kpiResponse, value: `2.4${d.hoursUnit}`, sub: d.kpiResponseSub, icon: Timer },
-          ]}
-        />
-      </div>
-
-      {/* The week board — scheduling happens here now */}
-      <div className="rise rise-3">
         <WeekBoard
           locationId={locationId}
           lang={lang}
@@ -350,16 +322,28 @@ export default async function LocationPage({
           employees={location.employees.map((e) => ({ id: e.id, name: e.name }))}
           droppedNames={droppedNames}
           availabilityHint={availabilityHint}
+          pulse={
+            featuredShifts.length > 0
+              ? {
+                  coveragePct,
+                  filled: filledCount,
+                  total: featuredShifts.length,
+                  open: openCount,
+                  hours: plannedHours,
+                }
+              : null
+          }
         />
       </div>
 
       {/* Charts */}
-      <div className="rise rise-4 grid gap-6 lg:grid-cols-2">
+      <div className="rise rise-3 grid gap-6 lg:grid-cols-2">
         <CoverageChart lang={lang} data={coverageData} />
-        <ResponseChart lang={lang} data={responseData} />
+        {/* headline is SAMPLE data — see responseData note above */}
+        <ResponseChart lang={lang} data={responseData} headline={`2.4${d.hoursUnit}`} />
       </div>
 
-      <div className="rise rise-5 grid items-start gap-6 lg:grid-cols-2">
+      <div className="rise rise-4 grid items-start gap-6 lg:grid-cols-2">
       <RulesCard locationId={locationId} rules={managerRules} />
 
       {/* Employees */}

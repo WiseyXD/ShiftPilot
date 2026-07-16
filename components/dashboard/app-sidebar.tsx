@@ -106,8 +106,9 @@ export function AppSidebar({ locations, user }: Props) {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <div className="flex items-center gap-2 px-2 py-1.5">
-          <Covrly size={32} className="shrink-0" />
+        <div className="flex items-center gap-2 px-2 py-1.5 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+          {/* Icon rail is 3rem wide — the class shrinks the mascot to fit */}
+          <Covrly size={32} className="shrink-0 group-data-[collapsible=icon]:size-7" />
           <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
             <span className="font-display text-lg font-semibold tracking-tight text-sidebar-foreground">Covrly</span>
             <span className="text-xs text-sidebar-foreground/60 truncate">{s.tagline}</span>
