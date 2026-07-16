@@ -7,8 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PageHeader } from "@/components/dashboard/page-header"
 import { confirmSickCall } from "@/app/actions/sick"
-import { getShiftStart, getShiftEnd, formatShiftDate } from "@/lib/scheduling/shift-date"
-import { getHoursDistribution } from "@/lib/analytics/kpis"
+import { getShiftStart, formatShiftDate } from "@/lib/scheduling/shift-date"
 import { RulesCard } from "@/components/dashboard/rules-card"
 import { ChevronRight, ArrowRight, Siren, TriangleAlert, CheckCircle2, Circle, CalendarCheck, Clock, Timer } from "lucide-react"
 import { Covrly } from "@/components/covrly"
@@ -20,7 +19,7 @@ import { CoverageChart, ResponseChart, type CoveragePoint, type ResponsePoint } 
 import { getWeatherToday } from "@/lib/weather/client"
 import { getNearbyEventsToday } from "@/lib/events/client"
 import { estimateTraffic } from "@/lib/events/traffic"
-import { TodayPanel, type TodayShift } from "@/components/dashboard/today-panel"
+import { TodayPanel } from "@/components/dashboard/today-panel"
 import { getUserLang } from "@/lib/i18n/server"
 import { ui, uiDateLocale } from "@/lib/i18n/dashboard"
 
@@ -59,7 +58,6 @@ export default async function LocationPage({
   if (!location) notFound()
 
   const weekStart = currentMonday()
-  const todayDayOfWeek = new Date().getDay() // 0=Sun ... 6=Sat, matches Shift.dayOfWeek
   // Featured week: honour ?week=, else this week if it has a schedule, else the
   // nearest upcoming week that does — so a freshly created next-week plan lights
   // up the dashboard instead of showing an empty "this week".
@@ -102,12 +100,6 @@ export default async function LocationPage({
     select: { id: true, kind: true, plain: true, sourceText: true },
   })
 
-  // Hours warnings for the featured week — early, before anything is blocked.
-  const hoursReport = await getHoursDistribution(locationId, boardWeekStart)
-  const hoursAlerts = hoursReport.filter(
-    (r) => r.status !== "ok" || r.approaching || (r.assignedHours > 0 && r.bindingMax.hours === 0)
-  )
-
   // "Today" panel — weather + nearby-event traffic (only if the venue has an
   // address on file) and today's shifts from the current week's schedule.
   const hasLocationCoords = location.lat != null && location.lng != null
@@ -138,18 +130,6 @@ export default async function LocationPage({
   // first week (and seeds real data). Setup still in progress → guide them first.
   const setupComplete = location.shiftTemplates.length > 0 && location.employees.length > 0
   const firstRunLocked = location.schedules.length === 0 && setupComplete
-
-  const todayShifts: TodayShift[] = (currentSchedule?.shifts ?? [])
-    .filter((s) => s.dayOfWeek === todayDayOfWeek)
-    .map((s) => ({
-      id: s.id,
-      employeeName: s.employee?.name ?? "Unassigned",
-      templateName: s.shiftTemplate.name,
-      start: getShiftStart(weekStart, s.dayOfWeek, s.shiftTemplate.startTime),
-      end: getShiftEnd(weekStart, s.dayOfWeek, s.shiftTemplate.endTime),
-      status: s.status,
-    }))
-    .sort((a, b) => a.start.getTime() - b.start.getTime())
 
   // ── KPI pulse (featured week) ───────────────────────────────────────────
   const featuredShifts = boardSchedule?.shifts ?? []
@@ -282,29 +262,6 @@ export default async function LocationPage({
         )
       })()}
 
-      {hoursAlerts.length > 0 && (
-        <Card className="border-amber-200 bg-amber-50">
-          <CardContent className="py-4 space-y-2">
-            <div className="flex items-center gap-2 text-amber-800 font-semibold">
-              <TriangleAlert className="h-4 w-4" />
-              {o.hoursWarnings}
-            </div>
-            <ul className="text-sm text-amber-900 list-disc list-inside">
-              {hoursAlerts.map((r) => (
-                <li key={r.employeeId}>
-                  <strong>{r.name}</strong>: {o.scheduledHours(r.assignedHours.toFixed(1))} —{" "}
-                  {r.status === "over"
-                    ? o.overLimit(r.bindingMax.source, r.bindingMax.hours.toFixed(1))
-                    : r.status === "under"
-                      ? o.underMin(r.minHours)
-                      : o.approachingLimit(r.bindingMax.source, r.bindingMax.hours.toFixed(1))}
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      )}
-
       {sickDetails.length > 0 && (
         <Card className="border-red-300 bg-red-50">
           <CardContent className="py-4 space-y-3">
@@ -337,7 +294,6 @@ export default async function LocationPage({
           weather={weather}
           events={events}
           traffic={traffic}
-          todayShifts={todayShifts}
           lang={lang}
         />
       </div>

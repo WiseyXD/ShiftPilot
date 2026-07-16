@@ -1,39 +1,20 @@
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { CalendarClock, MapPin, TriangleAlert } from "lucide-react"
+import { MapPin, TriangleAlert } from "lucide-react"
 import type { WeatherToday } from "@/lib/weather/client"
 import type { NearbyEvent } from "@/lib/events/client"
 import type { TrafficEstimate } from "@/lib/events/traffic"
 import { ui, uiDateLocale, type UiLang } from "@/lib/i18n/dashboard"
 
-export interface TodayShift {
-  id: string
-  employeeName: string
-  templateName: string
-  start: Date
-  end: Date
-  status: string
-}
+// Read-only scale: the level is inferred from the nearby-event count by
+// estimateTraffic(), so these are segments that light up, not tabs you pick.
+// Ordered low → high; the engine's names for those levels are normal/elevated/high.
+const BUSY_LEVELS: TrafficEstimate["level"][] = ["normal", "elevated", "high"]
 
-const TRAFFIC_STYLES: Record<TrafficEstimate["level"], string> = {
-  normal: "bg-slate-100 text-slate-600 border-slate-200",
-  elevated: "bg-yellow-100 text-yellow-700 border-yellow-200",
-  high: "bg-red-100 text-red-700 border-red-200",
-}
-
-const SHIFT_STATUS_STYLES: Record<string, string> = {
-  PENDING: "bg-slate-100 text-slate-600 border-slate-200",
-  ACCEPTED: "bg-green-100 text-green-700 border-green-200",
-  DECLINED: "bg-red-100 text-red-700 border-red-200",
-  REASSIGNED: "bg-blue-100 text-blue-700 border-blue-200",
-  UNASSIGNED: "bg-yellow-100 text-yellow-700 border-yellow-200",
-  LENT_OUT: "bg-purple-100 text-purple-700 border-purple-200",
-  NO_SHOW: "bg-red-100 text-red-700 border-red-200",
-}
-
-function formatTime(d: Date): string {
-  return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })
+const BUSY_ACTIVE_STYLES: Record<TrafficEstimate["level"], string> = {
+  normal: "bg-slate-200 text-slate-700",
+  elevated: "bg-yellow-100 text-yellow-800",
+  high: "bg-red-100 text-red-700",
 }
 
 export function TodayPanel({
@@ -42,7 +23,6 @@ export function TodayPanel({
   weather,
   events,
   traffic,
-  todayShifts,
   lang = "en",
 }: {
   hasLocationCoords: boolean
@@ -50,7 +30,6 @@ export function TodayPanel({
   weather: WeatherToday | null
   events: NearbyEvent[]
   traffic: TrafficEstimate
-  todayShifts: TodayShift[]
   lang?: UiLang
 }) {
   const t = ui(lang).today
@@ -79,42 +58,73 @@ export function TodayPanel({
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
-            {/* Weather */}
-            <div className="rounded-2xl border border-slate-100 px-4 py-4">
-              {weather ? (
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl leading-none">{weather.icon}</span>
-                  <div>
-                    <p className="text-sm font-medium text-slate-900">
-                      {weather.tempC}°C · {weather.conditionLabel}
-                    </p>
-                    <p className="text-xs text-slate-500 mt-0.5">
-                      {t.feelsLike(weather.feelsLikeC)} · H {weather.maxC}° / L {weather.minC}° ·{" "}
-                      {t.rain(weather.precipitationChance)}
-                    </p>
+            {/* Weather, with the footfall scale reading directly beneath it */}
+            <div className="space-y-4">
+              <div className="rounded-2xl border border-slate-100 px-4 py-4">
+                {weather ? (
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl leading-none">{weather.icon}</span>
+                    <div>
+                      <p className="text-sm font-medium text-slate-900">
+                        {weather.tempC}°C · {weather.conditionLabel}
+                      </p>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        {t.feelsLike(weather.feelsLikeC)} · H {weather.maxC}° / L {weather.minC}° ·{" "}
+                        {t.rain(weather.precipitationChance)}
+                      </p>
+                    </div>
                   </div>
+                ) : (
+                  <p className="text-sm text-slate-500">{t.weatherUnavailable}</p>
+                )}
+              </div>
+
+              <div className="rounded-2xl border border-slate-100 px-4 py-4">
+                <div className="flex items-center gap-2">
+                  <p className="text-xs font-medium text-slate-500">{t.busyTitle}</p>
+                  {traffic.level !== "normal" && (
+                    <TriangleAlert className="h-3.5 w-3.5 text-amber-600" />
+                  )}
                 </div>
-              ) : (
-                <p className="text-sm text-slate-500">{t.weatherUnavailable}</p>
-              )}
+                <div
+                  role="group"
+                  aria-label={t.busyTitle}
+                  className="mt-2 grid grid-cols-3 gap-1 rounded-xl bg-slate-50 p-1"
+                >
+                  {BUSY_LEVELS.map((level) => {
+                    const active = level === traffic.level
+                    return (
+                      <span
+                        key={level}
+                        aria-current={active}
+                        className={`rounded-lg px-2 py-1.5 text-center text-xs font-medium transition-colors ${
+                          active ? BUSY_ACTIVE_STYLES[level] : "text-slate-400"
+                        }`}
+                      >
+                        {level === "normal" ? t.busyLow : level === "elevated" ? t.busyMedium : t.busyHigh}
+                      </span>
+                    )
+                  })}
+                </div>
+                <p className="text-xs text-slate-500 mt-2">{traffic.label}</p>
+              </div>
             </div>
 
-            {/* Traffic / nearby events */}
+            {/* Nearby events */}
             <div className="rounded-2xl border border-slate-100 px-4 py-4">
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className={`text-xs ${TRAFFIC_STYLES[traffic.level]}`}>
-                  {traffic.level === "normal" ? t.normalTraffic : traffic.level === "elevated" ? t.elevatedTraffic : t.highTraffic}
-                </Badge>
-                {traffic.level !== "normal" && <TriangleAlert className="h-3.5 w-3.5 text-amber-600" />}
-              </div>
-              <p className="text-sm text-slate-600 mt-2">{traffic.label}</p>
-              {events.length > 0 && (
-                <ul className="mt-2 space-y-1">
+              <p className="text-xs font-medium text-slate-500">{t.eventsTitle}</p>
+              {events.length === 0 ? (
+                <p className="text-sm text-slate-500 mt-2">{t.noEvents}</p>
+              ) : (
+                <ul className="mt-2 space-y-2">
                   {events.slice(0, 3).map((e) => (
-                    <li key={e.id} className="text-xs text-slate-500 truncate">
-                      {e.name}
-                      {e.venueName ? ` — ${e.venueName}` : ""}
-                      {e.localTime ? ` (${e.localTime.slice(0, 5)})` : ""}
+                    <li key={e.id} className="min-w-0">
+                      <p className="text-sm text-slate-700 truncate">{e.name}</p>
+                      <p className="text-xs text-slate-500 truncate">
+                        {e.venueName ?? ""}
+                        {e.venueName && e.localTime ? " · " : ""}
+                        {e.localTime ? e.localTime.slice(0, 5) : ""}
+                      </p>
                     </li>
                   ))}
                 </ul>
@@ -122,33 +132,6 @@ export function TodayPanel({
             </div>
           </div>
         )}
-
-        {/* Today's schedule */}
-        <div className="mt-4">
-          <div className="flex items-center gap-2 text-sm font-medium text-slate-900 mb-2">
-            <CalendarClock className="h-4 w-4 text-slate-400" />
-            {t.todaysShifts}
-          </div>
-          {todayShifts.length === 0 ? (
-            <p className="text-sm text-slate-500 px-1">{t.noShiftsToday}</p>
-          ) : (
-            <ul className="divide-y divide-slate-100 border border-slate-100 rounded-2xl overflow-hidden">
-              {todayShifts.map((s) => (
-                <li key={s.id} className="flex items-center justify-between px-4 py-2.5">
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-slate-900 truncate">{s.employeeName}</p>
-                    <p className="text-xs text-slate-500 truncate">
-                      {s.templateName} · {formatTime(s.start)}–{formatTime(s.end)}
-                    </p>
-                  </div>
-                  <Badge variant="outline" className={`text-xs shrink-0 ${SHIFT_STATUS_STYLES[s.status] ?? ""}`}>
-                    {s.status}
-                  </Badge>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
       </CardContent>
     </Card>
   )
