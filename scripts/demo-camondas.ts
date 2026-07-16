@@ -47,7 +47,9 @@ const monday = (offsetWeeks = 0) => {
   return d
 }
 
-const MON = 1, TUE = 2, WED = 3, THU = 4, FRI = 5
+// Shift.dayOfWeek matches JS getDay(): Sunday is 0, not 7.
+const MON = 1, TUE = 2, WED = 3, THU = 4, FRI = 5, SAT = 6, SUN = 0
+const ALL_DAYS = [MON, TUE, WED, THU, FRI, SAT, SUN]
 
 // Age 15 on the demo date — a 16-year-old would be LEGAL until 22:00 in
 // gastronomy (nightEndGastro16Plus), and the Evening Shift ends exactly at
@@ -141,15 +143,21 @@ async function main() {
   // Ranking matches on dayOfWeek ONLY (template is ignored), so whoever has
   // Tuesday availability becomes a candidate for the Tuesday call-out. That set
   // is exactly the cast of the refusal scene — plus Vedika, who survives it.
+  // TOUCH TUESDAY AT YOUR PERIL: adding it to Julia gives the engine a fifth
+  // candidate and the "three refusals, one ask" story quietly becomes four.
   const avail: { emp: string; days: number[] }[] = [
-    { emp: niko.id, days: [TUE, WED, THU, FRI] },
-    { emp: vedika.id, days: [MON, TUE, WED, THU] },
-    { emp: lina.id, days: [MON, TUE, WED, FRI] },
-    { emp: tim.id, days: [MON, TUE, THU, FRI] },
-    { emp: marco.id, days: [TUE, WED, THU, FRI] },
+    { emp: niko.id, days: [TUE, WED, THU, FRI, SAT, SUN] },
+    { emp: vedika.id, days: ALL_DAYS },
+    // Lina is 15: JArbSchG caps her at a 5-day week and bars Sundays outright,
+    // so weekends never go in her availability in the first place.
+    { emp: lina.id, days: [MON, TUE, WED, THU, FRI] },
+    { emp: tim.id, days: [MON, TUE, WED, THU, FRI, SAT] },
+    { emp: marco.id, days: [TUE, WED, THU, FRI, SAT, SUN] },
     // Julia is Festangestellt — freely assignable, and deliberately NOT
-    // available Tuesday, so she never enters the candidate list.
-    { emp: julia.id, days: [MON, WED, THU, FRI] },
+    // available Tuesday, so she never enters the candidate list. She still
+    // WORKS Tuesdays in the grid below; availability and assignment are
+    // different things, and only availability feeds the ranking.
+    { emp: julia.id, days: [MON, WED, THU, FRI, SAT, SUN] },
   ]
   for (const a of avail)
     for (const d of a.days)
@@ -159,60 +167,81 @@ async function main() {
         })
 
   // ── The week grids ────────────────────────────────────────────────────────
-  // Hand-built rather than generated, because the rest rules make this a real
-  // puzzle: an Evening Shift ends at 22:00 and a Morning Shift starts at 07:00 —
-  // only 9 h apart, under the 10 h ArbZG floor. Nobody works a morning after an
-  // evening here. Vedika in particular must stay legal for the Tuesday cover.
+  // Every day of all three weeks carries all three shifts. Seats that no one
+  // can LEGALLY take are left `null` (→ UNASSIGNED, an "Open" chip) rather than
+  // filled with someone the compliance engine would flag — an open seat is
+  // honest, a quietly illegal roster is not.
+  //
+  // Hand-built rather than generated, because the caps make this a real puzzle:
+  //
+  //   • ONE SHIFT PER PERSON PER DAY. Daily max is 8 h net and every pair
+  //     overlaps or busts it (Morning 6 h + Midday 5 h = 11 h), so 5 seats/day
+  //     means 5 different people.
+  //   • NO EVENING → NEXT MORNING, for anyone. 22:00 to 07:00 is 9 h rest,
+  //     under the 10 h ArbZG floor. This is why mornings are the thin ones:
+  //     Vedika works evenings, so she can never open the next day.
+  //   • MARCO'S WHOLE JULY is pinned to 35.2–40.2 h. Below 35.2 the 5 h cover
+  //     doesn't tip him over 603 €; above 40.2 he's ALREADY over and the board
+  //     is showing a violation before the demo starts. 37 h it is — which is
+  //     also just what a minijobber's month looks like: ~2 shifts a week.
+  //   • TIM'S DEMO WEEK must land in 15–20 h. 20 h exactly is legal (the rule
+  //     is `> 20`), and +5 h makes 25 h — a refusal the engine computes.
   //
   // CRITICAL: Niko has exactly ONE upcoming shift — the Tuesday Evening Shift of
   // the demo week. The sick-call picker offers every future shift, so if he had
   // others he could tap the wrong one on stage and the whole refusal story
   // collapses (a different day means different people are legal). He appears in
-  // LAST week for history, and not at all in the current week.
-  type Row = { t: string; day: number; who: (string | null)[] }
+  // LAST week for history, and not at all in the current week — "not at all" is
+  // deliberate: seeding him into a past day of THIS week would depend on what
+  // time you re-run this, and a re-run on a Monday would hand him a live shift.
+  type Who = string | null
+  type Row = { t: string; day: number; who: Who[] }
   const AM = morning.id, MID = midday.id, PM = evening.id
 
+  // One line per day: morning (2 seats), midday (1), evening (2).
+  const day = (d: number, am: [Who, Who], mid: [Who], pm: [Who, Who]): Row[] => [
+    { t: AM, day: d, who: am },
+    { t: MID, day: d, who: mid },
+    { t: PM, day: d, who: pm },
+  ]
+
+  // Demo week. Vedika takes the evenings and is OFF Tuesday entirely — any
+  // Tuesday shift at all would put her over the 8 h day once the 5 h cover
+  // lands, and a Wednesday morning would leave her 9 h rest after it. She is
+  // the only person who may legally cover; both are load-bearing.
   const demoWeek: Row[] = [
-    { t: AM, day: MON, who: [julia.id, lina.id] },
-    { t: MID, day: MON, who: [marco.id] },
-    { t: PM, day: MON, who: [vedika.id, tim.id] },
-
-    { t: AM, day: TUE, who: [marco.id, null] }, // open seat → the "open shifts" story
-    { t: MID, day: TUE, who: [null] },
-    { t: PM, day: TUE, who: [niko.id, julia.id] }, // ← THE SICK SHIFT (Niko's seat)
-
-    { t: AM, day: WED, who: [lina.id, marco.id] },
-    { t: MID, day: WED, who: [null] },
-    { t: PM, day: WED, who: [vedika.id, julia.id] },
-
-    { t: AM, day: THU, who: [tim.id, lina.id] },
-    { t: MID, day: THU, who: [marco.id] },
-    { t: PM, day: THU, who: [vedika.id, julia.id] },
-
-    { t: AM, day: FRI, who: [tim.id, lina.id] },
-    { t: MID, day: FRI, who: [marco.id] },
-    { t: PM, day: FRI, who: [vedika.id, julia.id] },
+    //         morning                    midday        evening
+    ...day(MON, [lina.id, marco.id], [julia.id], [vedika.id, null]),
+    ...day(TUE, [lina.id, marco.id], [tim.id], [niko.id, julia.id]), // ← Niko's seat = THE SICK SHIFT
+    ...day(WED, [lina.id, null], [julia.id], [vedika.id, null]),
+    ...day(THU, [lina.id, julia.id], [marco.id], [vedika.id, null]),
+    ...day(FRI, [lina.id, julia.id], [tim.id], [vedika.id, null]),
+    ...day(SAT, [julia.id, null], [tim.id], [vedika.id, null]),
+    ...day(SUN, [julia.id, null], [tim.id], [vedika.id, null]),
   ]
 
-  // Current week — deliberately WITHOUT Niko, so his only future shift stays the
-  // demo one. Gives the dashboard something to show.
+  // Current week — deliberately WITHOUT Niko (see above). Marco takes 10 h here
+  // and 10 h last week, leaving 17 h for the demo week: 37 h for July.
   const thisWeekRows: Row[] = [
-    { t: AM, day: MON, who: [julia.id, lina.id] },
-    { t: AM, day: WED, who: [tim.id, lina.id] },
-    { t: PM, day: WED, who: [vedika.id, julia.id] },
-    { t: MID, day: FRI, who: [marco.id] },
-    { t: PM, day: FRI, who: [vedika.id, julia.id] },
+    ...day(MON, [lina.id, julia.id], [marco.id], [vedika.id, null]),
+    ...day(TUE, [lina.id, julia.id], [marco.id], [vedika.id, null]),
+    ...day(WED, [lina.id, julia.id], [tim.id], [vedika.id, null]),
+    ...day(THU, [lina.id, julia.id], [tim.id], [vedika.id, null]),
+    ...day(FRI, [lina.id, julia.id], [tim.id], [vedika.id, null]),
+    ...day(SAT, [julia.id, null], [tim.id], [vedika.id, null]),
+    ...day(SUN, [null, null], [julia.id], [vedika.id, null]),
   ]
 
-  // Last week — fully in the past, so it never pollutes the sick-call picker.
-  // Marco's hours here + this week are calibrated so he sits just UNDER the
-  // Minijob cap (amber warning) and a 5 h cover would tip him over it. That's
-  // what makes his refusal real rather than staged.
+  // Last week — fully in the past, so it never pollutes the sick-call picker,
+  // and Niko can work every evening without touching his one-future-shift rule.
   const lastWeekRows: Row[] = [
-    { t: PM, day: MON, who: [niko.id, vedika.id] },
-    { t: MID, day: WED, who: [marco.id] },
-    { t: PM, day: WED, who: [niko.id, julia.id] },
-    { t: PM, day: FRI, who: [niko.id, vedika.id] },
+    ...day(MON, [lina.id, julia.id], [marco.id], [vedika.id, niko.id]),
+    ...day(TUE, [lina.id, julia.id], [marco.id], [vedika.id, niko.id]),
+    ...day(WED, [lina.id, julia.id], [tim.id], [vedika.id, niko.id]),
+    ...day(THU, [lina.id, julia.id], [tim.id], [vedika.id, niko.id]),
+    ...day(FRI, [lina.id, julia.id], [tim.id], [vedika.id, niko.id]),
+    ...day(SAT, [julia.id, null], [tim.id], [vedika.id, niko.id]),
+    ...day(SUN, [null, null], [julia.id], [vedika.id, niko.id]),
   ]
 
   const buildWeek = async (weekStart: Date, rows: Row[]) => {
@@ -236,8 +265,8 @@ async function main() {
   const lastWeek = monday(-1)
   const thisWeek = monday(0)
   const nextWeek = monday(1)
-  await buildWeek(lastWeek, lastWeekRows)
-  await buildWeek(thisWeek, thisWeekRows)
+  const past = await buildWeek(lastWeek, lastWeekRows)
+  const current = await buildWeek(thisWeek, thisWeekRows)
   const demo = await buildWeek(nextWeek, demoWeek)
 
   // Nobody gets auto-dropped for an unconfirmed availability ask.
@@ -261,6 +290,63 @@ async function main() {
   }
   const cast = [lina, tim, marco, vedika]
   const monthHours = await loadMonthNetHoursBeforeWeek(cast.map((e) => e.id), nextWeek, rules.arbzg)
+
+  // ── Is the ROSTER ITSELF legal? ───────────────────────────────────────────
+  // Filling every day is only worth anything if nobody is scheduled into a
+  // violation. Re-check each assigned shift against the same engine, with that
+  // person's OTHER shifts that week as context — if the board would show a
+  // breach before Niko even calls, we want to know here.
+  const everyone = [niko, vedika, lina, tim, marco, julia]
+  const weeks = [
+    { name: "last week", start: lastWeek, id: past.id },
+    { name: "this week", start: thisWeek, id: current.id },
+    { name: "demo week", start: nextWeek, id: demo.id },
+  ]
+  let rosterBreaches = 0
+  let seats = 0
+  let openSeats = 0
+
+  for (const w of weeks) {
+    const shifts = await prisma.shift.findMany({
+      where: { scheduleId: w.id },
+      include: { shiftTemplate: true },
+    })
+    seats += shifts.length
+    openSeats += shifts.filter((s) => !s.employeeId).length
+
+    const monthBefore = await loadMonthNetHoursBeforeWeek(
+      everyone.map((e) => e.id),
+      w.start,
+      rules.arbzg
+    )
+    const planned = (s: (typeof shifts)[number]) => ({
+      start: getShiftStart(w.start, s.dayOfWeek, s.shiftTemplate.startTime),
+      end: getShiftEnd(w.start, s.dayOfWeek, s.shiftTemplate.endTime),
+    })
+
+    for (const emp of everyone) {
+      const mine = shifts.filter((s) => s.employeeId === emp.id)
+      for (const s of mine) {
+        const others = mine.filter((o) => o.id !== s.id).map(planned)
+        const v = checkEmployeeAssignment(emp, planned(s), others, rules, {
+          monthNetHoursBeforeWeek: monthBefore[emp.id] ?? 0,
+        })
+        if (v) {
+          rosterBreaches++
+          console.log(
+            `   ⚠️  ${w.name}: ${emp.name} on ${s.shiftTemplate.name} day ${s.dayOfWeek} — ${v.rule}: ${v.detail}`
+          )
+        }
+      }
+    }
+  }
+
+  const filled = seats - openSeats
+  console.log(
+    `Roster: ${filled}/${seats} seats filled across 3 weeks, ${openSeats} left open — ${
+      rosterBreaches === 0 ? "no compliance breaches ✓" : `${rosterBreaches} BREACHES ✗`
+    }\n`
+  )
 
   // The sick-call picker offers EVERY future shift. If Niko has more than one,
   // he can tap the wrong one on stage — a different day means different people
