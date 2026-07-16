@@ -405,7 +405,8 @@ export const ModelName = {
   FixedShift: 'FixedShift',
   BlockedTime: 'BlockedTime',
   ComplianceRuleSet: 'ComplianceRuleSet',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  WaitlistEntry: 'WaitlistEntry'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -421,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityConfirmation" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "sharingDeal" | "actionToken" | "managerRule" | "chatMessage" | "agentAction" | "sickCall" | "vacation" | "fixedShift" | "blockedTime" | "complianceRuleSet" | "auditLog"
+    modelProps: "user" | "location" | "employee" | "shiftTemplate" | "recurringAvailability" | "availabilityConfirmation" | "availabilityOverride" | "schedule" | "shift" | "swapRequest" | "sharingListing" | "sharingDeal" | "actionToken" | "managerRule" | "chatMessage" | "agentAction" | "sickCall" | "vacation" | "fixedShift" | "blockedTime" | "complianceRuleSet" | "auditLog" | "waitlistEntry"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2053,6 +2054,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    WaitlistEntry: {
+      payload: Prisma.$WaitlistEntryPayload<ExtArgs>
+      fields: Prisma.WaitlistEntryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WaitlistEntryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WaitlistEntryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>
+        }
+        findFirst: {
+          args: Prisma.WaitlistEntryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WaitlistEntryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>
+        }
+        findMany: {
+          args: Prisma.WaitlistEntryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>[]
+        }
+        create: {
+          args: Prisma.WaitlistEntryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>
+        }
+        createMany: {
+          args: Prisma.WaitlistEntryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WaitlistEntryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>[]
+        }
+        delete: {
+          args: Prisma.WaitlistEntryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>
+        }
+        update: {
+          args: Prisma.WaitlistEntryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>
+        }
+        deleteMany: {
+          args: Prisma.WaitlistEntryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WaitlistEntryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WaitlistEntryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>[]
+        }
+        upsert: {
+          args: Prisma.WaitlistEntryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>
+        }
+        aggregate: {
+          args: Prisma.WaitlistEntryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWaitlistEntry>
+        }
+        groupBy: {
+          args: Prisma.WaitlistEntryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WaitlistEntryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WaitlistEntryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WaitlistEntryCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2393,6 +2468,16 @@ export const AuditLogScalarFieldEnum = {
 } as const
 
 export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
+export const WaitlistEntryScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  source: 'source',
+  createdAt: 'createdAt'
+} as const
+
+export type WaitlistEntryScalarFieldEnum = (typeof WaitlistEntryScalarFieldEnum)[keyof typeof WaitlistEntryScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2839,6 +2924,7 @@ export type GlobalOmitConfig = {
   blockedTime?: Prisma.BlockedTimeOmit
   complianceRuleSet?: Prisma.ComplianceRuleSetOmit
   auditLog?: Prisma.AuditLogOmit
+  waitlistEntry?: Prisma.WaitlistEntryOmit
 }
 
 /* Types for Logging */

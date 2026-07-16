@@ -127,3 +127,8 @@ export type ComplianceRuleSet = Prisma.ComplianceRuleSetModel
  * 
  */
 export type AuditLog = Prisma.AuditLogModel
+/**
+ * Model WaitlistEntry
+ * 
+ */
+export type WaitlistEntry = Prisma.WaitlistEntryModel

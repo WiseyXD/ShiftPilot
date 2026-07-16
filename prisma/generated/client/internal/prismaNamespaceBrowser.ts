@@ -72,7 +72,8 @@ export const ModelName = {
   FixedShift: 'FixedShift',
   BlockedTime: 'BlockedTime',
   ComplianceRuleSet: 'ComplianceRuleSet',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  WaitlistEntry: 'WaitlistEntry'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -392,6 +393,16 @@ export const AuditLogScalarFieldEnum = {
 } as const
 
 export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
+export const WaitlistEntryScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  source: 'source',
+  createdAt: 'createdAt'
+} as const
+
+export type WaitlistEntryScalarFieldEnum = (typeof WaitlistEntryScalarFieldEnum)[keyof typeof WaitlistEntryScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -563,3 +563,12 @@ model AuditLog {
   @@index([locationId])
   @@index([createdAt])
 }
+
+// ─── Waitlist (landing page) ──────────────────────────────────────────────────
+
+model WaitlistEntry {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  source    String? // which form: "landing-hero" | "landing-footer"
+  createdAt DateTime @default(now())
+}
