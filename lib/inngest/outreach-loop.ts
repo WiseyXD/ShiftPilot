@@ -1,23 +1,33 @@
+import { NonRetriableError } from "inngest"
 import { prisma } from "@/prisma/client"
 import { generateToken } from "@/lib/tokens/generate"
 import { sendEmail } from "@/lib/email/send"
-import { rankReplacementCandidates } from "@/lib/scheduling/replacement"
-import { getShiftStart, getShiftEnd } from "@/lib/scheduling/shift-date"
 import {
-  checkEmployeeAssignment,
-  type ComplianceViolation,
-  type PlannedShift,
-} from "@/lib/compliance/check"
-import { loadRules } from "@/lib/compliance/load"
-import { loadMonthNetHoursBeforeWeek } from "@/lib/compliance/hours"
-import { isBlocked, type Block } from "@/lib/scheduling/pins"
-import { isOnVacation, type VacationRange } from "@/lib/scheduling/vacation"
+  computeShiftCandidates,
+  type OutreachCandidate,
+  type ShiftForCandidates,
+} from "@/lib/scheduling/candidates"
 import { pushAgentMessage } from "@/lib/whatsapp-sim/handler"
-import type { ComplianceRules } from "@/lib/compliance/rules"
-import type { Prisma } from "@/prisma/generated/client/client"
 import * as React from "react"
 
-type LoadedEmployee = Prisma.EmployeeGetPayload<{ include: { recurringAvailability: true } }>
+export { shiftDurationHours, type OutreachCandidate, type ShiftForCandidates } from "@/lib/scheduling/candidates"
+
+// A foreign-key violation (P2003) or missing record (P2025) means the row this
+// step depends on was deleted while the run was in flight — re-seeding the demo
+// under a live workflow does exactly that. The row will never come back, so
+// retrying only burns minutes of backoff before failing anyway.
+const PERMANENT_PRISMA_CODES = new Set(["P2003", "P2025"])
+
+function rethrowPermanentAsNonRetriable(err: unknown): never {
+  const code = (err as { code?: string } | null)?.code
+  if (typeof code === "string" && PERMANENT_PRISMA_CODES.has(code)) {
+    throw new NonRetriableError(
+      `Referenced row no longer exists (Prisma ${code}) — giving up instead of retrying`,
+      { cause: err }
+    )
+  }
+  throw err
+}
 
 // Minimal structural type for Inngest's step. We only use these two methods;
 // keeping the type narrow avoids dragging in the rest of Inngest's type graph.
@@ -31,14 +41,6 @@ export interface StepLike {
     id: string,
     opts: { event: string; match?: string; timeout: string }
   ): Promise<{ data: Record<string, unknown> } | null>
-}
-
-export interface OutreachCandidate {
-  employeeId: string
-  email: string
-  name: string
-  priority: number
-  fairnessScore: number
 }
 
 interface OutreachUrls {
@@ -114,52 +116,56 @@ export async function runOutreachLoop(config: OutreachConfig): Promise<OutreachR
     triedCount++
 
     await step.run(`outreach-${candidate.employeeId}`, async () => {
-      const acceptPayload = { shiftId, offeredBy, ...extraTokenPayload }
-      const declinePayload = { shiftId, ...extraTokenPayload }
+      try {
+        const acceptPayload = { shiftId, offeredBy, ...extraTokenPayload }
+        const declinePayload = { shiftId, ...extraTokenPayload }
 
-      const acceptToken = await generateToken(
-        candidate.employeeId,
-        "ACCEPT_SWAP",
-        acceptPayload,
-        timeoutHours + 1
-      )
-      const declineToken = await generateToken(
-        candidate.employeeId,
-        "DECLINE_SWAP",
-        declinePayload,
-        timeoutHours + 1
-      )
+        const acceptToken = await generateToken(
+          candidate.employeeId,
+          "ACCEPT_SWAP",
+          acceptPayload,
+          timeoutHours + 1
+        )
+        const declineToken = await generateToken(
+          candidate.employeeId,
+          "DECLINE_SWAP",
+          declinePayload,
+          timeoutHours + 1
+        )
 
-      const urls: OutreachUrls = {
-        acceptUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/token/${acceptToken.id}`,
-        declineUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/token/${declineToken.id}`,
+        const urls: OutreachUrls = {
+          acceptUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/token/${acceptToken.id}`,
+          declineUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/token/${declineToken.id}`,
+        }
+        const outreach = await Promise.resolve(buildOutreach(candidate, urls))
+
+        await sendEmail({ to: candidate.email, subject: outreach.subject, react: outreach.react })
+
+        if (config.chatMessage) {
+          // A swap resolves by swapRequestId; a plain replacement by shiftId.
+          // The Yes button must carry whichever key this loop waits on.
+          const yesCommand =
+            matchKey === "data.swapRequestId"
+              ? `COVER_SWAP:${extraTokenPayload.swapRequestId}`
+              : `COVER:${shiftId}`
+          await pushAgentMessage(locationId, candidate.employeeId, config.chatMessage, [
+            { label: "🙋 Yes, I can", command: yesCommand },
+            { label: "No", command: `NOCOVER:${shiftId}` },
+          ])
+        }
+
+        await prisma.auditLog.create({
+          data: {
+            locationId,
+            action: outreachAction,
+            aiReasoning: `Priority ${candidate.priority}, fairness score ${candidate.fairnessScore.toFixed(2)}`,
+            candidatesConsidered: [{ employeeId: candidate.employeeId, priority: candidate.priority }],
+            outcome: "outreach_sent",
+          },
+        })
+      } catch (err) {
+        rethrowPermanentAsNonRetriable(err)
       }
-      const outreach = await Promise.resolve(buildOutreach(candidate, urls))
-
-      await sendEmail({ to: candidate.email, subject: outreach.subject, react: outreach.react })
-
-      if (config.chatMessage) {
-        // A swap resolves by swapRequestId; a plain replacement by shiftId.
-        // The Yes button must carry whichever key this loop waits on.
-        const yesCommand =
-          matchKey === "data.swapRequestId"
-            ? `COVER_SWAP:${extraTokenPayload.swapRequestId}`
-            : `COVER:${shiftId}`
-        await pushAgentMessage(locationId, candidate.employeeId, config.chatMessage, [
-          { label: "🙋 Yes, I can", command: yesCommand },
-          { label: "No", command: `NOCOVER:${shiftId}` },
-        ])
-      }
-
-      await prisma.auditLog.create({
-        data: {
-          locationId,
-          action: outreachAction,
-          aiReasoning: `Priority ${candidate.priority}, fairness score ${candidate.fairnessScore.toFixed(2)}`,
-          candidatesConsidered: [{ employeeId: candidate.employeeId, priority: candidate.priority }],
-          outcome: "outreach_sent",
-        },
-      })
     })
 
     const response = await step.waitForEvent(`wait-${candidate.employeeId}`, {
@@ -194,24 +200,11 @@ export async function runOutreachLoop(config: OutreachConfig): Promise<OutreachR
 }
 
 // ─── Candidate building ──────────────────────────────────────────────────────
-// The two workflows previously duplicated this preamble: load location's employees
-// with availability, compute their assigned hours for the week, then call
-// rankReplacementCandidates. Extracted here so both adapters share it.
-
-interface ShiftForCandidates {
-  dayOfWeek: number
-  shiftTemplateId: string
-  shiftTemplate: { requiredRoles: string[]; startTime: string; endTime: string }
-  schedule: {
-    weekStart: Date | string
-    shifts: Array<{
-      employeeId: string | null
-      dayOfWeek: number
-      status: string
-      shiftTemplate: { startTime: string; endTime: string }
-    }>
-  }
-}
+// The real work lives in lib/scheduling/candidates.ts so the WhatsApp handler
+// can run it synchronously. Here it stays a SINGLE step.run — it used to be
+// six, and every step.run is a full Inngest→server round trip; in production
+// those round trips, not the queries inside them, dominated the replacement
+// engine's latency. Cheap reads plus one audit write: safe to redo on retry.
 
 export async function buildShiftCandidates(opts: {
   step: StepLike
@@ -221,141 +214,7 @@ export async function buildShiftCandidates(opts: {
   excludeEmployeeId: string
 }): Promise<OutreachCandidate[]> {
   const { step, locationId, shift, excludeEmployeeId } = opts
-
-  // Cast back from `unknown` (StepLike's widened return type) to the actual Prisma type.
-  const employees = (await step.run("load-employees", () =>
-    prisma.employee.findMany({
-      where: { locationId },
-      include: { recurringAvailability: true },
-    })
-  )) as LoadedEmployee[]
-
-  const hoursMap: Record<string, number> = {}
-  for (const s of shift.schedule.shifts) {
-    if (s.employeeId && s.status !== "DECLINED") {
-      const h = shiftDurationHours(s.shiftTemplate.startTime, s.shiftTemplate.endTime)
-      hoursMap[s.employeeId] = (hoursMap[s.employeeId] ?? 0) + h
-    }
-  }
-
-  const ranked = rankReplacementCandidates(
-    employees.map((emp) => ({
-      id: emp.id,
-      name: emp.name,
-      roles: emp.roles,
-      minHours: emp.minHours,
-      maxHours: emp.maxHours,
-      assignedHoursThisWeek: hoursMap[emp.id] ?? 0,
-      hasVolunteeredForExtra: false,
-    })),
-    {
-      requiredRoles: shift.shiftTemplate.requiredRoles,
-      durationHours: shiftDurationHours(shift.shiftTemplate.startTime, shift.shiftTemplate.endTime),
-      dayOfWeek: shift.dayOfWeek,
-    },
-    employees.flatMap((emp) =>
-      emp.recurringAvailability.map((a) => ({
-        employeeId: emp.id,
-        dayOfWeek: a.dayOfWeek,
-        available: true,
-      }))
-    ),
-    excludeEmployeeId
-  )
-
-  // Hydrate each ranked candidate with the employee's email + name so callers
-  // don't need to look them up again. Preserves the priority order.
-  const hydrated: OutreachCandidate[] = []
-  for (const r of ranked) {
-    const emp = employees.find((e) => e.id === r.employeeId)
-    if (!emp) continue
-    hydrated.push({
-      employeeId: r.employeeId,
-      email: emp.email,
-      name: emp.name,
-      priority: r.priority,
-      fairnessScore: r.fairnessScore,
-    })
-  }
-
-  // Legal filter — a candidate whose acceptance would break working-time law
-  // (ArbZG, or JArbSchG for minors) is never contacted, and the exclusion is
-  // explained in the audit log.
-  const rules = (await step.run("load-compliance-rules", () => loadRules(new Date()))) as ComplianceRules
-  const weekStart = new Date(shift.schedule.weekStart)
-  const monthHours = (await step.run("load-month-hours", () =>
-    loadMonthNetHoursBeforeWeek(
-      hydrated.map((c) => c.employeeId),
-      weekStart,
-      rules.arbzg
-    )
-  )) as Record<string, number>
-  const blocks = (await step.run("load-blocked-times", () =>
-    prisma.blockedTime.findMany({ where: { locationId } })
-  )) as Block[]
-  const vacations = (await step.run("load-vacations", () =>
-    prisma.vacation.findMany({ where: { locationId } })
-  )) as VacationRange[]
-  const candidateSlot: PlannedShift = {
-    start: getShiftStart(weekStart, shift.dayOfWeek, shift.shiftTemplate.startTime),
-    end: getShiftEnd(weekStart, shift.dayOfWeek, shift.shiftTemplate.endTime),
-  }
-
-  const legal: OutreachCandidate[] = []
-  const blocked: { candidate: OutreachCandidate; violation: ComplianceViolation }[] = []
-  for (const candidate of hydrated) {
-    // Sperrzeit: this employee never works this slot — hard exclusion.
-    if (isBlocked(blocks, candidate.employeeId, shift.shiftTemplateId, shift.dayOfWeek)) continue
-    // On vacation on the shift's real date — never asked.
-    if (isOnVacation(vacations, candidate.employeeId, candidateSlot.start)) continue
-    const emp = employees.find((e) => e.id === candidate.employeeId)
-    const existing: PlannedShift[] = shift.schedule.shifts
-      .filter((s) => s.employeeId === candidate.employeeId && s.status !== "DECLINED")
-      .map((s) => ({
-        start: getShiftStart(weekStart, s.dayOfWeek, s.shiftTemplate.startTime),
-        end: getShiftEnd(weekStart, s.dayOfWeek, s.shiftTemplate.endTime),
-      }))
-    const violation = checkEmployeeAssignment(
-      {
-        birthDate: emp?.birthDate ?? null,
-        category: emp?.category,
-        hourlyWageCents: emp?.hourlyWageCents,
-        isWerkstudent: emp?.isWerkstudent,
-        lectureFree: emp?.lectureFree,
-      },
-      candidateSlot,
-      existing,
-      rules,
-      { monthNetHoursBeforeWeek: monthHours[candidate.employeeId] ?? 0 }
-    )
-    if (violation) blocked.push({ candidate, violation })
-    else legal.push(candidate)
-  }
-
-  if (blocked.length > 0) {
-    await step.run("log-compliance-blocked", () =>
-      prisma.auditLog.create({
-        data: {
-          locationId,
-          action: "COMPLIANCE_BLOCKED",
-          aiReasoning: blocked
-            .map((b) => `${b.candidate.name}: ${b.violation.rule} — ${b.violation.detail}`)
-            .join("; "),
-          candidatesConsidered: blocked.map((b) => ({
-            employeeId: b.candidate.employeeId,
-            rule: b.violation.rule,
-          })),
-          outcome: `${blocked.length} candidate(s) excluded by working-time law`,
-        },
-      })
-    )
-  }
-
-  return legal
-}
-
-export function shiftDurationHours(start: string, end: string): number {
-  const [sh, sm] = start.split(":").map(Number)
-  const [eh, em] = end.split(":").map(Number)
-  return (eh * 60 + em - (sh * 60 + sm)) / 60
+  return (await step.run("build-candidates", () =>
+    computeShiftCandidates({ locationId, shift, excludeEmployeeId })
+  )) as OutreachCandidate[]
 }

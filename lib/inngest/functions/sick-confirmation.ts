@@ -18,7 +18,11 @@ const REMINDER_DELAYS = ["30m", "2h", "4h", "8h", "12h"] as const
 export const sickConfirmationNag = inngest.createFunction(
   { id: "sick-confirmation-nag", triggers: [{ event: "sick/reported" }] },
   async ({ event, step }) => {
-    const { sickCallId } = event.data as { sickCallId: string }
+    // origin:"chat" = the WhatsApp handler already posted the copilot message
+    // (and ran the instant cover search) synchronously — only the email nag
+    // loop is still this function's job. Token/email sick calls carry no
+    // origin and keep the copilot push.
+    const { sickCallId, origin } = event.data as { sickCallId: string; origin?: string }
 
     const sickCall = await step.run("load-sick-call", () =>
       prisma.sickCall.findUnique({ where: { id: sickCallId } })
@@ -49,17 +53,19 @@ export const sickConfirmationNag = inngest.createFunction(
     const summary = `${context.employee.name} — ${context.shift.shiftTemplate.name} on ${formatShiftDate(start)}`
 
     // Copilot thread first: the owner usually sees chat before email.
-    await step.run("notify-copilot", async () => {
-      const lang = await ownerThreadLanguage(sickCall.locationId)
-      await pushOwnerMessage(
-        sickCall.locationId,
-        t(lang).sickCallPush(
-          context.employee!.name,
-          context.shift!.shiftTemplate.name,
-          fmtDay(lang, start)
+    if (origin !== "chat") {
+      await step.run("notify-copilot", async () => {
+        const lang = await ownerThreadLanguage(sickCall.locationId)
+        await pushOwnerMessage(
+          sickCall.locationId,
+          t(lang).sickCallPush(
+            context.employee!.name,
+            context.shift!.shiftTemplate.name,
+            fmtDay(lang, start)
+          )
         )
-      )
-    })
+      })
+    }
 
     for (let attempt = 0; attempt <= REMINDER_DELAYS.length; attempt++) {
       await step.run(`notify-${attempt}`, async () => {

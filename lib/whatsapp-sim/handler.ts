@@ -11,7 +11,9 @@ import { getShiftStart, getShiftEnd, formatShiftDate } from "@/lib/scheduling/sh
 import { checkEmployeeAssignment } from "@/lib/compliance/check"
 import { loadRules } from "@/lib/compliance/load"
 import { needsAvailability } from "@/lib/scheduling/categories"
-import { pushOwnerMessage } from "@/lib/agent/owner-thread"
+import { computeShiftCandidates } from "@/lib/scheduling/candidates"
+import { pushOwnerMessage, ownerThreadLanguage } from "@/lib/agent/owner-thread"
+import { t, fmtDay } from "@/lib/agent/i18n"
 import { routeMessage } from "./agent"
 
 export interface ChatAction {
@@ -161,6 +163,70 @@ export async function requestManagerCover(
     ]
   )
   return { ok: true, employeeName: employee.name, shiftLabel }
+}
+
+// ── Instant sick-call cover ──────────────────────────────────────────────────
+// Runs the replacement search synchronously the moment a sick call lands in
+// chat: same ranking, same compliance wall, same audit trail as the Inngest
+// engine — minus the per-step round trips. The cover ask reuses the
+// MGRCOVER_YES/NO consent flow, so the accept path (compliance re-check,
+// reassign, confirmations, owner notification) already exists above.
+async function instantSickCover(locationId: string, shiftId: string) {
+  const shift = await prisma.shift.findFirst({
+    where: { id: shiftId, schedule: { locationId } },
+    include: {
+      shiftTemplate: true,
+      employee: { select: { name: true } },
+      schedule: { include: { shifts: { include: { shiftTemplate: true } } } },
+    },
+  })
+  if (!shift) return
+
+  const weekStart = new Date(shift.schedule.weekStart)
+  const start = getShiftStart(weekStart, shift.dayOfWeek, shift.shiftTemplate.startTime)
+  const lang = await ownerThreadLanguage(locationId)
+  await pushOwnerMessage(
+    locationId,
+    t(lang).sickCallPush(
+      shift.employee?.name ?? "An employee",
+      shift.shiftTemplate.name,
+      fmtDay(lang, start)
+    )
+  )
+
+  const candidates = await computeShiftCandidates({
+    locationId,
+    shift,
+    excludeEmployeeId: shift.employeeId ?? "none",
+  })
+
+  if (candidates.length === 0) {
+    await pushOwnerMessage(
+      locationId,
+      t(lang).replacementFailed(shift.shiftTemplate.name, fmtDay(lang, start), 0)
+    )
+    return
+  }
+
+  const top = candidates[0]
+  await pushAgentMessage(
+    locationId,
+    top.employeeId,
+    `🔔 Can you cover? The *${shift.shiftTemplate.name}* shift on ${formatShiftDate(start)} (${shift.shiftTemplate.startTime}–${shift.shiftTemplate.endTime}) just opened up.`,
+    [
+      { label: "🙋 Yes, I can", command: `MGRCOVER_YES:${shiftId}` },
+      { label: "No", command: `MGRCOVER_NO:${shiftId}` },
+    ]
+  )
+  await prisma.auditLog.create({
+    data: {
+      locationId,
+      action: "REPLACEMENT_OUTREACH",
+      aiReasoning: `Instant sick-call outreach: ${top.name} (priority ${top.priority}, fairness ${top.fairnessScore.toFixed(2)})`,
+      candidatesConsidered: [{ employeeId: top.employeeId, priority: top.priority }],
+      outcome: "outreach_sent",
+    },
+  })
 }
 
 // ── Entry point ──────────────────────────────────────────────────────────────
@@ -390,16 +456,24 @@ async function runCommand(locationId: string, employeeId: string, command: strin
       if (!shift) return notYours(locationId, employeeId)
       if (shift.status === "LENT_OUT") return notYours(locationId, employeeId)
       await prisma.shift.update({ where: { id: arg }, data: { status: "DECLINED" } })
-      await safeSend({ name: "shift/sick-call", data: { shiftId: arg } })
       const sickCall = await prisma.sickCall.create({
         data: { locationId, shiftId: arg, employeeId },
       })
-      await safeSend({ name: "sick/reported", data: { sickCallId: sickCall.id } })
+      // sick/reported still drives the manager's email-confirmation nag loop.
+      // origin:"chat" tells it the copilot thread is already notified (below),
+      // so it must not post a duplicate a few minutes later.
+      await safeSend({ name: "sick/reported", data: { sickCallId: sickCall.id, origin: "chat" } })
       await pushAgentMessage(
         locationId,
         employeeId,
         `Get well soon! 🤒 I've let your manager know and I'm already looking for cover. Please also give them a quick personal heads-up.`
       )
+      // NO shift/sick-call event, deliberately: the Inngest replacement engine
+      // pays a full round trip per step, which in production stretched this
+      // exact flow to 10+ minutes. A sick colleague's phone-to-phone cover ask
+      // must land in seconds, so the search runs synchronously here. The
+      // engine still serves the email-token and copilot paths.
+      await instantSickCover(locationId, arg)
       return
     }
 
@@ -522,6 +596,9 @@ async function runCommand(locationId: string, employeeId: string, command: strin
       })
       if (!shift) return notYours(locationId, employeeId)
       if (shift.status === "LENT_OUT") return notYours(locationId, employeeId)
+      // Someone else already covered it — a second Yes must not steal the shift.
+      if (shift.status === "REASSIGNED" && shift.employee?.id !== employeeId)
+        return alreadyHandled(locationId, employeeId, shift.status)
 
       // Same compliance wall as the scheduler — never book an illegal shift.
       const employee = await prisma.employee.findUnique({ where: { id: employeeId } })
