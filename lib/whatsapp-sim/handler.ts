@@ -251,12 +251,20 @@ async function loadEmployeeShifts(employeeId: string, statuses: string[]) {
   )
 }
 
-// "Tue 14 Jul · Evening" — fits WhatsApp's 24-char list-row title. Drops the
-// generic suffix either language spells it with ("Abendschicht" → "Abend",
-// "Evening Shift" → "Evening"); templates named neither way pass through.
+// "Tue 21 Jul · Evening" — 20 chars, which is WhatsApp's REPLY BUTTON title
+// limit, not the roomier 24 of a list row. The sick picker shows one button per
+// upcoming shift, and Niko normally has exactly one, so the button path is the
+// one that matters: budget for 20 or the label lands truncated on his phone.
+// en-GB renders "Tue, 21 Jul" — the comma is a char we can't spare.
+//
+// Drops the generic suffix either language spells it with ("Abendschicht" →
+// "Abend", "Evening Shift" → "Evening"); templates named neither way pass
+// through and clamp() catches anything still too long.
 const shortShiftLabel = (s: ShiftWithCtx) => {
   const start = getShiftStart(new Date(s.schedule.weekStart), s.dayOfWeek, s.shiftTemplate.startTime)
-  const when = start.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })
+  const when = start
+    .toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })
+    .replace(",", "")
   return `${when} · ${s.shiftTemplate.name.replace(/(schicht|\s+shift)$/i, "")}`
 }
 

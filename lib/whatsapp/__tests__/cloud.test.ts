@@ -100,4 +100,26 @@ describe("buildPayload", () => {
     expect([...title].length).toBeLessThanOrEqual(20)
     expect(title.startsWith("🤒")).toBe(true)
   })
+
+  // Regression: the sick picker shows one button per upcoming shift, and the
+  // demo employee has exactly one — so it takes the BUTTON path (20 chars),
+  // not the list path (24). "Tue, 21 Jul · Evening" is 21 and arrived on the
+  // phone as "Tue, 21 Jul · Eveni…"; shortShiftLabel drops the comma to fit.
+  // If a shift name grows, truncate it there rather than letting clamp() do it.
+  it("shows a shift-picker button label in full — no ellipsis", () => {
+    for (const label of [
+      "Tue 21 Jul · Evening", // longest real case: 20 chars exactly
+      "Mon 7 Sep · Morning",
+      "Wed 3 Jun · Midday",
+      "Tue 21 Jul · Abend", // the German templates demo-minou still seeds
+    ]) {
+      const p = buildPayload(to, "Which shift are you calling in sick for?", [
+        { label, command: "SICK:s1" },
+      ]) as { interactive: { action: { buttons: { reply: { title: string } }[] } } }
+
+      const title = p.interactive.action.buttons[0].reply.title
+      expect(title, `"${label}" must survive Meta's 20-char button limit`).toBe(label)
+      expect(title).not.toContain("…")
+    }
+  })
 })
