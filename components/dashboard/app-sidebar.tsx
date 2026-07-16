@@ -14,7 +14,6 @@ import {
   Plus,
   Sparkles,
   Building2,
-  MessageCircle,
   Bot,
   LogOut,
   Languages,
@@ -81,12 +80,16 @@ export function AppSidebar({ locations, user }: Props) {
 
   // The week board on the overview replaced the separate Schedules tab —
   // schedule detail/editor routes stay reachable from the board.
+  //
+  // No WhatsApp entry: the employee channel is real WhatsApp now, so the
+  // in-app simulator isn't day-to-day furniture. The page still lives at
+  // /dashboard/[locationId]/whatsapp and RUNBOOK §112 leans on it as the
+  // wifi-failure fallback — reachable by URL, just not from here.
   const locationNav = activeLocationId
     ? [
         { label: s.overview, icon: Home, href: `/dashboard/${activeLocationId}` },
         { label: s.assistant, icon: Bot, href: `/dashboard/${activeLocationId}/assistant` },
         { label: s.employees, icon: Users, href: `/dashboard/${activeLocationId}/employees` },
-        { label: s.whatsapp, icon: MessageCircle, href: `/dashboard/${activeLocationId}/whatsapp` },
       ]
     : []
 
